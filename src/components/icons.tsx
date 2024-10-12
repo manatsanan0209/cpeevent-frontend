@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { IconSvgProps } from "@/types";
 
-import logo from "../images/logo1024.png";
+import logo from "../images/logo.png";
 
 // logo image from folder images
 export const Logo: React.FC<IconSvgProps> = ({
