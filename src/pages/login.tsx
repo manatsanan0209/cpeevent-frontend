@@ -3,7 +3,11 @@ import { HiUserCircle } from "react-icons/hi2";
 import { Logo } from "@/components/icons";
 import { useState } from "react";
 import React from "react";
-const EyeIcon = ({ isVisible, ...props }) => (
+interface EyeIconProps extends React.SVGProps<SVGSVGElement> {
+  isVisible: boolean;
+}
+
+const EyeIcon: React.FC<EyeIconProps> = ({ isVisible, ...props }) =>  (
   <svg
     aria-hidden="true"
     fill="none"
