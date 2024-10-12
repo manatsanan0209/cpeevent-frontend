@@ -1,7 +1,6 @@
 import { siteConfig } from "@/config/site";
 import { Logo } from "@/components/icons";
 import { Link } from "@nextui-org/react";
-import { Button } from "@nextui-org/react";
 import { BiCalendarStar } from "react-icons/bi";
 import { LuCalendarClock } from "react-icons/lu";
 import { GoChecklist } from "react-icons/go";
