@@ -28,7 +28,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       try {
          const token = localStorage.getItem('token');
 
-         const response = await axios.post(
+         await axios.post(
             '/api/user/logout',
             {},
             {
@@ -47,8 +47,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
          localStorage.removeItem('refresh_token');
          localStorage.removeItem('access');
          window.location.reload();
-
-         return response;
       } catch (error) {
          throw new Error('Logout failed');
       }

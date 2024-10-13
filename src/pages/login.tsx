@@ -66,7 +66,6 @@ export default function LoginPage() {
    const navigate = useNavigate();
 
    const [isVisible, setIsVisible] = React.useState(false);
-   const toggleVisibility = () => setIsVisible(!isVisible);
    const { login, loading, error } = useLogin();
 
    const handleSubmit = (e: React.FormEvent) => {
