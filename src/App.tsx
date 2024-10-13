@@ -7,6 +7,7 @@ import DocsPage from '@/pages/docs';
 import PricingPage from '@/pages/pricing';
 import BlogPage from '@/pages/blog';
 import AboutPage from '@/pages/about';
+import ProtectedLayout from '@/layouts/ProtectedLayout';
 
 function App() {
    return (
@@ -17,6 +18,18 @@ function App() {
          <Route element={<BlogPage />} path="/blog" />
          <Route element={<AboutPage />} path="/about" />
          <Route element={<LoginPage />} path="/login" />
+         <Route
+            element={
+               <ProtectedLayout requiredAccess="1">
+                  <Routes>
+                     <Route element={<AboutPage />} path="/some" />
+                     <Route element={<BlogPage />} path="/another" />
+                     {/* Add more protected routes here */}
+                  </Routes>
+               </ProtectedLayout>
+            }
+            path="/protected/*"
+         />
       </Routes>
    );
 }

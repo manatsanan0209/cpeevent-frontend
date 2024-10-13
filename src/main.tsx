@@ -5,12 +5,15 @@ import App from './App.tsx';
 import { Provider } from './provider.tsx';
 import '@/styles/globals.css';
 import './api/axios-config';
+import AuthProvider from './context/AuthProvider.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
    <>
       <BrowserRouter>
          <Provider>
-            <App />
+            <AuthProvider>
+               <App />
+            </AuthProvider>
          </Provider>
       </BrowserRouter>
    </>,
