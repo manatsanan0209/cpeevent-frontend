@@ -63,7 +63,6 @@ export default function LoginPage() {
    const [user, setUser] = useState('');
    const [password, setPassword] = useState('');
 
-   console.log(password);
    const [isVisible, setIsVisible] = React.useState(false);
    const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -76,7 +75,7 @@ export default function LoginPage() {
                   Welcome to CPE EVO!
                </h1>
                <h2 className="text-m font-semibold mb-4 text-zinc-400 text-center">
-                  The best community of all for us, "CPEs."{' '}
+                  The best community of all for us, &rdquo;CPEs.&rdquo;{' '}
                </h2>
                <Logo className="w-96 h-96" />
             </div>
@@ -147,7 +146,9 @@ export default function LoginPage() {
                      </Button>
 
                      <div className="text-sm flex justify-center">
-                        <div className="">Don't have an account? &nbsp; </div>
+                        <div className="">
+                           Don&apos;t have an account? &nbsp;{' '}
+                        </div>
                         <Link className="text-violet-800" to="/register">
                            Sign up here
                         </Link>
