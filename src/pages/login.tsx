@@ -5,6 +5,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 
+import { useLogin } from '@/hooks/use-login';
 import { Logo } from '@/components/icons';
 interface EyeIconProps extends React.SVGProps<SVGSVGElement> {
    isVisible: boolean;
@@ -60,11 +61,17 @@ const EyeIcon: React.FC<EyeIconProps> = ({ isVisible, ...props }) => (
 );
 
 export default function LoginPage() {
-   const [user, setUser] = useState('');
+   const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
 
    const [isVisible, setIsVisible] = React.useState(false);
    const toggleVisibility = () => setIsVisible(!isVisible);
+   const { login, loading, error } = useLogin();
+
+   const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      await login(email, password);
+   };
 
    return (
       <div className="min-h-screen bg-gray-100 flex justify-center">
@@ -79,7 +86,6 @@ export default function LoginPage() {
                </h2>
                <Logo className="w-96 h-96" />
             </div>
-
             {/* Right Section */}
             <div className="flex flex-col gap-3 mx-auto lg:w-1/2 p-6 sm:p-12 justify-center items-center">
                <div className="bg-white w-2/3 h-2/3 shadow-2xl rounded-xl p-8 flex flex-col justify-center items-center">
@@ -89,13 +95,16 @@ export default function LoginPage() {
                   <p className="text-2xl font-bold text-zinc-600 my-5">
                      Sign in
                   </p>
-                  <div className="w-full max-w-sm flex flex-col gap-4">
+                  <form
+                     className="w-full max-w-sm flex flex-col gap-4"
+                     onSubmit={handleSubmit}
+                  >
                      <div className="">
                         <Input
                            label="Student ID"
                            type="text"
-                           value={user}
-                           onChange={(e) => setUser(e.target.value)}
+                           value={email}
+                           onChange={(e) => setEmail(e.target.value)}
                         />
                      </div>
                      <div className="">
@@ -106,7 +115,7 @@ export default function LoginPage() {
                                  aria-label="toggle password visibility"
                                  className="focus:outline-none"
                                  type="button"
-                                 onClick={toggleVisibility}
+                                 onClick={() => setIsVisible(!isVisible)}
                               >
                                  <EyeIcon
                                     className="text-2xl text-default-400 pointer-events-none"
@@ -129,9 +138,14 @@ export default function LoginPage() {
                            Forgot your password?
                         </Link>
                      </div>
-                     <Button className="bg-violet-800 hover:bg-violet-900 text-white font-bold rounded-xl">
-                        Sign in
+                     <Button
+                        className="bg-violet-800 hover:bg-violet-900 text-white font-bold rounded-xl"
+                        isLoading={loading}
+                        type="submit"
+                     >
+                        {loading ? 'Signing in...' : 'Sign in'}
                      </Button>
+                     {error && <p className="text-red-500">{error}</p>}
                      <div className="relative flex items-center">
                         <div className="flex-grow border-t border-gray-400" />
                         <span className="flex-shrink mx-4 text-sm text-gray-400">
@@ -139,12 +153,10 @@ export default function LoginPage() {
                         </span>
                         <div className="flex-grow border-t border-gray-400" />
                      </div>
-
                      <Button className="bg-white hover:bg-gray-100 border-2 text-gray-800 rounded-xl mt-2 flex items-center justify-center">
                         <FcGoogle className="w-5 h-5 mr-2" />
                         Sign up with Google
                      </Button>
-
                      <div className="text-sm flex justify-center">
                         <div className="">
                            Don&apos;t have an account? &nbsp;{' '}
@@ -153,7 +165,7 @@ export default function LoginPage() {
                            Sign up here
                         </Link>
                      </div>
-                  </div>
+                  </form>
                </div>
             </div>
          </div>
