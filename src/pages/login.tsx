@@ -2,7 +2,7 @@ import { Input, Button, Checkbox } from '@nextui-org/react';
 import { HiUserCircle } from 'react-icons/hi2';
 import { useState } from 'react';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 
 import { useLogin } from '@/hooks/use-login';
@@ -63,14 +63,22 @@ const EyeIcon: React.FC<EyeIconProps> = ({ isVisible, ...props }) => (
 export default function LoginPage() {
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
+   const navigate = useNavigate();
 
    const [isVisible, setIsVisible] = React.useState(false);
    const toggleVisibility = () => setIsVisible(!isVisible);
    const { login, loading, error } = useLogin();
 
-   const handleSubmit = async (e: React.FormEvent) => {
+   const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
-      await login(email, password);
+      login(email, password)
+         .then(() => {
+            navigate('/'); // Navigate to home page on successful login
+         })
+         .catch((error) => {
+            console.error('Login failed:', error);
+            // Handle login failure (e.g., show an error message)
+         });
    };
 
    return (
