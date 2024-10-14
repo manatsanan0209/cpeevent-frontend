@@ -8,7 +8,8 @@ import PricingPage from '@/pages/pricing';
 import BlogPage from '@/pages/blog';
 import AboutPage from '@/pages/about';
 import ProtectedLayout from '@/layouts/ProtectedLayout';
-import AllEvent from "./components/all-event";
+import AllEvent from "./components/All-Event";
+import Event from './pages/Event';
 
 function App() {
    return (
@@ -32,6 +33,7 @@ function App() {
             path="/protected/*"
          />
         <Route element={<AllEvent />} path="/all-event" />
+        <Route element={<Event />} path="/event/" />
     </Routes>
    );
 }
