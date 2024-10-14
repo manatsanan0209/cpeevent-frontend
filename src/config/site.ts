@@ -3,6 +3,23 @@ export type SiteConfig = typeof siteConfig;
 export const siteConfig = {
   name: "Vite + NextUI",
   description: "Make beautiful websites regardless of your design experience.",
+  sideItems: [
+    {
+      label: "Event",
+      href: "/event",
+      icon: "event",
+    },
+    {
+      label: "Calendar",
+      href: "/calendar",
+      icon: "calendar",
+    },
+    {
+      label: "To - Do",
+      href: "/todo",
+      icon: "todo",
+    },
+  ],
   navItems: [
     {
       label: "Home",
