@@ -1,15 +1,13 @@
 import { Route, Routes } from 'react-router-dom';
-
 import LoginPage from './pages/login';
-
 import IndexPage from '@/pages/index';
 import DocsPage from '@/pages/docs';
 import PricingPage from '@/pages/pricing';
 import BlogPage from '@/pages/blog';
 import AboutPage from '@/pages/about';
 import ProtectedLayout from '@/layouts/ProtectedLayout';
-import AllEvent from "./components/All-Event";
 import Event from './pages/Event';
+import AllEvent from './components/all-event';
 
 function App() {
    return (
@@ -32,9 +30,9 @@ function App() {
             }
             path="/protected/*"
          />
-        <Route element={<AllEvent />} path="/all-event" />
-        <Route element={<Event />} path="/event/" />
-    </Routes>
+         <Route element={<AllEvent />} path="/all-event" />
+         <Route element={<Event />} path="/event" />
+      </Routes>
    );
 }
 
