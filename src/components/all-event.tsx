@@ -166,7 +166,6 @@ export default function AllEvent() {
       );
     }
   }
-  console.log(dummy_data[1].participants.includes(dummy_user_data.student_id));
 
   return (
     <div className="flex items-center w-full flex-col">
@@ -174,14 +173,14 @@ export default function AllEvent() {
       <Tabs
         key="secondary"
         color="secondary"
-        className="flex  w-full"
+        className="flex w-screen"
         variant="underlined"
         fullWidth
         size="md"
       >
         {/* Tab All */}
-        <Tab className="flex flex-col md:flex-col" key="All" title="All">
-          <div className="flex flex-row w-screen justify-between ">
+        <Tab className="flex flex-col md:flex-col w-screen" key="All" title="All">
+          <div className="flex flex-row justify-between ">
             {/* Search */}
             <div className=" w-1/4 mx-20 my-8 justify-start mb-4 md:mb-0">
               {searchInput}
