@@ -1,5 +1,4 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
-
 import LoginPage from './pages/login';
 import Event from './pages/Event';
 import Custom404 from './pages/Custom404';
@@ -10,6 +9,8 @@ import PricingPage from '@/pages/pricing';
 import BlogPage from '@/pages/blog';
 import AboutPage from '@/pages/about';
 import ProtectedLayout from '@/layouts/ProtectedLayout';
+import CalendarPage from "@/pages/calendar";
+import TodoPage from "@/pages/todo";
 
 function App() {
    return (
@@ -34,7 +35,9 @@ function App() {
             }
             path="/protected/*"
          />
-         <Route element={<Event />} path="/event" />
+         <Route element={<Event />} path="/events" />
+         <Route element={<CalendarPage />} path="/calendar" />
+         <Route element={<TodoPage />} path="/todo" />
       </Routes>
    );
 }

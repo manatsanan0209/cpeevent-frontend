@@ -1,52 +1,50 @@
-import { Link } from '@nextui-org/react';
-import { BiCalendarStar } from 'react-icons/bi';
-import { LuCalendarClock } from 'react-icons/lu';
-import { GoChecklist } from 'react-icons/go';
-import { link as linkStyles } from '@nextui-org/theme';
-import clsx from 'clsx';
-
-import { Logo } from '@/components/icons';
-import { siteConfig } from '@/config/site';
+import { siteConfig } from "@/config/site";
+import { Logo } from "@/components/icons";
+import { Link, link as linkStyles } from "@nextui-org/react";
+import { BiCalendarStar } from "react-icons/bi";
+import { LuCalendarClock } from "react-icons/lu";
+import { GoChecklist } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
+import clsx from "clsx";
 
 export const Sidebar = () => {
-   const events = [
-      {
-         id: '1',
-         title: 'COMCAMP 34',
-      },
-      {
-         id: '2',
-         title: 'COMCAMP 35',
-      },
-      {
-         id: '3',
-         title: 'COMCAMP 36',
-      },
-   ];
+    const currentPath = window.location.pathname;
+    const navigate = useNavigate();
+    const events = [
+        {
+        id: "1",
+        title: "COMCAMP 34",
+        },
+        {
+        id: "2",
+        title: "COMCAMP 35",
+        },
+        {
+        id: "3",
+        title: "COMCAMP 36",
+        },
+    ];
+  return (
 
-   return (
-      <aside
-         aria-label="Sidebar"
-         className="fixed h-full p-6 w-64 z-50 border-r transition-transform -translate-x-full md:translate-x-0"
-         id="sidebar"
-      >
-         <div className="flex items-center justify-center h-32">
-            <Link aria-label="Home" href="/">
-               <Logo className="w-32 h-32 " />
+    <aside id="sidebar" className=" h-full p-6 w-64 z-50 border-r transition-transform -translate-x-full md:translate-x-0" aria-label="Sidebar">
+        <div className="flex items-center justify-center h-32">
+            <Link href="/" aria-label="Home">
+                <Logo className="w-32 h-32 " />
             </Link>
-         </div>
-         {siteConfig.sideItems.map((item) => (
-            <Link
-               key={item.href}
-               aria-label={item.label}
-               className={clsx(
-                  linkStyles({
-                     color: 'foreground',
-                  }),
-                  'data-[active=true]:text-primary data-[active=true]:font-medium',
-                  'flex items-center gap-2 my-4 p-2 rounded-lg hover:bg-default-100 dark:hover:bg-default-800 dark:hover:text-default-100',
-               )}
-               href={item.href}
+        </div>
+        {siteConfig.sideItems.map((item) => (
+            <Link 
+                key={item.href} 
+                onClick={() => navigate(item.href)}
+                className={clsx(
+                    linkStyles({ 
+                        color: "foreground" 
+                    }),
+                    "data-[active=true]:text-primary data-[active=true]:font-medium",
+                    currentPath === item.href && "text-violet-500 bg-default-100 font-medium",
+                    "flex items-center gap-2 my-4 p-2 rounded-lg hover:bg-default-100 dark:hover:bg-default-800 dark:hover:text-default-100"
+                )} 
+                aria-label={item.label}
             >
                {/* icon */}
                {item.icon === 'event' && (
@@ -66,24 +64,24 @@ export const Sidebar = () => {
          {/* list events */}
          <div className="flex flex-col gap-2">
             <h3 className="text-lg font-medium">Events</h3>
-            <ul className="flex flex-col gap-2 ml-2">
-               {events.map((event) => (
-                  <li key={event.id}>
-                     <Link
-                        aria-label={event.title}
-                        className={clsx(
-                           linkStyles({
-                              color: 'foreground',
-                           }),
-                           'data-[active=true]:text-primary data-[active=true]:font-medium',
-                           'flex items-center gap-2 p-2 rounded-lg hover:bg-default-100 dark:hover:bg-default-800 dark:hover:text-default-100',
-                        )}
-                        href={`/event/${event.id}`}
-                     >
-                        <span>{event.title}</span>
-                     </Link>
-                  </li>
-               ))}
+            <ul className="flex flex-col gap-2 ml-2 list-disc">
+                {events.map((event) => (
+                    <li key={event.id} className="ml-4">
+                        <Link 
+                            onClick={() => navigate(`/event/${event.id}`)}
+                            className={clsx(
+                                linkStyles({ 
+                                    color: "foreground" 
+                                }),
+                                "data-[active=true]:text-primary data-[active=true]:font-medium",
+                                "flex items-center gap-2 p-2 rounded-lg hover:bg-default-100 dark:hover:bg-default-800 dark:hover:text-default-100"
+                            )} 
+                            aria-label={event.title}
+                        >
+                            <span>{event.title}</span>
+                        </Link>
+                    </li>
+                ))}
             </ul>
          </div>
       </aside>
