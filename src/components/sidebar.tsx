@@ -26,7 +26,7 @@ export const Sidebar = () => {
     ];
   return (
 
-    <aside id="sidebar" className=" h-full p-6 w-64 z-50 border-r transition-transform -translate-x-full md:translate-x-0" aria-label="Sidebar">
+    <aside id="sidebar" className="fixed h-full p-6 w-64 z-50 border-r transition-transform -translate-x-full md:translate-x-0" aria-label="Sidebar">
         <div className="flex items-center justify-center h-32">
             <Link href="/" aria-label="Home">
                 <Logo className="w-32 h-32 " />

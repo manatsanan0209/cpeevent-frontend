@@ -11,9 +11,9 @@ export default function DefaultLayout({
   return (
     <div className="relative flex h-screen">
       <Sidebar />
-      <div className="flex flex-col w-full h-full">
+      <div className="flex flex-col w-full h-full ml-64">
         <Navbar />
-        <main className="container mx-auto max-w-7xl px-6 flex-grow pt-16">
+        <main className="container mx-auto max-w-7xl px-6 flex-grow mb-[1000px]">
           {children}
         </main>
         <footer className="w-full flex  items-center justify-center py-3">
