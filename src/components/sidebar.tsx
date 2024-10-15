@@ -1,13 +1,15 @@
 import { siteConfig } from "@/config/site";
 import { Logo } from "@/components/icons";
-import { Link } from "@nextui-org/react";
+import { Link, link as linkStyles } from "@nextui-org/react";
 import { BiCalendarStar } from "react-icons/bi";
 import { LuCalendarClock } from "react-icons/lu";
 import { GoChecklist } from "react-icons/go";
-import { link as linkStyles } from "@nextui-org/theme";
+import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 
 export const Sidebar = () => {
+    const currentPath = window.location.pathname;
+    const navigate = useNavigate();
     const events = [
         {
         id: "1",
@@ -33,12 +35,13 @@ export const Sidebar = () => {
         {siteConfig.sideItems.map((item) => (
             <Link 
                 key={item.href} 
-                href={item.href} 
+                onClick={() => navigate(item.href)}
                 className={clsx(
                     linkStyles({ 
                         color: "foreground" 
                     }),
                     "data-[active=true]:text-primary data-[active=true]:font-medium",
+                    currentPath === item.href && "text-violet-500 bg-default-100 font-medium",
                     "flex items-center gap-2 my-4 p-2 rounded-lg hover:bg-default-100 dark:hover:bg-default-800 dark:hover:text-default-100"
                 )} 
                 aria-label={item.label}
@@ -55,11 +58,11 @@ export const Sidebar = () => {
         {/* list events */}
         <div className="flex flex-col gap-2">
             <h3 className="text-lg font-medium">Events</h3>
-            <ul className="flex flex-col gap-2 ml-2">
+            <ul className="flex flex-col gap-2 ml-2 list-disc">
                 {events.map((event) => (
-                    <li key={event.id}>
+                    <li key={event.id} className="ml-4">
                         <Link 
-                            href={`/event/${event.id}`} 
+                            onClick={() => navigate(`/event/${event.id}`)}
                             className={clsx(
                                 linkStyles({ 
                                     color: "foreground" 
