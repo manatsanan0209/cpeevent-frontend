@@ -6,7 +6,7 @@ export const siteConfig = {
   sideItems: [
     {
       label: "Event",
-      href: "/event",
+      href: "/events",
       icon: "event",
     },
     {
