@@ -1,13 +1,12 @@
-import { Link } from "@nextui-org/link";
+import { Link } from '@nextui-org/link';
 
-import { Navbar } from "@/components/navbar";
-
-import { Sidebar } from "@/components/sidebar";
+import { Navbar } from '@/components/navbar';
+import { Sidebar } from '@/components/sidebar';
 
 export default function DefaultLayout({
-  children,
+   children,
 }: {
-  children: React.ReactNode;
+   children: React.ReactNode;
 }) {
   return (
     <div className="relative flex h-screen">

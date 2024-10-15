@@ -10,9 +10,13 @@ module.exports = {
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Noto Sans', 'sans-serif'],
+      },
+    },
+  darkMode: "class",
+  darkMode: "class"
   },
-  darkMode: "class",
-  darkMode: "class",
- plugins: [nextui()],
+  plugins: [nextui()],
 }
