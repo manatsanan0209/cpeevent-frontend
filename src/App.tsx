@@ -34,7 +34,7 @@ function App() {
             }
             path="/protected/*"
          />
-         <Route element={<Event />} path="/event" />
+         <Route element={<Event />} path="/events" />
       </Routes>
    );
 }
