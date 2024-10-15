@@ -31,8 +31,6 @@ export const Navbar = () => {
       });
    };
 
-   console.log(searchContent);
-
    const searchInput = (
       <Input
          aria-label="Search"
