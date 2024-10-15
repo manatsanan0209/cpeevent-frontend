@@ -1,7 +1,8 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 
 import LoginPage from './pages/login';
 import Event from './pages/Event';
+import Custom404 from './pages/Custom404';
 
 import IndexPage from '@/pages/index';
 import DocsPage from '@/pages/docs';
@@ -19,6 +20,8 @@ function App() {
          <Route element={<BlogPage />} path="/blog" />
          <Route element={<AboutPage />} path="/about" />
          <Route element={<LoginPage />} path="/login" />
+         <Route element={<Custom404 />} path="/404" />
+         <Route element={<Navigate replace to="/404" />} path="*" />
          <Route
             element={
                <ProtectedLayout requiredAccess="1">
