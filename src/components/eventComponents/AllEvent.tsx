@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
    Accordion,
    AccordionItem,
@@ -8,11 +9,9 @@ import {
    SelectItem,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
-import { useEffect, useState } from 'react';
-
 import { SearchIcon } from '../icons';
 
-// define type of data
+// Define type of data
 interface Event {
    _id: number;
    eventName: string;
@@ -29,7 +28,6 @@ interface Event {
    poster: string | null;
 }
 
-//
 interface User {
    student_id: string;
 }
@@ -42,51 +40,28 @@ interface AllEventProps {
 export default function AllEvent({ events, user }: AllEventProps) {
    const [sortedEvents, setSortedEvents] = useState<Event[]>(events);
    const [sortOption, setSortOption] = useState<string>('DateDSC');
+   const [searchInput, setSearchInput] = useState<string>('');
 
    useEffect(() => {
       sortEvents(sortOption);
    }, [sortOption, events]);
 
-   const searchInput = (
-      <Input
-         aria-label="Search"
-         classNames={{
-            inputWrapper: 'bg-white shadow-lg',
-            input: 'text-sm',
-         }}
-         endContent={
-            <Kbd className="hidden lg:inline-block" keys={['command']}>
-               K
-            </Kbd>
-         }
-         labelPlacement="outside"
-         placeholder="Search"
-         startContent={
-            <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-         }
-         type="search"
-      />
-   );
+   useEffect(() => {
+      filterEvents(searchInput);
+   }, [searchInput, events]);
 
-   function getCurrentTime(): string {
-      const now = new Date();
+   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchInput(e.target.value);
+   };
 
-      return now.toISOString();
-   }
+   const filterEvents = (searchTerm: string) => {
+      const filteredEvents = events.filter((event) =>
+         event.eventName.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+      setSortedEvents(filteredEvents);
+   };
 
-   function eventStatus(event: any) {
-      const current_time = getCurrentTime();
-
-      if (current_time < event.startDate) {
-         return 'Upcoming';
-      } else if (current_time > event.endDate) {
-         return 'Ended';
-      } else {
-         return 'Ongoing';
-      }
-   }
-
-   function sortEvents(option: string) {
+   const sortEvents = (option: string) => {
       let sortedArray = [...events];
 
       switch (option) {
@@ -122,17 +97,16 @@ export default function AllEvent({ events, user }: AllEventProps) {
             break;
       }
       setSortedEvents(sortedArray);
-   }
+   };
 
-   function displayEventStatus(event: any) {
+   const displayEventStatus = (event: Event) => {
       const status = eventStatus(event);
 
       if (status == 'Upcoming') {
          return (
             <span className="flex flex-row">
                <span>
-                  {' '}
-                  <GrStatusGoodSmall className="text-xs mt-0.5 mr-7 text-green-500" />{' '}
+                  <GrStatusGoodSmall className="text-xs mt-0.5 mr-7 text-green-500" />
                </span>
                <span className="text-blue-500">Upcoming</span>
             </span>
@@ -152,18 +126,54 @@ export default function AllEvent({ events, user }: AllEventProps) {
             </span>
          );
       }
-   }
+   };
+
+   const eventStatus = (event: Event) => {
+      const current_time = getCurrentTime();
+
+      if (current_time < event.startDate) {
+         return 'Upcoming';
+      } else if (current_time > event.endDate) {
+         return 'Ended';
+      } else {
+         return 'Ongoing';
+      }
+   };
+
+   const getCurrentTime = (): string => {
+      const now = new Date();
+      return now.toISOString();
+   };
 
    return (
       <>
          <div className="flex flex-row justify-between ">
             {/* Search */}
             <div className=" w-1/4 mx-20 my-8 justify-start mb-4 md:mb-0">
-               {searchInput}
+               <Input
+                  aria-label="Search"
+                  classNames={{
+                     inputWrapper: 'bg-white shadow-lg',
+                     input: 'text-sm',
+                  }}
+                  endContent={
+                     <Kbd className="hidden lg:inline-block" keys={['command']}>
+                        K
+                     </Kbd>
+                  }
+                  labelPlacement="outside"
+                  placeholder="Search"
+                  startContent={
+                     <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+                  }
+                  type="search"
+                  value={searchInput}
+                  onChange={handleSearchChange}
+               />
             </div>
             {/* Sort by */}
             <div className="flex w-1/4 mx-20 my-8 item-start flex-row">
-               <div className="w-20 mt-2 text-sm">Sort by</div>
+               <div className="w-20 mt-2 text-sm ">Sort by</div>
                <Select
                   disallowEmptySelection
                   isRequired
@@ -256,7 +266,12 @@ export default function AllEvent({ events, user }: AllEventProps) {
                         <div className="flex flex-col text-wrap w-1/4">
                            <Button
                               aria-label="Join Event"
-                              className="mx-12 my-5 bg-violet-700 text-white"
+                              className={`mx-12 my-5 ${
+                                 event.participants.includes(user.student_id) ||
+                                 eventStatus(event) != 'Upcoming'
+                                    ? 'bg-zinc-300 text-violet-700'
+                                    : 'bg-violet-700 text-white'
+                              }`}
                               isDisabled={
                                  event.participants.includes(user.student_id) ||
                                  eventStatus(event) != 'Upcoming'
@@ -270,7 +285,11 @@ export default function AllEvent({ events, user }: AllEventProps) {
                            </Button>
                            <Button
                               aria-label="Go to Workspace"
-                              className="mx-12 my-5 bg-blue-500 text-white"
+                              className={`mx-12 my-5 ${
+                                 !event.participants.includes(user.student_id)
+                                    ? 'bg-gray-300 text-blue-600'
+                                    : 'bg-blue-500 text-white'
+                              }`}
                               isDisabled={
                                  !event.participants.includes(user.student_id)
                               }

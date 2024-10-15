@@ -10,7 +10,6 @@ import JoinedEvent from '@/components/eventComponents/JoinedEvent.tsx';
 export default function Event() {
    return (
       <DefaultLayout>
-         <div className="flex w-full pl-64 flex-col">
             <Tabs
                key="secondary"
                fullWidth
@@ -27,7 +26,6 @@ export default function Event() {
                   <JoinedEvent events={events} user={user} />
                </Tab>
             </Tabs>
-         </div>
       </DefaultLayout>
    );
 }
