@@ -29,10 +29,6 @@ interface Event {
     poster: string | null;
 }
 
-interface User {
-    student_id: string;
-}
-
 interface AllEventProps {
     events: Event[];
 }
