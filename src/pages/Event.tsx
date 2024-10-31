@@ -27,7 +27,6 @@ export default function Event() {
                         events={events.filter((event) =>
                             event.participants.includes(user.student_id),
                         )}
-                        user={user}
                     />
                 </Tab>
             </Tabs>

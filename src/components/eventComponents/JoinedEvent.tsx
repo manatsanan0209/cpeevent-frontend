@@ -35,13 +35,13 @@ interface User {
 
 interface AllEventProps {
     events: Event[];
-    user: User;
 }
 
-export default function JoinedEvent({ events, user }: AllEventProps) {
+export default function JoinedEvent({ events }: AllEventProps) {
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<Event[]>(
         [],
     );
+
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -213,8 +213,6 @@ export default function JoinedEvent({ events, user }: AllEventProps) {
                 <div className="mx-8">
                     <Accordion variant="splitted">
                         {sortedAndSearchEvents.map((event) => {
-                            console.log(event);
-
                             return (
                                 <AccordionItem
                                     key={event._id}
