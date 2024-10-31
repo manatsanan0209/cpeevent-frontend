@@ -8,24 +8,29 @@ import AllEvent from '@/components/eventComponents/AllEvent.tsx';
 import JoinedEvent from '@/components/eventComponents/JoinedEvent.tsx';
 
 export default function Event() {
-   return (
-      <DefaultLayout>
+    return (
+        <DefaultLayout>
             <Tabs
-               key="secondary"
-               fullWidth
-               color="secondary"
-               size="md"
-               style={{ fontWeight: 'bold' }}
-               variant="underlined"
+                key="secondary"
+                fullWidth
+                color="secondary"
+                size="md"
+                style={{ fontWeight: 'bold' }}
+                variant="underlined"
             >
-               <Tab key="All" title="All">
-                  <AllEvent events={events} user={user} />
-               </Tab>
+                <Tab key="All" title="All">
+                    <AllEvent events={events} user={user} />
+                </Tab>
 
-               <Tab key="Joined" title="Joined">
-                  <JoinedEvent events={events} user={user} />
-               </Tab>
+                <Tab key="Joined" title="Joined">
+                    <JoinedEvent
+                        events={events.filter((event) =>
+                            event.participants.includes(user.student_id),
+                        )}
+                        user={user}
+                    />
+                </Tab>
             </Tabs>
-      </DefaultLayout>
-   );
+        </DefaultLayout>
+    );
 }
