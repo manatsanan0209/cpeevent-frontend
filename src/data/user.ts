@@ -1,3 +1,3 @@
 export const user = {
-    student_id: "65070501003"
+    student_id: '65070501003',
 };

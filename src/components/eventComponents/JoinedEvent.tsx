@@ -12,9 +12,8 @@ import { useEffect, useState } from 'react';
 
 import { SearchIcon } from '../icons';
 
-// define type of data
 interface Event {
-    _id: number;
+    _id: string;
     eventName: string;
     eventDescription: string;
     nParticipant: number;
@@ -24,9 +23,14 @@ interface Event {
     endDate: string;
     president: string;
     kind: string;
-    role: any[];
+    role: string[];
     icon: string | null;
     poster: string | null;
+    postList: string[];
+    staff: {
+        stdID: string;
+        role: string;
+    }[];
 }
 
 interface AllEventProps {

@@ -20,7 +20,7 @@ import { SearchIcon } from '../icons';
 
 // Define type of data
 interface Event {
-    _id: number;
+    _id: string;
     eventName: string;
     eventDescription: string;
     nParticipant: number;
@@ -30,13 +30,18 @@ interface Event {
     endDate: string;
     president: string;
     kind: string;
-    role: any[];
+    role: string[];
     icon: string | null;
     poster: string | null;
+    postList: string[];
+    staff: {
+        stdID: string;
+        role: string;
+    }[];
 }
 
 interface User {
-    student_id: string;
+    _id: string;
 }
 
 interface AllEventProps {
@@ -45,23 +50,29 @@ interface AllEventProps {
 }
 
 export default function AllEvent({ events, user }: AllEventProps) {
-    const [sortedEvents, setSortedEvents] = useState<Event[]>(events);
+    const [sortedEvents, setSortedEvents] = useState<Event[]>([]);
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     useEffect(() => {
-        sortEvents(sortOption);
+        if (Array.isArray(events)) {
+            sortEvents(sortOption);
+        }
     }, [sortOption, events]);
 
     useEffect(() => {
-        filterEvents(searchInput);
+        if (Array.isArray(events)) {
+            filterEvents(searchInput);
+        }
     }, [searchInput, events]);
 
     // 1'st times access; default sort
     useEffect(() => {
-        sortEvents('DateDSC');
+        if (Array.isArray(events)) {
+            sortEvents('DateDSC');
+        }
     }, []);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,6 +80,8 @@ export default function AllEvent({ events, user }: AllEventProps) {
     };
 
     const filterEvents = (searchTerm: string) => {
+        if (!Array.isArray(events)) return;
+
         const filteredEvents = events.filter((event) =>
             event.eventName.toLowerCase().includes(searchTerm.toLowerCase()),
         );
@@ -77,6 +90,8 @@ export default function AllEvent({ events, user }: AllEventProps) {
     };
 
     const sortEvents = (option: string) => {
+        if (!Array.isArray(events)) return;
+
         let sortedArray = [...events];
 
         switch (option) {
@@ -168,7 +183,6 @@ export default function AllEvent({ events, user }: AllEventProps) {
     return (
         <>
             <div className="flex flex-row justify-between ">
-                {/* Search */}
                 <div className=" w-1/4 mx-20 my-8 justify-start mb-4 md:mb-0">
                     <Input
                         aria-label="Search"
@@ -194,7 +208,6 @@ export default function AllEvent({ events, user }: AllEventProps) {
                         onChange={handleSearchChange}
                     />
                 </div>
-                {/* Sort by */}
                 <div className="flex w-1/4 mx-20 my-8 item-start flex-row">
                     <div className="w-20 mt-2 text-sm ">Sort by</div>
                     <Select
@@ -293,23 +306,25 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                     <Button
                                         aria-label="Join Event"
                                         className={`mx-12 my-5 ${
-                                            event.participants.includes(
-                                                user.student_id,
+                                            event.staff?.some(
+                                                (staff) =>
+                                                    staff.stdID === user._id,
                                             ) ||
                                             eventStatus(event) != 'Upcoming'
                                                 ? 'bg-zinc-300 text-violet-700'
                                                 : 'bg-violet-700 text-white'
                                         }`}
                                         isDisabled={
-                                            event.participants.includes(
-                                                user.student_id,
+                                            event.staff?.some(
+                                                (staff) =>
+                                                    staff.stdID === user._id,
                                             ) ||
                                             eventStatus(event) != 'Upcoming'
                                         }
                                         onPress={onOpen}
                                     >
-                                        {!event.participants.includes(
-                                            user.student_id,
+                                        {!event.staff?.some(
+                                            (staff) => staff.stdID === user._id,
                                         ) ? (
                                             <strong>Join</strong>
                                         ) : (
@@ -358,15 +373,17 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                     <Button
                                         aria-label="Go to Workspace"
                                         className={`mx-12 my-5 ${
-                                            !event.participants.includes(
-                                                user.student_id,
+                                            !event.staff?.some(
+                                                (staff) =>
+                                                    staff.stdID === user._id,
                                             )
                                                 ? 'bg-gray-300 text-blue-600'
                                                 : 'bg-blue-500 text-white'
                                         }`}
                                         isDisabled={
-                                            !event.participants.includes(
-                                                user.student_id,
+                                            !event.staff?.some(
+                                                (staff) =>
+                                                    staff.stdID === user._id,
                                             )
                                         }
                                     >
