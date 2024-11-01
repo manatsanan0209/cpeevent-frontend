@@ -5,6 +5,7 @@ import LoginPage from './pages/login';
 import Event from './pages/Event';
 import Custom404 from './pages/Custom404';
 import { AuthContext } from './context/AuthContext';
+import MembersPage from './pages/members';
 
 import IndexPage from '@/pages/index';
 import DocsPage from '@/pages/docs';
@@ -50,6 +51,7 @@ function App() {
             <Route element={<Event />} path="/events" />
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<TodoPage />} path="/todo" />
+            <Route element={<MembersPage />} path="/members" />
         </Routes>
     );
 }
