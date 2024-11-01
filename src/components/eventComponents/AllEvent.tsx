@@ -7,6 +7,12 @@ import {
     Kbd,
     Select,
     SelectItem,
+    useDisclosure,
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 
@@ -43,19 +49,18 @@ export default function AllEvent({ events, user }: AllEventProps) {
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
 
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
     useEffect(() => {
-        console.log('1');
         sortEvents(sortOption);
     }, [sortOption, events]);
 
     useEffect(() => {
-        console.log('2');
         filterEvents(searchInput);
     }, [searchInput, events]);
 
     // 1'st times access; default sort
     useEffect(() => {
-        console.log('3');
         sortEvents('DateDSC');
     }, []);
 
@@ -301,6 +306,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             ) ||
                                             eventStatus(event) != 'Upcoming'
                                         }
+                                        onPress={onOpen}
                                     >
                                         {!event.participants.includes(
                                             user.student_id,
@@ -310,6 +316,45 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             <strong>Joined</strong>
                                         )}
                                     </Button>
+
+                                    <Modal
+                                        isOpen={isOpen}
+                                        onOpenChange={onOpenChange}
+                                    >
+                                        <ModalContent>
+                                            {(onClose) => (
+                                                <>
+                                                    <ModalHeader className="flex flex-col gap-1">
+                                                        Join Workspace
+                                                        Confirmation
+                                                    </ModalHeader>
+                                                    <ModalBody>
+                                                        <p>
+                                                            Are you sure you
+                                                            want to join the
+                                                            workspace?
+                                                        </p>
+                                                    </ModalBody>
+                                                    <ModalFooter>
+                                                        <Button
+                                                            color="danger"
+                                                            variant="light"
+                                                            onPress={onClose}
+                                                        >
+                                                            Cancel
+                                                        </Button>
+                                                        <Button
+                                                            color="primary"
+                                                            onPress={onClose}
+                                                        >
+                                                            Confirm
+                                                        </Button>
+                                                    </ModalFooter>
+                                                </>
+                                            )}
+                                        </ModalContent>
+                                    </Modal>
+
                                     <Button
                                         aria-label="Go to Workspace"
                                         className={`mx-12 my-5 ${
