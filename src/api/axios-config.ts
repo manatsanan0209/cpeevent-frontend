@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || '';
+const baseURL = `${import.meta.env.VITE_API_BASE_URL || ''}/api`;
 
 axios.defaults.baseURL = baseURL;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -39,7 +39,7 @@ axiosAPIInstance.interceptors.response.use(
                 const token = localStorage.getItem('token'); // Retrieve the stored access token.
                 const refresh_token = localStorage.getItem('refresh_token'); // Retrieve the stored refresh token.
                 // Make a request to your auth server to refresh the token.
-                const response = await axios.post('/user/refresh', {
+                const response = await axios.post('v1/user/refresh', {
                     token,
                     refresh_token,
                 });

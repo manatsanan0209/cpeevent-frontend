@@ -36,7 +36,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             //       },
             //    },
             // );
-            await axiosAPIInstance.post('/user/logout');
+            await axiosAPIInstance.post('v1/user/logout');
 
             setUser(null);
             setToken('');
