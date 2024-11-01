@@ -14,7 +14,7 @@ export const useLogin = () => {
         setError(null);
         try {
             const payload = { email, password };
-            const response = await axios.post('/user/login', payload);
+            const response = await axios.post('v1/user/login', payload);
 
             // Assuming response contains user, token, and refresh_token
             const { user, access, token, refresh_token } = response.data.data;
