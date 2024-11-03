@@ -2,6 +2,7 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import { useContext } from 'react';
 
 import LoginPage from './pages/login';
+import SignupPage from './pages/signup';
 import Event from './pages/Event';
 import Custom404 from './pages/Custom404';
 import { AuthContext } from './context/AuthContext';
@@ -29,6 +30,7 @@ function App() {
                 element={user ? <Navigate to="/" /> : <LoginPage />}
                 path="/login"
             />
+            <Route element={user ? <Navigate to="/" /> : <SignupPage />} path='/signup' />
             <Route element={<Custom404 />} path="/404" />
             <Route element={<Navigate replace to="/404" />} path="*" />
             <Route

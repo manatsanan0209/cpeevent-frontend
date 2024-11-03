@@ -6,7 +6,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 
 import { useLogin } from '@/hooks/use-login';
-import { Logo } from '@/components/icons';
 interface EyeIconProps extends React.SVGProps<SVGSVGElement> {
     isVisible: boolean;
 }
@@ -82,24 +81,16 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center">
-            <div className="max-w-screen-xl m-0 sm:m-10 bg-white drop-shadow-lg flex justify-center flex-1 rounded-lg">
+            <div className="max-w-screen-xl m-0 sm:m-10 bg-white drop-shadow-lg flex justify-center flex-1 ">
                 {/* Left Section */}
                 <div className="hidden md:flex flex-col gap-3 mx-auto lg:w-3/5 p-6 sm:p-12 justify-center items-center bg-violet-700">
-                    <h1 className="text-3xl font-semibold mb-4 text-zinc-600 text-center">
-                        Welcome to CPE EVO!
-                    </h1>
-                    <h2 className="text-m font-semibold mb-4 text-zinc-400 text-center">
-                        The best community of all for us, &rdquo;CPEs.&rdquo;{' '}
-                    </h2>
-                    <Logo className="w-96 h-96" />
+                    
                 </div>
                 {/* Right Section */}
                 <div className="flex flex-col gap-3 mx-auto lg:w-2/5 justify-center items-center">
                     <div className="flex flex-col justify-center items-center w-full">
-                        {/* User Icon */}
-                        <HiUserCircle className="w-24 h-24 text-zinc-500" />
                         {/* Sign In */}
-                        <p className="text-2xl font-bold text-zinc-600 my-5">
+                        <p className="text-2xl font-bold text-zinc-600 my-12">
                             Welcome Back!
                         </p>
                         <form
@@ -173,7 +164,7 @@ export default function LoginPage() {
                                 </div>
                                 <Link
                                     className="text-violet-800"
-                                    to="/register"
+                                    to="/signup"
                                 >
                                     Sign up here
                                 </Link>
