@@ -14,6 +14,7 @@ import AboutPage from '@/pages/about';
 import ProtectedLayout from '@/layouts/ProtectedLayout';
 import CalendarPage from '@/pages/calendar';
 import TodoPage from '@/pages/todo';
+import Post from './pages/Post';
 
 function App() {
     const { user } = useContext(AuthContext);
@@ -48,6 +49,7 @@ function App() {
                 path="/protected/*"
             />
             <Route element={<Event />} path="/events" />
+            <Route element={<Post />} path="/post" />
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<TodoPage />} path="/todo" />
         </Routes>
