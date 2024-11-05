@@ -194,8 +194,8 @@ export default function AllEvent({ events, user }: AllEventProps) {
 
     return (
         <>
-            <div className="flex flex-row justify-end ">
-                <div className=" w-1/4 my-8 justify-end mb-4 md:mb-0">
+            <div className="flex flex-row justify-between">
+                <div className=" flex justify-center w-1/4 my-8">
                     <Input
                         aria-label="Search"
                         classNames={{
@@ -220,9 +220,9 @@ export default function AllEvent({ events, user }: AllEventProps) {
                         onChange={handleSearchChange}
                     />
                 </div>
-                <div className="w-1/12" />
-                <div className="flex w-1/5 my-8 item-start flex-row mr-10">
-                    <div className="w-1/4 mt-2 text-sm ">Sort by</div>
+                {/* <div className="min-w-10" /> */}
+                <div className="flex w-1/5 my-8 justify-end flex-row mr-10">
+                    <div className="w-1/4 mt-2 items-end text-sm ">Sort by</div>
                     <Select
                         disallowEmptySelection
                         isRequired
