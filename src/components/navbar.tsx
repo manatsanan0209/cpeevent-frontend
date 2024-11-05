@@ -12,6 +12,13 @@ import {
     DropdownMenu,
     DropdownItem,
     Button,
+    Link,
+    Modal,
+    ModalContent,
+    ModalBody,
+    Autocomplete,
+    AutocompleteItem,
+    Kbd,
 } from '@nextui-org/react';
 import { useState, useContext, useEffect } from 'react';
 // eslint-disable-next-line import/order
@@ -27,8 +34,30 @@ import { SearchIcon } from '@/components/icons';
 export const Navbar = () => {
     const { user } = useContext(AuthContext);
     const [searchContent, setSearchContent] = useState('');
+    const [items] = useState(['Home', 'About', 'Services', 'Contact']);
+    const [filteredItems, setFilteredItems] = useState(items);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const query = e.target.value;
+
+        setSearchContent(query);
+        setFilteredItems(
+            items.filter((item) =>
+                item.toLowerCase().includes(query.toLowerCase()),
+            ),
+        );
+    };
+
+    const handleInputClick = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     const handleLogout = async () => {
         toast.promise(logout(), {
@@ -40,11 +69,16 @@ export const Navbar = () => {
 
     const searchInput = (
         <Input
+            readOnly
             aria-label="Search"
             classNames={{
-                inputWrapper: 'bg-default-100',
-                input: 'text-sm',
+                base: 'bg-default-100',
             }}
+            endContent={
+                <Kbd className="hidden lg:inline-block" keys={['command']}>
+                    K
+                </Kbd>
+            }
             labelPlacement="outside"
             placeholder="Search..."
             startContent={
@@ -52,7 +86,8 @@ export const Navbar = () => {
             }
             type="search"
             value={searchContent}
-            onChange={(e) => setSearchContent(e.target.value)}
+            onChange={handleSearchChange}
+            onClick={handleInputClick}
         />
     );
 
@@ -91,6 +126,34 @@ export const Navbar = () => {
             </NavbarBrand>
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 {searchInput}
+                <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+                    <ModalContent>
+                        <ModalBody>
+                            <div>
+                                <Autocomplete
+                                    aria-label="Search"
+                                    classNames={{
+                                        base: 'bg-default-100',
+                                    }}
+                                    labelPlacement="outside"
+                                    placeholder="Search..."
+                                    startContent={
+                                        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+                                    }
+                                    type="search"
+                                    value={searchContent}
+                                    onChange={handleSearchChange}
+                                >
+                                    {filteredItems.map((item, index) => (
+                                        <AutocompleteItem key={index}>
+                                            {item}
+                                        </AutocompleteItem>
+                                    ))}
+                                </Autocomplete>
+                            </div>
+                        </ModalBody>
+                    </ModalContent>
+                </Modal>
             </NavbarContent>
             <NavbarContent
                 className="hidden sm:flex basis-1/5 sm:basis-full"
@@ -117,8 +180,8 @@ export const Navbar = () => {
                             </Dropdown>
                         </NavbarItem>
                         <NavbarItem className="hidden lg:flex">
+                            <div className="my-auto">{user}</div>
                             <VscAccount className="text-2xl m-2" />
-
                             <Dropdown>
                                 <DropdownTrigger>
                                     <button>
@@ -145,18 +208,19 @@ export const Navbar = () => {
                         </NavbarItem>
                     </div>
                 ) : (
-                    <div>
+                    <div className="flex gap-2">
+                        <Link
+                            className="px-2 cursor-pointer text-sm"
+                            color="foreground"
+                            onClick={() => navigate('/signup')}
+                        >
+                            Sign Up
+                        </Link>
                         <Button
-                            className="bg-violet-700 text-white px-7 mx-3"
+                            className="bg-violet-700 text-white text-sm"
                             onClick={() => navigate('/login')}
                         >
                             Login
-                        </Button>
-                        <Button
-                            className="bg-blue-500 text-white px-7"
-                            // onClick={() => navigate('/login')}
-                        >
-                            Sign Up
                         </Button>
                     </div>
                 )}
