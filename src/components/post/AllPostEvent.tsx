@@ -45,6 +45,8 @@ export default function AllPostEvent({ posts = [] }: AllPostEventProps) {
     // const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
 
+    const [filterOption, setFilterOption] = useState<string>('all');
+
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchInput(e.target.value);
     };
@@ -98,6 +100,10 @@ export default function AllPostEvent({ posts = [] }: AllPostEventProps) {
 
         setSortedPosts(filteredPosts);
     }, [searchInput, posts]);
+
+    useEffect(() => {
+        filterEvents(filterOption);
+    }, [filterOption, posts]);
 
     const displayPostStatus = (kind: string) => {
         switch (kind) {
@@ -186,14 +192,72 @@ export default function AllPostEvent({ posts = [] }: AllPostEventProps) {
         }
     };
 
+    const filterEvents = (option: string) => {
+        let filteredArray = [...posts];
+
+        switch (option) {
+            case 'poll':
+                filteredArray = posts.filter((post) => post.kind === 'poll');
+                break;
+            case 'vote':
+                filteredArray = posts.filter((post) => post.kind === 'vote');
+                break;
+            case 'post':
+                filteredArray = posts.filter((post) => post.kind === 'post');
+                break;
+            case 'form':
+                filteredArray = posts.filter((post) => post.kind === 'form');
+                break;
+            default:
+                break;
+        }
+
+        setSortedPosts(filteredArray);
+    };
+
     return (
         <div>
-            <div className="flex flex-row justify-between my-2">
-                <div className="w-1/4 mx-20">
+            <div className="grid grid-cols-3 gap-4 my-8 items-center ">
+                <div className="flex content-center w-8/12 mx-auto">
+                    <div className="mr-1 mt-2 items-center text-sm text-zinc-600 font-bold">
+                        Filter
+                    </div>
+                    <div className="flex justify-center w-3/4 mx-auto">
+                        <Select
+                            disallowEmptySelection
+                            isRequired
+                            aria-label="Filter"
+                            className="max-w-xs"
+                            style={{ backgroundColor: '#DED1FF' }}
+                            variant="bordered"
+                            onChange={(e) =>
+                                setFilterOption(e.target.value as string)
+                            }
+                        >
+                            <SelectItem key="all" value="all">
+                                All
+                            </SelectItem>
+                            <SelectItem key="poll" value="poll">
+                                Poll
+                            </SelectItem>
+                            <SelectItem key="vote" value="vote">
+                                Vote
+                            </SelectItem>
+                            <SelectItem key="post" value="post">
+                                Post
+                            </SelectItem>
+                            <SelectItem key="form" value="form">
+                                Form
+                            </SelectItem>
+                        </Select>
+                    </div>
+                </div>
+                {/* Search bar */}
+                <div className="flex justify-center items-center content-center">
                     <Input
                         aria-label="Search"
                         classNames={{
-                            inputWrapper: 'bg-white shadow-lg',
+                            inputWrapper: 'bg-white shadow-lg w-4/5 mx-auto',
                             input: 'text-sm',
                         }}
                         endContent={
@@ -215,8 +279,10 @@ export default function AllPostEvent({ posts = [] }: AllPostEventProps) {
                     />
                 </div>
                 {/* Sort by */}
-                <div className="flex w-1/4 mx-20">
-                    <div className="w-20 mt-2 text-sm">Sort by</div>
+                <div className="flex content-center w-8/12 mx-auto">
+                    <div className="w-1/4 mr-4 mt-2 items-center text-sm text-zinc-600 font-bold">
+                        Sort by
+                    </div>
                     <Select
                         disallowEmptySelection
                         isRequired

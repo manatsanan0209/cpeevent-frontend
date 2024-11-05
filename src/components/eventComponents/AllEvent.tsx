@@ -194,12 +194,16 @@ export default function AllEvent({ events, user }: AllEventProps) {
 
     return (
         <>
-            <div className="flex flex-row justify-between">
-                <div className=" flex justify-center w-1/4 my-8">
+            <div className="grid grid-cols-3 gap-4 my-8 items-center">
+                <div className="flex justify-center">
+                    {/* Empty div to center the content */}
+                </div>
+                <div className="flex justify-center items-center content-center">
                     <Input
                         aria-label="Search"
                         classNames={{
-                            inputWrapper: 'bg-white shadow-lg',
+                            inputWrapper:
+                                'flex bg-white shadow-lg w-4/5 mx-auto',
                             input: 'text-sm',
                         }}
                         endContent={
@@ -220,14 +224,15 @@ export default function AllEvent({ events, user }: AllEventProps) {
                         onChange={handleSearchChange}
                     />
                 </div>
-                {/* <div className="min-w-10" /> */}
-                <div className="flex w-1/5 my-8 justify-end flex-row mr-10">
-                    <div className="w-1/4 mt-2 items-end text-sm ">Sort by</div>
+                <div className="flex content-center w-8/12 mx-auto">
+                    <div className="w-1/4 mr-4 mt-2 items-center text-sm text-zinc-600 font-bold">
+                        Sort by
+                    </div>
                     <Select
                         disallowEmptySelection
                         isRequired
                         aria-label="Sort by"
-                        className="max-w-xs"
+                        className="max-w-xs mx-auto content-center"
                         defaultSelectedKeys={[sortOption]}
                         selectedKeys={[sortOption]}
                         style={{
@@ -251,7 +256,6 @@ export default function AllEvent({ events, user }: AllEventProps) {
                     </Select>
                 </div>
             </div>
-
             <div className="mx-8">
                 <Accordion variant="splitted">
                     {sortedEvents.map((event) => (
