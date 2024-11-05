@@ -1,6 +1,7 @@
 import type { Event } from '@/types/index';
+
 import { Tabs, Tab, Skeleton } from '@nextui-org/react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { axiosAPIInstance } from '@/api/axios-config.ts';
@@ -10,7 +11,6 @@ import { AuthContext } from '@/context/AuthContext';
 import JoinedEvent from '@/components/eventComponents/JoinedEvent';
 
 export default function Event() {
-    const [allEventData, setAllEventData] = useState<Event[]>([]);
     const { user } = useContext(AuthContext);
     const user_id = {
         _id: user as string,
