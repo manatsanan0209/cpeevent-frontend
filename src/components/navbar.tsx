@@ -72,8 +72,7 @@ export const Navbar = () => {
             readOnly
             aria-label="Search"
             classNames={{
-                inputWrapper: 'bg-default-100',
-                input: 'text-sm',
+                base: 'bg-default-100',
             }}
             endContent={
                 <Kbd className="hidden lg:inline-block" keys={['command']}>
@@ -134,8 +133,7 @@ export const Navbar = () => {
                                 <Autocomplete
                                     aria-label="Search"
                                     classNames={{
-                                        inputWrapper: 'bg-default-100',
-                                        input: 'text-sm',
+                                        base: 'bg-default-100',
                                     }}
                                     labelPlacement="outside"
                                     placeholder="Search..."
