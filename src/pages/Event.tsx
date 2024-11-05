@@ -1,3 +1,5 @@
+import type { Event } from '@/types/index';
+
 import { Tabs, Tab } from '@nextui-org/react';
 import { useContext, useEffect, useState } from 'react';
 
@@ -8,26 +10,6 @@ import { AuthContext } from '@/context/AuthContext';
 import JoinedEvent from '@/components/eventComponents/JoinedEvent';
 
 export default function Event() {
-    interface Event {
-        _id: string;
-        eventName: string;
-        eventDescription: string;
-        nParticipant: number;
-        participants: string[];
-        nStaff: number;
-        startDate: string;
-        endDate: string;
-        president: string;
-        kind: string;
-        role: string[];
-        icon: string | null;
-        poster: string | null;
-        postList: string[];
-        staff: {
-            stdID: string;
-            role: string;
-        }[];
-    }
     const [allEventData, setAllEventData] = useState<Event[]>([]);
     const { user } = useContext(AuthContext);
     const user_id = {

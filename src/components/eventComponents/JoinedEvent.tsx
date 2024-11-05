@@ -1,3 +1,5 @@
+import type { Event } from '@/types/index';
+
 import {
     Accordion,
     AccordionItem,
@@ -13,32 +15,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { SearchIcon } from '../icons';
 
-interface Event {
-    _id: string;
-    eventName: string;
-    eventDescription: string;
-    nParticipant: number;
-    participants: string[];
-    nStaff: number;
-    startDate: string;
-    endDate: string;
-    president: string;
-    kind: string;
-    role: string[];
-    icon: string | null;
-    poster: string | null;
-    postList: string[];
-    staff: {
-        stdID: string;
-        role: string;
-    }[];
-}
-
-interface AllEventProps {
-    events: Event[];
-}
-
-export default function JoinedEvent({ events }: AllEventProps) {
+export default function JoinedEvent({ events }: { events: Event[] }) {
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<Event[]>(
         [],
     );
