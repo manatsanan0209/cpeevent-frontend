@@ -9,6 +9,7 @@ import {
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { SearchIcon } from '../icons';
 
@@ -45,6 +46,8 @@ export default function JoinedEvent({ events }: AllEventProps) {
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         setSortedAndSearchEvents(
@@ -291,6 +294,11 @@ export default function JoinedEvent({ events }: AllEventProps) {
                                             <Button
                                                 aria-label="Go to Workspace"
                                                 className="mx-12 my-5 bg-blue-500 text-white"
+                                                onClick={() =>
+                                                    navigate('/post', {
+                                                        state: { event },
+                                                    })
+                                                }
                                             >
                                                 <strong>Workspace</strong>
                                             </Button>

@@ -15,6 +15,7 @@ import {
     ModalFooter,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
+import { useNavigate } from 'react-router-dom';
 
 import { SearchIcon } from '../icons';
 
@@ -53,6 +54,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
     const [sortedEvents, setSortedEvents] = useState<Event[]>([]);
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
+    const navigate = useNavigate();
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -398,6 +400,11 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                 (staff) =>
                                                     staff.stdID === user._id,
                                             )
+                                        }
+                                        onClick={() =>
+                                            navigate('/post', {
+                                                state: { event },
+                                            })
                                         }
                                     >
                                         <strong>Workspace</strong>
