@@ -27,15 +27,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
-            // await axios.post(
-            //    '/api/user/logout',
-            //    {},
-            //    {
-            //       headers: {
-            //          Authorization: `Bearer ${token}`,
-            //       },
-            //    },
-            // );
             await axiosAPIInstance.post('v1/user/logout');
 
             setUser(null);
@@ -46,9 +37,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             localStorage.removeItem('token');
             localStorage.removeItem('refresh_token');
             localStorage.removeItem('access');
-            window.location.reload();
         } catch (error) {
             throw new Error('Logout failed');
+        } finally {
+            window.location.reload();
         }
     };
 
