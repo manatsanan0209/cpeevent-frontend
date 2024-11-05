@@ -1,3 +1,5 @@
+import type { Event } from '@/types/index';
+
 import {
     Tabs,
     Tab,
@@ -16,7 +18,7 @@ import { posts } from '@/data/post';
 
 export default function Post() {
     const location = useLocation();
-    const { event } = location.state;
+    const { event } = location.state as { event: Event };
 
     return (
         <DefaultLayout>

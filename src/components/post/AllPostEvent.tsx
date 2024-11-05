@@ -1,3 +1,5 @@
+import type { PostEventProps } from '@/types/index';
+
 import React, { useState, useEffect } from 'react';
 import {
     Card,
@@ -19,28 +21,7 @@ import formImage from '@/images/Form.png';
 import postImage from '@/images/Post.png';
 import pollImage from '@/images/Poll.png';
 
-interface PostEventProps {
-    _id: string;
-    kind: string;
-    assignTo: string;
-    title: string;
-    description: string;
-    postDate: string;
-    endDate: string | null;
-    author: string;
-    markdown: string;
-    questions?: {
-        question: string;
-        type: string;
-        options: string[];
-    }[];
-}
-
-interface AllPostEventProps {
-    posts: PostEventProps[];
-}
-
-export default function AllPostEvent({ posts = [] }: AllPostEventProps) {
+export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
     const [sortedEvents, setSortedPosts] = useState<PostEventProps[]>(posts);
     // const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
