@@ -294,11 +294,16 @@ export default function JoinedEvent({ events }: AllEventProps) {
                                             <Button
                                                 aria-label="Go to Workspace"
                                                 className="mx-12 my-5 bg-blue-500 text-white"
-                                                onClick={() =>
-                                                    navigate('/post', {
-                                                        state: { event },
-                                                    })
-                                                }
+                                                onClick={() => {
+                                                    const eventID = event._id;
+
+                                                    navigate(
+                                                        `/workspace/${eventID}`,
+                                                        {
+                                                            state: { event },
+                                                        },
+                                                    );
+                                                }}
                                             >
                                                 <strong>Workspace</strong>
                                             </Button>

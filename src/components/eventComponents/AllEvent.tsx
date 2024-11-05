@@ -401,11 +401,13 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                     staff.stdID === user._id,
                                             )
                                         }
-                                        onClick={() =>
-                                            navigate('/post', {
+                                        onClick={() => {
+                                            const eventID = event._id;
+
+                                            navigate(`/workspace/${eventID}`, {
                                                 state: { event },
-                                            })
-                                        }
+                                            });
+                                        }}
                                     >
                                         <strong>Workspace</strong>
                                     </Button>

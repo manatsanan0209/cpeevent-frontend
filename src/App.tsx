@@ -5,6 +5,7 @@ import LoginPage from './pages/login';
 import Event from './pages/Event';
 import Custom404 from './pages/Custom404';
 import { AuthContext } from './context/AuthContext';
+import Post from './pages/Post';
 
 import IndexPage from '@/pages/index';
 import DocsPage from '@/pages/docs';
@@ -14,7 +15,6 @@ import AboutPage from '@/pages/about';
 import ProtectedLayout from '@/layouts/ProtectedLayout';
 import CalendarPage from '@/pages/calendar';
 import TodoPage from '@/pages/todo';
-import Post from './pages/Post';
 
 function App() {
     const { user } = useContext(AuthContext);
@@ -49,7 +49,7 @@ function App() {
                 path="/protected/*"
             />
             <Route element={<Event />} path="/events" />
-            <Route element={<Post />} path="/post" />
+            <Route element={<Post />} path="/workspace/:eventid" />
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<TodoPage />} path="/todo" />
         </Routes>
