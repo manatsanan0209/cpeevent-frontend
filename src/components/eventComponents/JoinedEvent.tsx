@@ -64,7 +64,7 @@ export default function JoinedEvent({ events }: AllEventProps) {
         <Input
             aria-label="Search"
             classNames={{
-                inputWrapper: 'bg-white shadow-lg',
+                inputWrapper: 'flex bg-white shadow-lg w-4/5 mx-auto',
                 input: 'text-sm',
             }}
             endContent={
@@ -173,17 +173,31 @@ export default function JoinedEvent({ events }: AllEventProps) {
             event.eventName.toLowerCase().includes(searchTerm.toLowerCase()),
         );
     }
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+
+        return date.toLocaleDateString('en-US', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+    };
 
     return (
         <>
-            <div className="flex flex-row justify-between ">
+            <div className="grid grid-cols-3 gap-4 my-8 items-center ">
+                <div className="flex justify-center">
+                    {/* Empty div to center the content */}
+                </div>
                 {/* Search */}
-                <div className=" w-1/4 mx-20 my-8 justify-start mb-4 md:mb-0">
+                <div className=" flex justify-center items-center content-center">
                     {searchInputComponent}
                 </div>
                 {/* Sort by */}
-                <div className=" w-1/4 mx-20 my-8 item-start flex flex-row">
-                    <div className="w-20 mt-2 text-sm">Sort by</div>
+                <div className=" flex content-center w-8/12 mx-auto">
+                    <div className="w-1/4 mr-4 mt-2 items-center text-sm text-zinc-600 font-bold">
+                        Sort by
+                    </div>
                     <Select
                         disallowEmptySelection
                         isRequired
@@ -241,9 +255,11 @@ export default function JoinedEvent({ events }: AllEventProps) {
                                                     Start Date :{''}
                                                 </span>
                                                 <span className="text-blue-500 ml-2">
-                                                    {event.startDate
-                                                        .substring(0, 10)
-                                                        .replace(/-/g, '/')}
+                                                    {formatDate(
+                                                        event.startDate
+                                                            .substring(0, 10)
+                                                            .replace(/-/g, '/'),
+                                                    )}
                                                 </span>
                                             </span>
                                         </div>
@@ -283,11 +299,16 @@ export default function JoinedEvent({ events }: AllEventProps) {
                                             <Button
                                                 aria-label="Go to Workspace"
                                                 className="mx-12 my-5 bg-blue-500 text-white"
-                                                onClick={() =>
-                                                    navigate('/post', {
-                                                        state: { event },
-                                                    })
-                                                }
+                                                onClick={() => {
+                                                    const eventID = event._id;
+
+                                                    navigate(
+                                                        `/workspace/${eventID}`,
+                                                        {
+                                                            state: { event },
+                                                        },
+                                                    );
+                                                }}
                                             >
                                                 <strong>Workspace</strong>
                                             </Button>

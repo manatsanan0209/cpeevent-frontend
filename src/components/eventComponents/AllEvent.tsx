@@ -182,14 +182,28 @@ export default function AllEvent({ events, user }: AllEventProps) {
         return now.toISOString();
     };
 
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+
+        return date.toLocaleDateString('en-US', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+    };
+
     return (
         <>
-            <div className="flex flex-row justify-between ">
-                <div className=" w-1/4 mx-20 my-8 justify-start mb-4 md:mb-0">
+            <div className="grid grid-cols-3 gap-4 my-8 items-center">
+                <div className="flex justify-center">
+                    {/* Empty div to center the content */}
+                </div>
+                <div className="flex justify-center items-center content-center">
                     <Input
                         aria-label="Search"
                         classNames={{
-                            inputWrapper: 'bg-white shadow-lg',
+                            inputWrapper:
+                                'flex bg-white shadow-lg w-4/5 mx-auto',
                             input: 'text-sm',
                         }}
                         endContent={
@@ -210,13 +224,15 @@ export default function AllEvent({ events, user }: AllEventProps) {
                         onChange={handleSearchChange}
                     />
                 </div>
-                <div className="flex w-1/4 mx-20 my-8 item-start flex-row">
-                    <div className="w-20 mt-2 text-sm ">Sort by</div>
+                <div className="flex content-center w-8/12 mx-auto">
+                    <div className="w-1/4 mr-4 mt-2 items-center text-sm text-zinc-600 font-bold">
+                        Sort by
+                    </div>
                     <Select
                         disallowEmptySelection
                         isRequired
                         aria-label="Sort by"
-                        className="max-w-xs"
+                        className="max-w-xs mx-auto content-center"
                         defaultSelectedKeys={[sortOption]}
                         selectedKeys={[sortOption]}
                         style={{
@@ -240,7 +256,6 @@ export default function AllEvent({ events, user }: AllEventProps) {
                     </Select>
                 </div>
             </div>
-
             <div className="mx-8">
                 <Accordion variant="splitted">
                     {sortedEvents.map((event) => (
@@ -266,9 +281,11 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             Start Date :{''}
                                         </span>
                                         <span className="text-blue-500 ml-2">
-                                            {event.startDate
-                                                .substring(0, 10)
-                                                .replace(/-/g, '/')}
+                                            {formatDate(
+                                                event.startDate
+                                                    .substring(0, 10)
+                                                    .replace(/-/g, '/'),
+                                            )}
                                         </span>
                                     </span>
                                 </div>
@@ -388,11 +405,13 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                     staff.stdID === user._id,
                                             )
                                         }
-                                        onClick={() =>
-                                            navigate('/post', {
+                                        onClick={() => {
+                                            const eventID = event._id;
+
+                                            navigate(`/workspace/${eventID}`, {
                                                 state: { event },
-                                            })
-                                        }
+                                            });
+                                        }}
                                     >
                                         <strong>Workspace</strong>
                                     </Button>
