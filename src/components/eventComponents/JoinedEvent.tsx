@@ -170,6 +170,15 @@ export default function JoinedEvent({ events }: AllEventProps) {
             event.eventName.toLowerCase().includes(searchTerm.toLowerCase()),
         );
     }
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+
+        return date.toLocaleDateString('en-US', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+    };
 
     return (
         <>
@@ -238,9 +247,11 @@ export default function JoinedEvent({ events }: AllEventProps) {
                                                     Start Date :{''}
                                                 </span>
                                                 <span className="text-blue-500 ml-2">
-                                                    {event.startDate
-                                                        .substring(0, 10)
-                                                        .replace(/-/g, '/')}
+                                                    {formatDate(
+                                                        event.startDate
+                                                            .substring(0, 10)
+                                                            .replace(/-/g, '/'),
+                                                    )}
                                                 </span>
                                             </span>
                                         </div>

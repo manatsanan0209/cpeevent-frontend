@@ -180,10 +180,20 @@ export default function AllEvent({ events, user }: AllEventProps) {
         return now.toISOString();
     };
 
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+
+        return date.toLocaleDateString('en-US', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+    };
+
     return (
         <>
-            <div className="flex flex-row justify-between ">
-                <div className=" w-1/4 mx-20 my-8 justify-start mb-4 md:mb-0">
+            <div className="flex flex-row justify-end ">
+                <div className=" w-1/4 my-8 justify-end mb-4 md:mb-0">
                     <Input
                         aria-label="Search"
                         classNames={{
@@ -208,8 +218,9 @@ export default function AllEvent({ events, user }: AllEventProps) {
                         onChange={handleSearchChange}
                     />
                 </div>
-                <div className="flex w-1/4 mx-20 my-8 item-start flex-row">
-                    <div className="w-20 mt-2 text-sm ">Sort by</div>
+                <div className="w-1/12" />
+                <div className="flex w-1/5 my-8 item-start flex-row mr-10">
+                    <div className="w-1/4 mt-2 text-sm ">Sort by</div>
                     <Select
                         disallowEmptySelection
                         isRequired
@@ -264,9 +275,11 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             Start Date :{''}
                                         </span>
                                         <span className="text-blue-500 ml-2">
-                                            {event.startDate
-                                                .substring(0, 10)
-                                                .replace(/-/g, '/')}
+                                            {formatDate(
+                                                event.startDate
+                                                    .substring(0, 10)
+                                                    .replace(/-/g, '/'),
+                                            )}
                                         </span>
                                     </span>
                                 </div>

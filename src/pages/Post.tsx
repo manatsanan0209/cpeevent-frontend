@@ -16,7 +16,7 @@ import { posts } from '@/data/post';
 export default function Post() {
     return (
         <DefaultLayout>
-            <div className="flex mb-4 text-left mt-4 ml">
+            <div className="flex mb-4 text-left ml">
                 <h2 className="flex-col m-0 text-4xl font-bold w-11/12 text-zinc-600">
                     Comcamp 34
                 </h2>
