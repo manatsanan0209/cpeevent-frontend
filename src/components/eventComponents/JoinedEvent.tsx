@@ -176,7 +176,7 @@ export default function JoinedEvent({ events }: AllEventProps) {
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
 
-        return date.toLocaleDateString('en-US', {
+        return date.toLocaleDateString('en-GB', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
@@ -186,12 +186,12 @@ export default function JoinedEvent({ events }: AllEventProps) {
     return (
         <>
             <div className="grid grid-cols-3 gap-4 my-8 items-center ">
-                <div className="flex justify-center">
-                    {/* Empty div to center the content */}
-                </div>
                 {/* Search */}
                 <div className=" flex justify-center items-center content-center">
                     {searchInputComponent}
+                </div>
+                <div className="flex justify-center">
+                    {/* Empty div to center the content */}
                 </div>
                 {/* Sort by */}
                 <div className=" flex content-center w-8/12 mx-auto">
