@@ -23,7 +23,6 @@ import postImage from '@/images/Post.png';
 import pollImage from '@/images/Poll.png';
 
 export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
-    const [sortedEvents, setSortedPosts] = useState<PostEventProps[]>(posts);
     // const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
     const [sortOption, setSortOption] = useState<string>('DateDSC');

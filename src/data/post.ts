@@ -44,13 +44,4 @@ export const posts = [
             },
         ],
     },
-    {
-        _id: '67248ec00a58d813af6eec28',
-        kind: 'poll',
-        assignTo: 'everyone',
-        title: 'Vote for all',
-        description: 'Vote for all',
-        postDate: '2023-11-06T00:00:00.000+00:00',
-        endDate: '2025-07-22T00:00:00.000+00:00',
-    },
 ];
