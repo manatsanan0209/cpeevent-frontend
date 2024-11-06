@@ -13,6 +13,7 @@ import {
     Kbd,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
+import { IoFilter } from 'react-icons/io5';
 
 import { SearchIcon } from '../icons';
 
@@ -22,69 +23,72 @@ import postImage from '@/images/Post.png';
 import pollImage from '@/images/Poll.png';
 
 export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
-    const [sortedEvents, setSortedPosts] = useState<PostEventProps[]>(posts);
     // const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
-
+    const [sortOption, setSortOption] = useState<string>('DateDSC');
+    const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<
+        PostEventProps[]
+    >([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [filterOption, setFilterOption] = useState<string>('all');
+
+    useEffect(() => {
+        setSortedAndSearchEvents(
+            sortedAndSearchEventsFunc(sortOption, searchInput, filterOption),
+        );
+        setIsLoading(false);
+    }, [sortOption, searchInput, filterOption, posts]);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchInput(e.target.value);
     };
 
-    // const sortEvents = (option: string) => {
-    //     let sortedArray = [...posts];
+    function sortedAndSearchEventsFunc(
+        option: string,
+        searchTerm: string,
+        filter: string,
+    ): PostEventProps[] {
+        let newSortedArray = [...posts];
 
-    //     switch (option) {
-    //         case 'DateASC':
-    //             sortedArray.sort((a, b) => {
-    //                 const dateComparison =
-    //                     new Date(a.postDate).getTime() -
-    //                     new Date(b.postDate).getTime();
+        switch (option) {
+            case 'DateASC':
+                newSortedArray.sort((a, b) => {
+                    const dateComparison =
+                        new Date(a.postDate).getTime() -
+                        new Date(b.postDate).getTime();
 
-    //                 if (dateComparison !== 0) return dateComparison;
+                    return dateComparison;
+                });
+                break;
+            case 'DateDSC':
+                newSortedArray.sort((a, b) => {
+                    const dateComparison =
+                        new Date(b.postDate).getTime() -
+                        new Date(a.postDate).getTime();
 
-    //                 return a.title.localeCompare(b.title);
-    //             });
-    //             break;
-    //         case 'DateDSC':
-    //             sortedArray.sort((a, b) => {
-    //                 const dateComparison =
-    //                     new Date(b.postDate).getTime() -
-    //                     new Date(a.postDate).getTime();
+                    return dateComparison;
+                });
+                break;
+            case 'NameASC':
+                newSortedArray.sort((a, b) => a.title.localeCompare(b.title));
+                break;
+            case 'NameDSC':
+                newSortedArray.sort((a, b) => b.title.localeCompare(a.title));
+                break;
+            default:
+                break;
+        }
 
-    //                 if (dateComparison !== 0) return dateComparison;
+        if (filter !== 'all') {
+            newSortedArray = newSortedArray.filter(
+                (post) => post.kind === filter,
+            );
+        }
 
-    //                 return b.title.localeCompare(a.title);
-    //             });
-    //             break;
-    //         case 'NameASC':
-    //             sortedArray.sort((a, b) => a.title.localeCompare(b.title));
-    //             break;
-    //         case 'NameDSC':
-    //             sortedArray.sort((a, b) => b.title.localeCompare(a.title));
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    //     setSortedPosts(sortedArray);
-    // };
-
-    // useEffect(() => {
-    //     sortEvents(sortOption);
-    // }, [sortOption, posts]);
-
-    useEffect(() => {
-        const filteredPosts = posts.filter((post) =>
-            post.title.toLowerCase().includes(searchInput.toLowerCase()),
+        return newSortedArray.filter((post) =>
+            post.title.toLowerCase().includes(searchTerm.toLowerCase()),
         );
-
-        setSortedPosts(filteredPosts);
-    }, [searchInput, posts]);
-
-    useEffect(() => {
-        filterEvents(filterOption);
-    }, [filterOption, posts]);
+    }
 
     const displayPostStatus = (kind: string) => {
         switch (kind) {
@@ -150,6 +154,7 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                 return '';
         }
     };
+
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         const now = new Date();
@@ -169,39 +174,52 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
         } else if (diffDays === -1) {
             return 'Tomorrow';
         } else {
-            return date.toLocaleDateString();
+            return date.toLocaleDateString('eg-GB', {
+                // day: '2-digit',
+                // month: '2-digit',
+                // year: 'numeric',
+            });
         }
-    };
-
-    const filterEvents = (option: string) => {
-        let filteredArray = [...posts];
-
-        switch (option) {
-            case 'poll':
-                filteredArray = posts.filter((post) => post.kind === 'poll');
-                break;
-            case 'vote':
-                filteredArray = posts.filter((post) => post.kind === 'vote');
-                break;
-            case 'post':
-                filteredArray = posts.filter((post) => post.kind === 'post');
-                break;
-            case 'form':
-                filteredArray = posts.filter((post) => post.kind === 'form');
-                break;
-            default:
-                break;
-        }
-
-        setSortedPosts(filteredArray);
     };
 
     return (
         <div>
-            <div className="grid grid-cols-3 gap-4 my-8 items-center ">
-                <div className="flex content-center w-8/12 mx-auto">
-                    <div className="mr-1 mt-2 items-center text-sm text-zinc-600 font-bold">
-                        Filter
+            <div className="grid grid-cols-4 gap-4 mt-4 items-center px-8  ">
+                {/* Search bar */}
+                <div className="flex justify-center items-center content-center">
+                    <Input
+                        aria-label="Search"
+                        classNames={{
+                            inputWrapper: 'bg-white shadow-lg mx-auto',
+                            input: 'text-sm',
+                        }}
+                        endContent={
+                            <Kbd
+                                className="hidden lg:inline-block"
+                                keys={['command']}
+                            >
+                                K
+                            </Kbd>
+                        }
+                        labelPlacement="outside"
+                        placeholder="Search"
+                        startContent={
+                            <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+                        }
+                        type="search"
+                        value={searchInput}
+                        onChange={handleSearchChange}
+                    />
+                </div>
+                {/* Filter */}
+                <div className="flex col-start-3">
+                    <div className="flex flex-row mr-4 ">
+                        <div className="flex mr-2 items-center text-sm text-zinc-600 font-bold">
+                            Filter
+                        </div>
+                        <div className="content-center">
+                            <IoFilter className="flex" />
+                        </div>
                     </div>
                     <div className="flex justify-center w-3/4 mx-auto">
                         <Select
@@ -209,6 +227,8 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                             isRequired
                             aria-label="Filter"
                             className="max-w-xs"
+                            defaultSelectedKeys={[filterOption]}
+                            selectedKeys={[filterOption]}
                             style={{ backgroundColor: '#DED1FF' }}
                             variant="bordered"
                             onChange={(e) =>
@@ -233,35 +253,9 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                         </Select>
                     </div>
                 </div>
-                {/* Search bar */}
-                <div className="flex justify-center items-center content-center">
-                    <Input
-                        aria-label="Search"
-                        classNames={{
-                            inputWrapper: 'bg-white shadow-lg w-4/5 mx-auto',
-                            input: 'text-sm',
-                        }}
-                        endContent={
-                            <Kbd
-                                className="hidden lg:inline-block"
-                                keys={['command']}
-                            >
-                                K
-                            </Kbd>
-                        }
-                        labelPlacement="outside"
-                        placeholder="Search"
-                        startContent={
-                            <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-                        }
-                        type="search"
-                        value={searchInput}
-                        onChange={handleSearchChange}
-                    />
-                </div>
                 {/* Sort by */}
-                <div className="flex content-center w-8/12 mx-auto">
-                    <div className="w-1/4 mr-4 mt-2 items-center text-sm text-zinc-600 font-bold">
+                <div className="flex items-center">
+                    <div className="w-1/4 mr-4 items-center text-sm text-zinc-600 font-bold">
                         Sort by
                     </div>
                     <Select
@@ -269,105 +263,103 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                         isRequired
                         aria-label="Sort by"
                         className="max-w-xs"
-                        // selectedKeys={[sortOption]}
+                        selectedKeys={[sortOption]}
                         style={{
                             boxShadow: '0 8px 10px rgba(82, 82, 91, 0.1)',
                         }}
                         variant="bordered"
-                        // onChange={(e) =>
-                        //     // setSortOption(e.target.value as string)
-                        // }
+                        onChange={(e) =>
+                            setSortOption(e.target.value as string)
+                        }
                     >
-                        <SelectItem key="all" value="all">
-                            All
+                        <SelectItem key="DateDSC" value="DateDSC">
+                            Date ( Descending )
                         </SelectItem>
-                        <SelectItem key="poll" value="poll">
-                            Poll
+                        <SelectItem key="DateASC" value="DateASC">
+                            Date ( Ascending )
                         </SelectItem>
-                        <SelectItem key="vote" value="vote">
-                            Vote
+                        <SelectItem key="NameASC" value="NameASC">
+                            Name ( A-Z )
                         </SelectItem>
-                        <SelectItem key="post" value="post">
-                            Post
+                        <SelectItem key="NameDSC" value="NameDSC">
+                            Name ( Z-A )
                         </SelectItem>
-                        <SelectItem key="form" value="form">
-                            Form
-                        </SelectItem>
-
-                        <SelectItem key="divider" isDisabled>
-                            ──────────────────
-                        </SelectItem>
-
-                        {/* <SelectItem key="datepostASC" value="datepostASC">
-                            Date Post (Ascending)
-                        </SelectItem>
-                        <SelectItem key="datepostDSC" value="datepostDSC">
-                            Date Post (Descending)
-                        </SelectItem> */}
                     </Select>
                 </div>
             </div>
-
-            {/* card */}
-            <div className="max-w-full gap-6 grid grid-cols-12 grid-rows-2 px-8 my-8">
-                {sortedEvents.map((post) => (
-                    <Card
-                        isPressable
-                        onPress={() => console.log(post._id)}
-                        key={post._id}
-                        className="col-span-12 sm:col-span-4 h-[300px]"
-                    >
-                        <CardHeader className="absolute z-10 top-1 flex-col items-start">
-                            <div className="flex flex-row w-full">
-                                <p className="flex items-center px-2 py-1 ">
-                                    {displayPostStatus(post.kind)}
-                                </p>
-                                <p className="w-7/12" />
-                                <p className="flex text-zinc-600 text-tiny items-center">
-                                    {formatDate(post.postDate)}
-                                </p>
-                            </div>
-                            <div className="flex flex-row w-full">
-                                <h4 className="text-zinc-600 font-bold text-large w-full">
-                                    {post.title}
-                                </h4>
-                                <p className="flex  text-sm bg-gray-50 text-rose-600 px-1 h-6 items-center rounded-lg">
-                                    {post.assignTo}
-                                </p>
-                            </div>
-                            <p className="text-tiny text-zinc-600/80">
-                                {post.description}
-                            </p>
-                        </CardHeader>
-                        <Image
-                            removeWrapper
-                            alt="Card background"
-                            className="z-0 w-full h-full object-cover"
-                            src={getBackgroundImage(post.kind)}
-                        />
-                        <CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
-                            <div>
-                                <p className="text-black text-tiny">
-                                    End Date:{' '}
-                                    {post.endDate
-                                        ? new Date(post.endDate) >= new Date() // Check if end date is in the future
-                                            ? formatDate(post.endDate)
-                                            : 'Ended'
-                                        : 'Uncertain'}
-                                </p>
-                            </div>
-                            <Button
-                                className="text-tiny"
-                                color="primary"
-                                radius="full"
-                                size="sm"
+            {!isLoading && (
+                <div className="max-w-full gap-6 grid grid-cols-12 grid-rows-2 px-8 my-8">
+                    {sortedAndSearchEvents.map((post) => {
+                        return (
+                            <Card
+                                key={post._id}
+                                className="col-span-12 sm:col-span-4 h-[300px]"
                             >
-                                See More
-                            </Button>
-                        </CardFooter>
-                    </Card>
-                ))}
-            </div>
+                                <CardHeader className="absolute z-10 top-1 flex-col items-start">
+                                    <div className="flex flex-row w-full justify-between">
+                                        <p className="flex items-center px-2 py-1 ">
+                                            {displayPostStatus(post.kind)}
+                                        </p>
+                                        <p className="flex text-zinc-600 text-tiny items-center mr-4">
+                                            {formatDate(post.postDate)}
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-row w-full">
+                                        <h4 className="text-zinc-600 font-bold text-large w-full">
+                                            {post.title}
+                                        </h4>
+                                        <p className="flex  text-sm bg-gray-50 text-rose-600 px-1 h-6 items-center rounded-lg">
+                                            {post.assignTo}
+                                        </p>
+                                    </div>
+                                    <p className="text-tiny text-zinc-600/80">
+                                        {post.description}
+                                    </p>
+                                </CardHeader>
+                                <Image
+                                    removeWrapper
+                                    alt="Card background"
+                                    className="z-0 w-full h-full object-cover"
+                                    src={getBackgroundImage(post.kind)}
+                                />
+                                <CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
+                                    <div>
+                                        <p className="text-tiny text-zinc-600">
+                                            End Date:{' '}
+                                            <span
+                                                className={
+                                                    post.endDate &&
+                                                    new Date(post.endDate) <
+                                                        new Date()
+                                                        ? 'text-rose-500'
+                                                        : 'text-blue-500'
+                                                }
+                                            >
+                                                {post.endDate
+                                                    ? new Date(post.endDate) >=
+                                                      new Date() // Check if end date is in the future
+                                                        ? formatDate(
+                                                              post.endDate,
+                                                          )
+                                                        : 'Ended'
+                                                    : 'No end date'}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <Button
+                                        className="text-tiny"
+                                        color="primary"
+                                        radius="full"
+                                        size="sm"
+                                    >
+                                        Learn More
+                                    </Button>
+                                </CardFooter>
+                            </Card>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 }

@@ -28,7 +28,7 @@ export const posts = [
         title: 'Vote for all',
         description: 'Vote for all',
         postDate: '2023-11-06T00:00:00.000+00:00',
-        endDate: '2025-07-22T00:00:00.000+00:00',
+        endDate: '2024-12-11T00:00:00.000+00:00',
         author: '65070501087',
         markdown: '',
         questions: [
