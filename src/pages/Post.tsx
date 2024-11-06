@@ -1,4 +1,4 @@
-import type { Event } from '@/types/index';
+import type { PostEventProps, Event } from '@/types/index';
 
 import {
     Tabs,
@@ -10,15 +10,33 @@ import {
 } from '@nextui-org/react';
 import { LuMoreHorizontal } from 'react-icons/lu';
 import { useLocation } from 'react-router-dom';
+import { axiosAPIInstance } from '@/api/axios-config.ts';
 
 import DefaultLayout from '@/layouts/default';
 import AllPostEvent from '@/components/post/AllPostEvent';
 import CalendarPage from '@/components/post/CalendarEvent';
-import { posts } from '@/data/post';
+import { useQuery } from '@tanstack/react-query';
+// import { posts } from '@/data/post';
 
 export default function Post() {
     const location = useLocation();
     const { event } = location.state as { event: Event };
+
+    const fetchPosts = async () => {
+        const response = await axiosAPIInstance.get(
+            `v1/event/${event._id}/posts`,
+        );
+
+        return response.data.data;
+    };
+
+    const { data: posts = [] } = useQuery<PostEventProps[]>({
+        queryKey: ['posts', event._id],
+        queryFn: fetchPosts,
+    });
+
+    console.log(event._id);
+    console.log(posts);
 
     return (
         <DefaultLayout>
