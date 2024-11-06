@@ -17,7 +17,24 @@ const config = {
     },
     darkMode: "class",
   },
-  plugins: [nextui()],
+  plugins: [nextui({
+    themes: {
+      light: {
+        colors: {
+          primary: {
+            DEFAULT: "#6d28d9",
+          },
+        },
+      },
+      dark: {
+        colors: {
+          primary: {
+            DEFAULT: "#6d28d9",
+          },
+        },
+      },
+    },
+  })],
 };
 
 export default config;

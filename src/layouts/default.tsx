@@ -1,4 +1,5 @@
 import { Link } from '@nextui-org/link';
+import { FaHeart } from 'react-icons/fa6';
 
 import { Navbar } from '@/components/navbar';
 import { Sidebar } from '@/components/sidebar';
@@ -13,7 +14,7 @@ export default function DefaultLayout({
             <Sidebar />
             <div className="flex flex-col w-full h-full ml-64">
                 <Navbar />
-                <main className="container mx-auto max-w-7xl px-6 flex-grow mb-[1000px]">
+                <main className="container mx-auto max-w-7xl px-6 flex-grow">
                     {children}
                 </main>
                 <footer className="w-full flex  items-center justify-center py-3">
@@ -23,8 +24,8 @@ export default function DefaultLayout({
                         href="https://nextui-docs-v2.vercel.app?utm_source=next-pages-template"
                         title="nextui.org homepage"
                     >
-                        <span className="text-default-600">Powered by</span>
-                        <p className="text-primary">NextUI</p>
+                        <span className="text-default-600">Made with</span>
+                        <FaHeart className="text-red-500 ml-1" />
                     </Link>
                 </footer>
             </div>
