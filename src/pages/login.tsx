@@ -1,9 +1,10 @@
-import { Input, Button, Checkbox } from '@nextui-org/react';
-import { HiUserCircle } from 'react-icons/hi2';
+import { Input, Button, Checkbox, Image } from '@nextui-org/react';
 import { useState } from 'react';
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
+import eventImg from '@/images/event.png';
+import { Logo } from '@/components/icons';
 
 import { useLogin } from '@/hooks/use-login';
 interface EyeIconProps extends React.SVGProps<SVGSVGElement> {
@@ -81,20 +82,26 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center">
-            <div className="max-w-screen-xl m-0 sm:m-10 bg-white drop-shadow-lg flex justify-center flex-1 ">
+            <div className="max-w-screen-xl m-0 sm:m-10  bg-violet-700 drop-shadow-lg flex justify-center flex-1 rounded-lg">
                 {/* Left Section */}
-                <div className="hidden md:flex flex-col gap-3 mx-auto lg:w-3/5 p-6 sm:p-12 justify-center items-center bg-violet-700">
-                    
+                <div className="md:flex flex-col gap-3 mx-auto lg:w-3/5 p-6 sm:p-12 justify-center items-center">
+                    <Image src={eventImg} alt="event" />
                 </div>
                 {/* Right Section */}
-                <div className="flex flex-col gap-3 mx-auto lg:w-2/5 justify-center items-center">
-                    <div className="flex flex-col justify-center items-center w-full">
+                <div className="flex flex-col items-center mx-auto bg-white lg:w-2/5 rounded-r-lg">
+                    <Logo className="w-32 h-32 mt-14" />
+                    <div className="flex flex-col w-full flex-grow">
                         {/* Sign In */}
-                        <p className="text-2xl font-bold text-zinc-600 my-12">
-                            Welcome Back!
-                        </p>
+                        <div className="my-6 ml-8">
+                            <p className="text-2xl font-bold text-zinc-600 my-2">
+                                Welcome Back!
+                            </p>
+                            <p className="text-lg text-zinc-500 my-2">
+                                Enter your student ID and password to continue.
+                            </p>
+                        </div>
                         <form
-                            className="w-full max-w-md flex flex-col gap-4"
+                            className="w-full max-w-md flex flex-col gap-4 mx-auto"
                             onSubmit={handleSubmit}
                         >
                             <div className="">
@@ -144,7 +151,7 @@ export default function LoginPage() {
                                 isLoading={loading}
                                 type="submit"
                             >
-                                {loading ? 'Signing in...' : 'Sign in'}
+                                {loading ? 'Login...' : 'Login'}
                             </Button>
                             {error && <p className="text-red-500">{error}</p>}
                             <div className="relative flex items-center">
@@ -162,10 +169,7 @@ export default function LoginPage() {
                                 <div className="">
                                     Don&apos;t have an account? &nbsp;{' '}
                                 </div>
-                                <Link
-                                    className="text-violet-800"
-                                    to="/signup"
-                                >
+                                <Link className="text-violet-800" to="/signup">
                                     Sign up here
                                 </Link>
                             </div>

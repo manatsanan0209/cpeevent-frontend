@@ -1,5 +1,4 @@
-import { Input, Button, Checkbox } from '@nextui-org/react';
-import { HiUserCircle } from 'react-icons/hi2';
+import { Input, Button, Image } from '@nextui-org/react';
 import { useState, useEffect } from 'react';
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,6 +6,7 @@ import { FcGoogle } from 'react-icons/fc';
 
 import { useSignup } from '@/hooks/use-signup';
 import { Logo } from '@/components/icons';
+import eventImg from '@/images/event.png';
 
 export default function SignupPage() {
     const [studentID, setStudentID] = useState('');
@@ -39,11 +39,11 @@ export default function SignupPage() {
             username,
         )
             .then(() => {
-                //
+                navigate('/');
             })
             .catch((error) => {
-                console.error('Login failed:', error);
-                // Handle login failure (e.g., show an error message)
+                console.error('Sign up failed:', error);
+                // Handle Sign up failure (e.g., show an error message)
             });
     };
 
@@ -52,19 +52,23 @@ export default function SignupPage() {
             <div className="max-w-screen-xl m-0 sm:m-10  bg-violet-700 drop-shadow-lg flex justify-center flex-1 rounded-lg">
                 {/* Left Section */}
                 <div
-                    className={`flex flex-col gap-3 mx-auto bg-white lg:w-2/5 justify-center items-center transform transition-transform duration-{100ms} ${
+                    className={`flex flex-col items-center mx-auto bg-white lg:w-2/5 rounded-l-lg transform transition-transform duration-{100ms} ${
                         slideIn ? 'translate-x-0' : 'translate-x-full'
                     }`}
                 >
-                    <div className="flex flex-col justify-center items-center w-full">
-                        {/* User Icon */}
-                        <HiUserCircle className="w-24 h-24 text-zinc-500" />
-                        {/* Sign In */}
-                        <p className="text-2xl font-bold text-zinc-600 my-5">
-                            Create an account
-                        </p>
+                    <Logo className="w-32 h-32 mt-8" />
+                    <div className="flex flex-col w-full flex-grow">
+                        {/* Sign Up */}
+                        <div className="my-6 ml-8">
+                            <p className="text-2xl font-bold text-zinc-600 my-2">
+                                Create an account
+                            </p>
+                            <p className="text-lg text-zinc-500 my-2">
+                                Enter your student ID and password to continue.
+                            </p>
+                        </div>
                         <form
-                            className="w-full max-w-md flex flex-col gap-4"
+                            className="w-full max-w-md flex flex-col gap-4 mx-auto"
                             onSubmit={handleSubmit}
                         >
                             <div className="">
@@ -81,7 +85,8 @@ export default function SignupPage() {
                                             e.key !== 'Backspace' &&
                                             e.key !== 'Delete' &&
                                             e.key !== 'ArrowLeft' &&
-                                            e.key !== 'ArrowRight'
+                                            e.key !== 'ArrowRight' &&
+                                            e.key !== 'Tab'
                                         ) {
                                             e.preventDefault();
                                         }
@@ -139,7 +144,8 @@ export default function SignupPage() {
                                             e.key !== 'Backspace' &&
                                             e.key !== 'Delete' &&
                                             e.key !== 'ArrowLeft' &&
-                                            e.key !== 'ArrowRight'
+                                            e.key !== 'ArrowRight' &&
+                                            e.key !== 'Tab'
                                         ) {
                                             e.preventDefault();
                                         }
@@ -170,14 +176,16 @@ export default function SignupPage() {
                                     Already have an account? &nbsp;{' '}
                                 </div>
                                 <Link className="text-violet-800" to="/login">
-                                    Sign in here
+                                    Login here
                                 </Link>
                             </div>
                         </form>
                     </div>
                 </div>
                 {/* Right Section */}
-                <div className="hidden md:flex flex-col gap-3 mx-auto lg:w-3/5 p-6 sm:p-12 justify-center items-center"></div>
+                <div className="md:flex flex-col gap-3 mx-auto lg:w-3/5 p-6 sm:p-12 justify-center items-center">
+                    <Image src={eventImg} alt="event" />
+                </div>
             </div>
         </div>
     );
