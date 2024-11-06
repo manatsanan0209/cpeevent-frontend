@@ -52,7 +52,7 @@ const SectionContent = ({
     }
 };
 
-export default function SettingPage() {
+export default function SettingsPage() {
     const { section } = useParams<{ section: string }>();
     const navigate = useNavigate();
     const [selectedSection, setSelectedSection] = useState('Profile');
@@ -67,7 +67,7 @@ export default function SettingPage() {
 
     const handleSectionChange = (newSection: string) => {
         setSelectedSection(newSection);
-        navigate(`/setting/${newSection.toLowerCase()}`);
+        navigate(`/settings/${newSection.toLowerCase()}`);
     };
 
     return (

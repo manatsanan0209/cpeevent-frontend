@@ -5,7 +5,6 @@ import LoginPage from './pages/login';
 import Custom404 from './pages/Custom404';
 import { AuthContext } from './context/AuthContext';
 import Post from './pages/Post';
-import SettingPage from './pages/setting';
 
 import IndexPage from '@/pages/index';
 import DocsPage from '@/pages/docs';
@@ -16,6 +15,7 @@ import ProtectedLayout from '@/layouts/ProtectedLayout';
 import CalendarPage from '@/pages/calendar';
 import TodoPage from '@/pages/todo';
 import Event from '@/pages/Event';
+import SettingsPage from '@/pages/settings';
 
 function App() {
     const { user } = useContext(AuthContext);
@@ -42,12 +42,14 @@ function App() {
                             <Routes>
                                 <Route element={<Event />} path="/events" />
                                 <Route
-                                    element={<Navigate to="/setting/profile" />}
-                                    path="/setting"
+                                    element={
+                                        <Navigate to="/settings/profile" />
+                                    }
+                                    path="/settings"
                                 />
                                 <Route
-                                    element={<SettingPage />}
-                                    path="/setting/:section"
+                                    element={<SettingsPage />}
+                                    path="/settings/:section"
                                 />
                             </Routes>
                         </ProtectedLayout>
