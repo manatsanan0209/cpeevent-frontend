@@ -22,7 +22,7 @@ const SectionNavLink = ({
     onClick,
 }: SectionNavLinkProps): ReactNode => (
     <NavLink
-        className={`text-2xl font-bold text-zinc-600 cursor-pointer rounded-md pl-3 ${
+        className={`text-xl font-semibold text-zinc-600 cursor-pointer rounded-md pl-3 mb-1 ${
             selectedSection === section ? 'bg-default-100' : ''
         }`}
         onClick={() => onClick(section)}
