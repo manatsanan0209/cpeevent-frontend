@@ -1,3 +1,5 @@
+import type { Event } from '@/types/index';
+
 import { useEffect, useState } from 'react';
 import {
     Accordion,
@@ -15,28 +17,12 @@ import {
     ModalFooter,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
+import { useNavigate } from 'react-router-dom';
 
 import { SearchIcon } from '../icons';
 
-// Define type of data
-interface Event {
-    _id: number;
-    eventName: string;
-    eventDescription: string;
-    nParticipant: number;
-    participants: string[];
-    nStaff: number;
-    startDate: string;
-    endDate: string;
-    president: string;
-    kind: string;
-    role: any[];
-    icon: string | null;
-    poster: string | null;
-}
-
 interface User {
-    student_id: string;
+    _id: string;
 }
 
 interface AllEventProps {
@@ -45,23 +31,30 @@ interface AllEventProps {
 }
 
 export default function AllEvent({ events, user }: AllEventProps) {
-    const [sortedEvents, setSortedEvents] = useState<Event[]>(events);
+    const [sortedEvents, setSortedEvents] = useState<Event[]>([]);
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
+    const navigate = useNavigate();
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     useEffect(() => {
-        sortEvents(sortOption);
+        if (Array.isArray(events)) {
+            sortEvents(sortOption);
+        }
     }, [sortOption, events]);
 
     useEffect(() => {
-        filterEvents(searchInput);
+        if (Array.isArray(events)) {
+            filterEvents(searchInput);
+        }
     }, [searchInput, events]);
 
     // 1'st times access; default sort
     useEffect(() => {
-        sortEvents('DateDSC');
+        if (Array.isArray(events)) {
+            sortEvents('DateDSC');
+        }
     }, []);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,6 +62,8 @@ export default function AllEvent({ events, user }: AllEventProps) {
     };
 
     const filterEvents = (searchTerm: string) => {
+        if (!Array.isArray(events)) return;
+
         const filteredEvents = events.filter((event) =>
             event.eventName.toLowerCase().includes(searchTerm.toLowerCase()),
         );
@@ -77,6 +72,8 @@ export default function AllEvent({ events, user }: AllEventProps) {
     };
 
     const sortEvents = (option: string) => {
+        if (!Array.isArray(events)) return;
+
         let sortedArray = [...events];
 
         switch (option) {
@@ -165,15 +162,28 @@ export default function AllEvent({ events, user }: AllEventProps) {
         return now.toISOString();
     };
 
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+
+        return date.toLocaleDateString('en-US', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+    };
+
     return (
         <>
-            <div className="flex flex-row justify-between ">
-                {/* Search */}
-                <div className=" w-1/4 mx-20 my-8 justify-start mb-4 md:mb-0">
+            <div className="grid grid-cols-3 gap-4 my-8 items-center">
+                <div className="flex justify-center">
+                    {/* Empty div to center the content */}
+                </div>
+                <div className="flex justify-center items-center content-center">
                     <Input
                         aria-label="Search"
                         classNames={{
-                            inputWrapper: 'bg-white shadow-lg',
+                            inputWrapper:
+                                'flex bg-white shadow-lg w-4/5 mx-auto',
                             input: 'text-sm',
                         }}
                         endContent={
@@ -194,14 +204,15 @@ export default function AllEvent({ events, user }: AllEventProps) {
                         onChange={handleSearchChange}
                     />
                 </div>
-                {/* Sort by */}
-                <div className="flex w-1/4 mx-20 my-8 item-start flex-row">
-                    <div className="w-20 mt-2 text-sm ">Sort by</div>
+                <div className="flex content-center w-8/12 mx-auto">
+                    <div className="w-1/4 mr-4 mt-2 items-center text-sm text-zinc-600 font-bold">
+                        Sort by
+                    </div>
                     <Select
                         disallowEmptySelection
                         isRequired
                         aria-label="Sort by"
-                        className="max-w-xs"
+                        className="max-w-xs mx-auto content-center"
                         defaultSelectedKeys={[sortOption]}
                         selectedKeys={[sortOption]}
                         style={{
@@ -225,7 +236,6 @@ export default function AllEvent({ events, user }: AllEventProps) {
                     </Select>
                 </div>
             </div>
-
             <div className="mx-8">
                 <Accordion variant="splitted">
                     {sortedEvents.map((event) => (
@@ -235,7 +245,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
                             title={
                                 <div className="flex flex-row">
                                     <span
-                                        className="w-5/12 text-zinc-600"
+                                        className="w-5/12 text-zinc-600 capitalize"
                                         style={{ fontWeight: 'bold' }}
                                     >
                                         {event.eventName}
@@ -251,9 +261,11 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             Start Date :{''}
                                         </span>
                                         <span className="text-blue-500 ml-2">
-                                            {event.startDate
-                                                .substring(0, 10)
-                                                .replace(/-/g, '/')}
+                                            {formatDate(
+                                                event.startDate
+                                                    .substring(0, 10)
+                                                    .replace(/-/g, '/'),
+                                            )}
                                         </span>
                                     </span>
                                 </div>
@@ -293,23 +305,25 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                     <Button
                                         aria-label="Join Event"
                                         className={`mx-12 my-5 ${
-                                            event.participants.includes(
-                                                user.student_id,
+                                            event.staff?.some(
+                                                (staff) =>
+                                                    staff.stdID === user._id,
                                             ) ||
                                             eventStatus(event) != 'Upcoming'
                                                 ? 'bg-zinc-300 text-violet-700'
                                                 : 'bg-violet-700 text-white'
                                         }`}
                                         isDisabled={
-                                            event.participants.includes(
-                                                user.student_id,
+                                            event.staff?.some(
+                                                (staff) =>
+                                                    staff.stdID === user._id,
                                             ) ||
                                             eventStatus(event) != 'Upcoming'
                                         }
                                         onPress={onOpen}
                                     >
-                                        {!event.participants.includes(
-                                            user.student_id,
+                                        {!event.staff?.some(
+                                            (staff) => staff.stdID === user._id,
                                         ) ? (
                                             <strong>Join</strong>
                                         ) : (
@@ -358,17 +372,26 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                     <Button
                                         aria-label="Go to Workspace"
                                         className={`mx-12 my-5 ${
-                                            !event.participants.includes(
-                                                user.student_id,
+                                            !event.staff?.some(
+                                                (staff) =>
+                                                    staff.stdID === user._id,
                                             )
                                                 ? 'bg-gray-300 text-blue-600'
                                                 : 'bg-blue-500 text-white'
                                         }`}
                                         isDisabled={
-                                            !event.participants.includes(
-                                                user.student_id,
+                                            !event.staff?.some(
+                                                (staff) =>
+                                                    staff.stdID === user._id,
                                             )
                                         }
+                                        onClick={() => {
+                                            const eventID = event._id;
+
+                                            navigate(`/workspace/${eventID}`, {
+                                                state: { event },
+                                            });
+                                        }}
                                     >
                                         <strong>Workspace</strong>
                                     </Button>
