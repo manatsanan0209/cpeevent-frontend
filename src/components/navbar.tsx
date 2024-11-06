@@ -68,27 +68,29 @@ export const Navbar = () => {
     };
 
     const searchInput = (
-        <Input
-            readOnly
-            aria-label="Search"
-            classNames={{
-                base: 'bg-default-100',
-            }}
-            endContent={
-                <Kbd className="hidden lg:inline-block" keys={['command']}>
-                    K
-                </Kbd>
-            }
-            labelPlacement="outside"
-            placeholder="Search..."
-            startContent={
-                <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-            }
-            type="search"
-            value={searchContent}
-            onChange={handleSearchChange}
+        <button
+            aria-label="Open search modal"
+            className="bg-transparent border-none p-0 m-0 cursor-pointer"
             onClick={handleInputClick}
-        />
+        >
+            <Input
+                readOnly
+                aria-label="Search"
+                endContent={
+                    <Kbd className="hidden lg:inline-block" keys={['command']}>
+                        K
+                    </Kbd>
+                }
+                labelPlacement="outside"
+                placeholder="Search..."
+                startContent={
+                    <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+                }
+                type="search"
+                value={searchContent}
+                onChange={handleSearchChange}
+            />
+        </button>
     );
 
     //dummy noti
@@ -126,15 +128,22 @@ export const Navbar = () => {
             </NavbarBrand>
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 {searchInput}
-                <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+                <Modal
+                    classNames={{ closeButton: 'hidden' }}
+                    isOpen={isModalOpen}
+                    onClose={handleCloseModal}
+                >
                     <ModalContent>
                         <ModalBody>
-                            <div>
+                            <div className="w-full min-h-16 flex justify-center">
                                 <Autocomplete
                                     aria-label="Search"
-                                    classNames={{
-                                        base: 'bg-default-100',
-                                    }}
+                                    className="my-auto"
+                                    endContent={
+                                        <Kbd className="hidden lg:inline-block">
+                                            ESC
+                                        </Kbd>
+                                    }
                                     labelPlacement="outside"
                                     placeholder="Search..."
                                     startContent={

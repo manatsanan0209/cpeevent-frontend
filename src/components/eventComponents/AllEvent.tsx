@@ -245,7 +245,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
                             title={
                                 <div className="flex flex-row">
                                     <span
-                                        className="w-5/12 text-zinc-600"
+                                        className="w-5/12 text-zinc-600 capitalize"
                                         style={{ fontWeight: 'bold' }}
                                     >
                                         {event.eventName}
