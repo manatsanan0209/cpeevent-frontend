@@ -312,6 +312,8 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
             <div className="max-w-full gap-6 grid grid-cols-12 grid-rows-2 px-8 my-8">
                 {sortedEvents.map((post) => (
                     <Card
+                        isPressable
+                        onPress={() => console.log(post._id)}
                         key={post._id}
                         className="col-span-12 sm:col-span-4 h-[300px]"
                     >
@@ -360,7 +362,7 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                                 radius="full"
                                 size="sm"
                             >
-                                Learn More
+                                See More
                             </Button>
                         </CardFooter>
                     </Card>
