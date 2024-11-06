@@ -19,36 +19,32 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
 
     useEffect(() => {
-        localStorage.setItem('user', user || '');
-        localStorage.setItem('token', token);
-        localStorage.setItem('refresh_token', refresh_token);
-        localStorage.setItem('access', access);
+        const updateLocalStorage = (key: string, value: string | null) => {
+            if (value) {
+                localStorage.setItem(key, value);
+            } else {
+                localStorage.removeItem(key);
+            }
+        };
+
+        updateLocalStorage('user', user);
+        updateLocalStorage('token', token);
+        updateLocalStorage('refresh_token', refresh_token);
+        updateLocalStorage('access', access);
     }, [user, token, refresh_token, access]);
 
     const logout = async () => {
         try {
-            // await axios.post(
-            //    '/api/user/logout',
-            //    {},
-            //    {
-            //       headers: {
-            //          Authorization: `Bearer ${token}`,
-            //       },
-            //    },
-            // );
             await axiosAPIInstance.post('v1/user/logout');
 
             setUser(null);
             setToken('');
             setRefreshToken('');
             setAccess('');
-            localStorage.removeItem('user');
-            localStorage.removeItem('token');
-            localStorage.removeItem('refresh_token');
-            localStorage.removeItem('access');
-            window.location.reload();
         } catch (error) {
             throw new Error('Logout failed');
+        } finally {
+            window.location.reload();
         }
     };
 

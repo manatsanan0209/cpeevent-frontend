@@ -61,7 +61,7 @@ const EyeIcon: React.FC<EyeIconProps> = ({ isVisible, ...props }) => (
 );
 
 export default function LoginPage() {
-    const [email, setEmail] = useState('');
+    const [user, setUser] = useState(''); //changed from email, setEmail
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
@@ -70,7 +70,7 @@ export default function LoginPage() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        login(email, password)
+        login(user, password)
             .then(() => {
                 navigate('/'); // Navigate to home page on successful login
             })
@@ -108,8 +108,8 @@ export default function LoginPage() {
                                 <Input
                                     label="Student ID"
                                     type="text"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={user}
+                                    onChange={(e) => setUser(e.target.value)}
                                 />
                             </div>
                             <div className="">

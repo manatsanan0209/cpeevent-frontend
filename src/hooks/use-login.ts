@@ -9,11 +9,11 @@ export const useLogin = () => {
     const { setUser, setAccess, setToken, setRefreshToken } =
         useContext(AuthContext);
 
-    const login = async (email: string, password: string) => {
+    const login = async (userID: string, password: string) => { //userID is student ID
         setLoading(true);
         setError(null);
         try {
-            const payload = { email, password };
+            const payload = { "studentid": userID, "password": password }; //Bind the userID to be a "studentid" in JSON
             const response = await axios.post('v1/user/login', payload);
 
             // Assuming response contains user, token, and refresh_token
