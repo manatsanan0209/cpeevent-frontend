@@ -145,7 +145,8 @@ export default function SignupPage() {
                                             e.key !== 'Delete' &&
                                             e.key !== 'ArrowLeft' &&
                                             e.key !== 'ArrowRight' &&
-                                            e.key !== 'Tab'
+                                            e.key !== 'Tab' &&
+                                            e.key !== 'Enter'
                                         ) {
                                             e.preventDefault();
                                         }
