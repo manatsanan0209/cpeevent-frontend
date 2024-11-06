@@ -1,5 +1,6 @@
 import type { PostEventProps } from '@/types/index';
 
+import { IoAdd } from 'react-icons/io5';
 import React, { useState, useEffect } from 'react';
 import {
     Card,
@@ -11,10 +12,14 @@ import {
     Select,
     SelectItem,
     Kbd,
+    useDisclosure,
+    Modal,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 
 import { SearchIcon } from '../icons';
+
+import CreatePostModal from './createPostModal.tsx';
 
 import voteImage from '@/images/Vote.png';
 import formImage from '@/images/Form.png';
@@ -27,6 +32,7 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
     const [searchInput, setSearchInput] = useState<string>('');
 
     const [filterOption, setFilterOption] = useState<string>('all');
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchInput(e.target.value);
@@ -310,6 +316,26 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
 
             {/* card */}
             <div className="max-w-full gap-6 grid grid-cols-12 grid-rows-2 px-8 my-8">
+                <Card
+                    className="col-span-12 sm:col-span-4 h-[300px]"
+                    style={{ backgroundColor: '#efefef' }}
+                >
+                    <Button
+                        className="flex flex-col w-full h-full justify-center items-center text-xl bg-transparent"
+                        onPress={onOpen}
+                    >
+                        <IoAdd className="text-6xl" />
+                        Add new post
+                    </Button>
+                    <Modal
+                        isOpen={isOpen}
+                        scrollBehavior="outside"
+                        size="lg"
+                        onOpenChange={onOpenChange}
+                    >
+                        <CreatePostModal />
+                    </Modal>
+                </Card>
                 {sortedEvents.map((post) => (
                     <Card
                         key={post._id}
