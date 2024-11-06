@@ -23,7 +23,7 @@ export default function Post() {
     return (
         <DefaultLayout>
             <div className="flex mb-4 text-left ml">
-                <h2 className="flex-col m-0 text-4xl font-bold w-11/12 text-zinc-600">
+                <h2 className="flex-col m-0 text-4xl font-bold w-11/12 text-zinc-600 capitalize">
                     {event.eventName}
                 </h2>
                 <Dropdown className="flex justify-end">

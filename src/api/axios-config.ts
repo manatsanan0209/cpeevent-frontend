@@ -60,6 +60,8 @@ axiosAPIInstance.interceptors.response.use(
             } catch (refreshError) {
                 // Handle refresh token errors by clearing stored tokens and redirecting to the login page.
                 console.error('Token refresh failed:', refreshError);
+                localStorage.removeItem('user');
+                localStorage.removeItem('access');
                 localStorage.removeItem('token');
                 localStorage.removeItem('refresh_token');
                 window.location.href = '/login';
