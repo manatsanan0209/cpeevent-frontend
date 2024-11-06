@@ -1,3 +1,5 @@
+import type { Event } from '@/types/index';
+
 import {
     Tabs,
     Tab,
@@ -16,12 +18,12 @@ import { posts } from '@/data/post';
 
 export default function Post() {
     const location = useLocation();
-    const { event } = location.state;
+    const { event } = location.state as { event: Event };
 
     return (
         <DefaultLayout>
             <div className="flex mb-4 text-left ml">
-                <h2 className="flex-col m-0 text-4xl font-bold w-11/12 text-zinc-600">
+                <h2 className="flex-col m-0 text-4xl font-bold w-11/12 text-zinc-600 capitalize">
                     {event.eventName}
                 </h2>
                 <Dropdown className="flex justify-end">

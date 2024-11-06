@@ -1,3 +1,5 @@
+import type { Event } from '@/types/index';
+
 import { useEffect, useState } from 'react';
 import {
     Accordion,
@@ -18,28 +20,6 @@ import { GrStatusGoodSmall } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
 
 import { SearchIcon } from '../icons';
-
-// Define type of data
-interface Event {
-    _id: string;
-    eventName: string;
-    eventDescription: string;
-    nParticipant: number;
-    participants: string[];
-    nStaff: number;
-    startDate: string;
-    endDate: string;
-    president: string;
-    kind: string;
-    role: string[];
-    icon: string | null;
-    poster: string | null;
-    postList: string[];
-    staff: {
-        stdID: string;
-        role: string;
-    }[];
-}
 
 interface User {
     _id: string;
