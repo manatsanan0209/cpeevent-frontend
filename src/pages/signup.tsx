@@ -49,11 +49,11 @@ export default function SignupPage() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center">
-            <div className="max-w-screen-xl m-0 sm:m-10  bg-violet-700 drop-shadow-lg flex justify-center flex-1 rounded-lg">
+            <div className="max-w-screen-xl m-0 sm:m-10  lg:bg-violet-700 drop-shadow-lg flex justify-center flex-1 rounded-lg">
                 {/* Left Section */}
                 <div
-                    className={`flex flex-col items-center mx-auto bg-white lg:w-2/5 rounded-l-lg transform transition-transform duration-{100ms} ${
-                        slideIn ? 'translate-x-0' : 'translate-x-full'
+                    className={`flex flex-col items-center mx-auto bg-white lg:w-2/5 sm:rounded-lg lg:rounded-l-lg lg:rounded-r-none transform transition-transform duration-{100ms} ${
+                        slideIn ? 'lg:translate-x-0' : 'lg:translate-x-full'
                     }`}
                 >
                     <Logo className="w-32 h-32 mt-8" />
@@ -68,7 +68,7 @@ export default function SignupPage() {
                             </p>
                         </div>
                         <form
-                            className="w-full max-w-md flex flex-col gap-4 mx-auto"
+                            className="w-full max-w-md flex flex-col gap-4 mx-auto px-6 xl:px-0"
                             onSubmit={handleSubmit}
                         >
                             <div className="">
@@ -184,7 +184,7 @@ export default function SignupPage() {
                     </div>
                 </div>
                 {/* Right Section */}
-                <div className="md:flex flex-col gap-3 mx-auto lg:w-3/5 p-6 sm:p-12 justify-center items-center">
+                <div className="hidden lg:flex flex-col gap-3 mx-auto lg:w-3/5 p-6 sm:p-12 justify-center items-center">
                     <Image src={eventImg} alt="event" />
                 </div>
             </div>
