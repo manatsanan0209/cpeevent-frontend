@@ -64,7 +64,7 @@ export default function JoinedEvent({ events }: AllEventProps) {
         <Input
             aria-label="Search"
             classNames={{
-                inputWrapper: 'flex bg-white shadow-lg w-4/5 mx-auto',
+                inputWrapper: 'flex bg-white shadow-lg mx-auto',
                 input: 'text-sm',
             }}
             endContent={
@@ -185,7 +185,7 @@ export default function JoinedEvent({ events }: AllEventProps) {
 
     return (
         <>
-            <div className="grid grid-cols-3 gap-4 my-8 items-center ">
+            <div className="grid grid-cols-4 gap-4 my-8 items-center px-10 ">
                 {/* Search */}
                 <div className=" flex justify-center items-center content-center">
                     {searchInputComponent}
@@ -194,7 +194,7 @@ export default function JoinedEvent({ events }: AllEventProps) {
                     {/* Empty div to center the content */}
                 </div>
                 {/* Sort by */}
-                <div className=" flex content-center w-8/12 mx-auto">
+                <div className=" flex content-center col-end-5">
                     <div className="w-1/4 mr-4 mt-2 items-center text-sm text-zinc-600 font-bold">
                         Sort by
                     </div>
