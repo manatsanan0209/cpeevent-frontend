@@ -5,6 +5,7 @@ import LoginPage from './pages/login';
 import Custom404 from './pages/Custom404';
 import { AuthContext } from './context/AuthContext';
 import Post from './pages/Post';
+import SettingPage from './pages/setting';
 
 import IndexPage from '@/pages/index';
 import DocsPage from '@/pages/docs';
@@ -40,6 +41,14 @@ function App() {
                         <ProtectedLayout requiredAccess="1">
                             <Routes>
                                 <Route element={<Event />} path="/events" />
+                                <Route
+                                    element={<Navigate to="/setting/profile" />}
+                                    path="/setting"
+                                />
+                                <Route
+                                    element={<SettingPage />}
+                                    path="/setting/:section"
+                                />
                             </Routes>
                         </ProtectedLayout>
                     ) : (
