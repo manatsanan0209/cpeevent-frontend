@@ -37,8 +37,8 @@ export default function CreatePostModal() {
     >([]);
 
     const [newPost, setNewPost] = useState<PostEventProps>({
-        kind: '',
-        assignTo: [],
+        kind: 'post',
+        assignTo: ['everyone'],
         title: '',
         description: '',
         postDate: new Date().toISOString(),
@@ -143,7 +143,9 @@ export default function CreatePostModal() {
                                     isRequired
                                     className="pr-1 w-2/5"
                                     errorMessage="This field is required"
+                                    isInvalid={newPost.kind === ''}
                                     label="Post Kind"
+                                    selectedKeys={[newPost.kind]}
                                     onChange={(e) =>
                                         setNewPost({
                                             ...newPost,
@@ -165,6 +167,7 @@ export default function CreatePostModal() {
                                     isRequired
                                     required
                                     className="pl-1"
+                                    defaultSelectedKeys={['everyone']}
                                     label="Assign To"
                                     selectionMode="multiple"
                                     onChange={(e) =>
