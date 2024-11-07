@@ -26,15 +26,15 @@ export interface Event {
 }
 
 export interface PostEventProps {
-    _id: string;
+    _id?: string;
     kind: string;
-    assignTo: string;
+    assignTo: string[];
     title: string;
     description: string;
     postDate: string;
     endDate: string | null;
     author: string;
-    markdown: string;
+    markdown?: string;
     questions?: {
         question: string;
         type: string;
