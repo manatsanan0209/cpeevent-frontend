@@ -1,5 +1,6 @@
 import type { PostEventProps } from '@/types/index';
 
+import { IoAdd } from 'react-icons/io5';
 import React, { useState, useEffect } from 'react';
 import {
     Card,
@@ -10,6 +11,8 @@ import {
     Select,
     SelectItem,
     Kbd,
+    useDisclosure,
+    Modal,
     Divider,
     CardBody,
     Chip,
@@ -18,6 +21,8 @@ import { GrStatusGoodSmall } from 'react-icons/gr';
 import { IoFilter } from 'react-icons/io5';
 
 import { SearchIcon } from '../icons';
+
+import CreatePostModal from './createPost/createPostModal.tsx';
 
 import voteImage from '@/images/Vote.png';
 import formImage from '@/images/Form.png';
@@ -33,6 +38,7 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
     >([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [filterOption, setFilterOption] = useState<string>('all');
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     useEffect(() => {
         setSortedAndSearchEvents(
@@ -50,7 +56,7 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
         searchTerm: string,
         filter: string,
     ): PostEventProps[] {
-        let newSortedArray = [...posts];
+        let newSortedArray = Array.isArray(posts) ? [...posts] : [];
 
         switch (option) {
             case 'DateASC':
@@ -291,6 +297,26 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
             </div>
             {!isLoading && (
                 <div className="max-w-full gap-6 grid grid-cols-12 px-8 my-8">
+                    <Card
+                        className="col-span-12 sm:col-span-4 w-full"
+                        style={{ backgroundColor: '#efefef' }}
+                    >
+                        <Button
+                            className="flex flex-col w-full h-full justify-center items-center text-xl bg-transparent"
+                            onPress={onOpen}
+                        >
+                            <IoAdd className="text-6xl" />
+                            Add new post
+                        </Button>
+                        <Modal
+                            isOpen={isOpen}
+                            scrollBehavior="outside"
+                            size="lg"
+                            onOpenChange={onOpenChange}
+                        >
+                            <CreatePostModal />
+                        </Modal>
+                    </Card>
                     {sortedAndSearchEvents.length > 0 &&
                         sortedAndSearchEvents.map((post) => {
                             return (
@@ -336,7 +362,9 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                                     <CardBody
                                         className="min-h-72"
                                         style={{
-                                            backgroundImage: `url(${getBackgroundImage(post.kind)})`,
+                                            backgroundImage: `url(${getBackgroundImage(
+                                                post.kind,
+                                            )})`,
                                             backgroundSize: 'cover',
                                             backgroundPosition: 'center',
                                         }}

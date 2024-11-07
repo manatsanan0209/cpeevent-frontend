@@ -18,12 +18,12 @@ import {
 } from '@nextui-org/react';
 import { LuMoreHorizontal } from 'react-icons/lu';
 import { useLocation } from 'react-router-dom';
-import { axiosAPIInstance } from '@/api/axios-config.ts';
+import { useQuery } from '@tanstack/react-query';
 
+import { axiosAPIInstance } from '@/api/axios-config.ts';
 import DefaultLayout from '@/layouts/default';
 import AllPostEvent from '@/components/post/AllPostEvent';
 import CalendarPage from '@/components/post/CalendarEvent';
-import { useQuery } from '@tanstack/react-query';
 // import { posts } from '@/data/post';
 
 export default function Post() {
