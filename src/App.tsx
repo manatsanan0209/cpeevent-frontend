@@ -2,9 +2,11 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import { useContext } from 'react';
 
 import LoginPage from './pages/login';
+import SignupPage from './pages/signup';
 import Event from './pages/Event';
 import Custom404 from './pages/Custom404';
 import { AuthContext } from './context/AuthContext';
+import MembersPage from './pages/members';
 import Post from './pages/Post';
 
 import IndexPage from '@/pages/index';
@@ -30,6 +32,7 @@ function App() {
                 element={user ? <Navigate to="/" /> : <LoginPage />}
                 path="/login"
             />
+            <Route element={user ? <Navigate to="/" /> : <SignupPage />} path='/signup' />
             <Route element={<Custom404 />} path="/404" />
             <Route element={<Navigate replace to="/404" />} path="*" />
             <Route
@@ -52,6 +55,7 @@ function App() {
             <Route element={<Post />} path="/workspace/:eventid" />
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<TodoPage />} path="/todo" />
+            <Route element={<MembersPage />} path="/members" />
         </Routes>
     );
 }

@@ -79,8 +79,6 @@ export default function PostKindVote({
         setVoteQuestions(updatedQuestions);
     }
 
-    console.log('vote question : ', voteQuestions);
-
     return (
         <>
             {voteQuestions.map((question, questionIndex) => (

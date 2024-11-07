@@ -2,16 +2,10 @@ import { Textarea } from '@nextui-org/react';
 import React from 'react';
 
 interface PostKindPostProps {
-    markdown: string;
     setMarkdown: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function PostKindPost({
-    markdown,
-    setMarkdown,
-}: PostKindPostProps) {
-    console.log(markdown);
-
+export default function PostKindPost({ setMarkdown }: PostKindPostProps) {
     return (
         <>
             <Textarea

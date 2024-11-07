@@ -28,7 +28,7 @@ export interface Event {
 export interface PostEventProps {
     _id?: string;
     kind: string;
-    assignTo: string;
+    assignTo: string[];
     title: string;
     description: string;
     postDate: string;

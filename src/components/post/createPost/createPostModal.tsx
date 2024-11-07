@@ -38,7 +38,7 @@ export default function CreatePostModal() {
 
     const [newPost, setNewPost] = useState<PostEventProps>({
         kind: '',
-        assignTo: '',
+        assignTo: [],
         title: '',
         description: '',
         postDate: new Date().toISOString(),
@@ -47,34 +47,28 @@ export default function CreatePostModal() {
     });
 
     useEffect(() => {
-        console.log(voteQuestions);
-    }, [voteQuestions]);
-
-    useEffect(() => {
-        console.log(formQuestions);
-    }, [formQuestions]);
-
-    useEffect(() => {
         if (!event.role.includes('everyone')) {
             event.role.push('everyone');
         }
     }, []);
 
     useEffect(() => {
-        console.log(markdown);
-    }, [markdown]);
-
-    useEffect(() => {
-        console.log(newPost);
-    }, [newPost]);
+        if (newPost.kind === 'form') {
+            setVoteQuestions([]);
+            setMarkdown('');
+        } else if (newPost.kind === 'post') {
+            setVoteQuestions([]);
+            setFormQuestions([]);
+        } else if (newPost.kind === 'vote') {
+            setFormQuestions([]);
+            setMarkdown('');
+        }
+    }, [newPost.kind]);
 
     function checkDateValidation(startDate: string, endDate: string) {
         if (new Date(endDate) < new Date(startDate)) {
-            console.log('Invalid Date');
-
             return true;
         }
-        console.log('Valid Date');
 
         return false;
     }
@@ -147,7 +141,7 @@ export default function CreatePostModal() {
                             <div className="flex flex-row">
                                 <Select
                                     isRequired
-                                    className="pr-1"
+                                    className="pr-1 w-2/5"
                                     errorMessage="This field is required"
                                     label="Post Kind"
                                     onChange={(e) =>
@@ -172,10 +166,15 @@ export default function CreatePostModal() {
                                     required
                                     className="pl-1"
                                     label="Assign To"
+                                    selectionMode="multiple"
                                     onChange={(e) =>
                                         setNewPost({
                                             ...newPost,
-                                            assignTo: e.target.value,
+                                            assignTo: Array.isArray(
+                                                e.target.value,
+                                            )
+                                                ? e.target.value
+                                                : [e.target.value],
                                         })
                                     }
                                 >
@@ -196,10 +195,7 @@ export default function CreatePostModal() {
 
                             {newPost.kind === 'post' ? (
                                 <>
-                                    <PostKindPost
-                                        markdown={markdown}
-                                        setMarkdown={setMarkdown}
-                                    />
+                                    <PostKindPost setMarkdown={setMarkdown} />
                                 </>
                             ) : null}
 
