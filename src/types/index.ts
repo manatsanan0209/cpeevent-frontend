@@ -37,7 +37,8 @@ export interface PostEventProps {
     markdown?: string;
     questions?: {
         question: string;
-        type: string;
+        maxSel?: string;
+        inputType?: string;
         options: string[];
     }[];
 }
