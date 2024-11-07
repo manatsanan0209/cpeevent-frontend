@@ -15,6 +15,7 @@ import {
     Modal,
     Divider,
     CardBody,
+    Chip,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 import { IoFilter } from 'react-icons/io5';
@@ -332,7 +333,7 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                                                         post.kind,
                                                     )}
                                                 </p>
-                                                {/* <div className="mx-2.5 ">
+                                                <div className="mx-2.5 ">
                                                     {post.assignTo.map(
                                                         (assignee, index) => (
                                                             <Chip
@@ -350,7 +351,7 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                                                             </Chip>
                                                         ),
                                                     )}
-                                                </div> */}
+                                                </div>
                                             </div>
                                             <p className="flex text-zinc-600 mr-4 mt-1.5 font-semibold text-xs">
                                                 {formatDate(post.postDate)}
@@ -361,7 +362,9 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                                     <CardBody
                                         className="min-h-72"
                                         style={{
-                                            backgroundImage: `url(${getBackgroundImage(post.kind)})`,
+                                            backgroundImage: `url(${getBackgroundImage(
+                                                post.kind,
+                                            )})`,
                                             backgroundSize: 'cover',
                                             backgroundPosition: 'center',
                                         }}
