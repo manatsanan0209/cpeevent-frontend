@@ -1,63 +1,97 @@
 import type { UserAccountType } from '@/types/index';
 
 import { Divider, Input, Button } from '@nextui-org/react';
-import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { TiTick, TiTimes } from 'react-icons/ti';
 
 import { axiosAPIInstance } from '@/api/axios-config.ts';
 
 interface InputFieldProps {
     label: string;
     placeholder: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    name: string;
+    control: any;
+    rules?: any;
+    error?: string;
+}
+
+interface UserAccountUpdate {
+    firstName: string;
+    lastName: string;
+    year: number;
+    email: string;
+    phoneNumber: string;
 }
 
 const InputField = ({
     label,
     placeholder,
-    value,
-    onChange,
     name,
-}: InputFieldProps & { name: string }) => (
+    control,
+    rules,
+    error,
+}: InputFieldProps) => (
     <div className="flex flex-col gap-2">
         <p className="text-zinc-500">{label}</p>
-        <Input
+        <Controller
+            control={control}
             name={name}
-            placeholder={placeholder}
-            type="text"
-            value={value}
-            onChange={onChange}
+            render={({ field }) => (
+                <Input
+                    {...field}
+                    errorMessage={error}
+                    isInvalid={!!error}
+                    placeholder={placeholder}
+                    type="text"
+                />
+            )}
+            rules={rules}
         />
     </div>
 );
 
+const schema = z.object({
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    year: z.number().min(1, 'Year is required'),
+    email: z.string().email('Invalid email address'),
+    phoneNumber: z
+        .string()
+        .min(1, 'Phone number is required')
+        .refine((val) => !isNaN(Number(val)), {
+            message: 'Phone number must be a number',
+        }),
+});
+
 export default function Account() {
-    // const { user } = useContext(AuthContext);
-    const [userInfo, setUserInfo] = useState<UserAccountType>({
-        studentID: '',
-        firstName: '',
-        lastName: '',
-        year: 1,
-        imgProfile: '',
-        email: '',
-        password: '',
-        phoneNumber: '',
-        username: '',
-        created_at: new Date(),
+    const {
+        control,
+        handleSubmit,
+        setValue,
+        reset,
+        formState: { errors, isDirty },
+    } = useForm<UserAccountType>({
+        resolver: zodResolver(schema),
+        defaultValues: {
+            studentID: '',
+            firstName: '',
+            lastName: '',
+            year: 1,
+            imgProfile: '',
+            email: '',
+            password: '',
+            phoneNumber: '',
+            username: '',
+            created_at: new Date(),
+        },
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-
-        setUserInfo((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
-
     const fetchProfile = async () => {
-        const response = await axiosAPIInstance.get('v1/account/info');
+        const response = await axiosAPIInstance.get('v1/account');
 
         return response.data.data;
     };
@@ -69,12 +103,33 @@ export default function Account() {
 
     useEffect(() => {
         if (userData) {
-            setUserInfo(userData);
+            reset(userData);
         }
-    }, [userData]);
+    }, [userData, setValue]);
+
+    const updateProfile = async (data: UserAccountUpdate) => {
+        const response = await axiosAPIInstance.patch('v1/account', data);
+
+        return response.data;
+    };
+
+    const { mutate, isPending, isError, isSuccess } = useMutation({
+        mutationFn: updateProfile,
+        onSuccess: (data) => {
+            console.log('Update successful:', data);
+        },
+        onError: (error: any) => {
+            console.error('Update failed:', error);
+        },
+    });
+
+    const onSubmit = (data: UserAccountType) => {
+        console.log(data);
+        mutate(data);
+    };
 
     return (
-        <div className="flex flex-col">
+        <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
             <h3 className="text-2xl font-bold text-zinc-600">Account</h3>
             <p className="text-zinc-400">Update your account details.</p>
             <Divider className="my-3" />
@@ -89,7 +144,7 @@ export default function Account() {
                         isReadOnly
                         description="You can't change your student ID."
                         placeholder="Student ID"
-                        value={userInfo.studentID}
+                        value={userData?.studentID || ''}
                     />
                 </div>
             </div>
@@ -101,57 +156,75 @@ export default function Account() {
                 <div className="w-full flex flex-row gap-2 gap-x-4 mt-4">
                     <div className="w-1/2">
                         <InputField
+                            control={control}
+                            error={errors.firstName?.message}
                             label="Name"
                             name="firstName"
                             placeholder="Name"
-                            value={userInfo.firstName}
-                            onChange={handleInputChange}
                         />
                     </div>
                     <div className="w-1/2">
                         <InputField
-                            label="Surname"
+                            control={control}
+                            error={errors.lastName?.message}
+                            label="Last Name"
                             name="lastName"
-                            placeholder="Surname"
-                            value={userInfo.lastName}
-                            onChange={handleInputChange}
+                            placeholder="Last Name"
                         />
                     </div>
                 </div>
                 <div className="mt-4">
                     <InputField
+                        control={control}
+                        error={errors.year?.message}
                         label="Year"
                         name="year"
                         placeholder="Year"
-                        value={userInfo.year.toString()}
-                        onChange={handleInputChange}
                     />
                 </div>
                 <div className="mt-4">
                     <InputField
+                        control={control}
+                        error={errors.email?.message}
                         label="Email"
                         name="email"
                         placeholder="Email"
-                        value={userInfo.email}
-                        onChange={handleInputChange}
                     />
                 </div>
                 <div className="mt-4">
                     <InputField
+                        control={control}
+                        error={errors.phoneNumber?.message}
                         label="Phone Number"
                         name="phoneNumber"
                         placeholder="Phone Number"
-                        value={userInfo.phoneNumber}
-                        onChange={handleInputChange}
                     />
                 </div>
             </div>
 
-            <div className="mt-6">
-                <Button className="bg-violet-700 text-white">
-                    Save Changes
+            <div className="mt-6 flex flex-row">
+                <Button
+                    className={`text-white ${
+                        isError
+                            ? 'bg-danger-500'
+                            : isSuccess
+                            ? 'bg-success-500'
+                            : 'bg-primary'
+                    }`}
+                    isDisabled={!isDirty}
+                    isLoading={isPending}
+                    startContent={
+                        isError ? <TiTimes /> : isSuccess ? <TiTick /> : null
+                    }
+                    type="submit"
+                >
+                    {isError
+                        ? 'Error updating profile'
+                        : isSuccess
+                        ? 'Profile updated successfully'
+                        : 'Save Changes'}
                 </Button>
             </div>
-        </div>
+        </form>
     );
 }

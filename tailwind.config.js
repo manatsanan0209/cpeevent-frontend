@@ -16,6 +16,9 @@ const config = {
       },
       colors: {
         'zinc-75': 'rgba(247,247,247,1)',
+        primary: {
+          DEFAULT: '#6d28d9',
+        }
       },
     },
     darkMode: "class",
