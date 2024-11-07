@@ -55,7 +55,7 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
         searchTerm: string,
         filter: string,
     ): PostEventProps[] {
-        let newSortedArray = [...posts];
+        let newSortedArray = Array.isArray(posts) ? [...posts] : [];
 
         switch (option) {
             case 'DateASC':
