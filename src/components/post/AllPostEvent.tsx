@@ -5,12 +5,14 @@ import {
     Card,
     CardHeader,
     CardFooter,
-    Image,
     Button,
     Input,
     Select,
     SelectItem,
     Kbd,
+    Divider,
+    CardBody,
+    Chip,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 import { IoFilter } from 'react-icons/io5';
@@ -174,16 +176,16 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
         } else if (diffDays === -1) {
             return 'Tomorrow';
         } else {
-            return date.toLocaleDateString('eg-GB', {
-                // day: '2-digit',
-                // month: '2-digit',
-                // year: 'numeric',
+            return date.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
             });
         }
     };
 
     return (
-        <div>
+        <div className="w-full ">
             <div className="grid grid-cols-4 gap-4 mt-4 items-center px-8  ">
                 {/* Search bar */}
                 <div className="flex justify-center items-center content-center">
@@ -288,76 +290,104 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                 </div>
             </div>
             {!isLoading && (
-                <div className="max-w-full gap-6 grid grid-cols-12 grid-rows-2 px-8 my-8">
-                    {sortedAndSearchEvents.map((post) => {
-                        return (
-                            <Card
-                                key={post._id}
-                                className="col-span-12 sm:col-span-4 h-[300px]"
-                            >
-                                <CardHeader className="absolute z-10 top-1 flex-col items-start">
-                                    <div className="flex flex-row w-full justify-between">
-                                        <p className="flex items-center px-2 py-1 ">
-                                            {displayPostStatus(post.kind)}
-                                        </p>
-                                        <p className="flex text-zinc-600 text-tiny items-center mr-4">
-                                            {formatDate(post.postDate)}
-                                        </p>
-                                    </div>
-                                    <div className="flex flex-row w-full">
-                                        <h4 className="text-zinc-600 font-bold text-large w-full">
-                                            {post.title}
-                                        </h4>
-                                        <p className="flex  text-sm bg-gray-50 text-rose-600 px-1 h-6 items-center rounded-lg">
-                                            {post.assignTo}
-                                        </p>
-                                    </div>
-                                    <p className="text-tiny text-zinc-600/80">
-                                        {post.description}
-                                    </p>
-                                </CardHeader>
-                                <Image
-                                    removeWrapper
-                                    alt="Card background"
-                                    className="z-0 w-full h-full object-cover"
-                                    src={getBackgroundImage(post.kind)}
-                                />
-                                <CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
-                                    <div>
-                                        <p className="text-tiny text-zinc-600">
-                                            End Date:{' '}
-                                            <span
-                                                className={
-                                                    post.endDate &&
-                                                    new Date(post.endDate) <
-                                                        new Date()
-                                                        ? 'text-rose-500'
-                                                        : 'text-blue-500'
-                                                }
-                                            >
-                                                {post.endDate
-                                                    ? new Date(post.endDate) >=
-                                                      new Date() // Check if end date is in the future
-                                                        ? formatDate(
-                                                              post.endDate,
-                                                          )
-                                                        : 'Ended'
-                                                    : 'No end date'}
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <Button
-                                        className="text-tiny"
-                                        color="primary"
-                                        radius="full"
-                                        size="sm"
+                <div className="max-w-full gap-6 grid grid-cols-12 px-8 my-8">
+                    {sortedAndSearchEvents.length > 0 &&
+                        sortedAndSearchEvents.map((post) => {
+                            return (
+                                <Card
+                                    key={post._id}
+                                    className="col-span-12 sm:col-span-4 w-full"
+                                >
+                                    {/* absolute z-10 top-1 */}
+                                    <CardHeader className="flex gap-3 flex-col bg-zinc-75  items-start">
+                                        <div className="flex flex-row w-full justify-between">
+                                            <div className="flex flex-col">
+                                                <p className="flex items-center px-2 py-1">
+                                                    {displayPostStatus(
+                                                        post.kind,
+                                                    )}
+                                                </p>
+                                                <div className="mx-2.5 ">
+                                                    {post.assignTo.map(
+                                                        (assignee, index) => (
+                                                            <Chip
+                                                                key={index}
+                                                                className="mr-1"
+                                                                color={
+                                                                    assignee ===
+                                                                    'everyone'
+                                                                        ? 'danger'
+                                                                        : 'secondary'
+                                                                }
+                                                                variant="flat"
+                                                            >
+                                                                {assignee}
+                                                            </Chip>
+                                                        ),
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <p className="flex text-zinc-600 mr-4 mt-1.5 font-semibold text-xs">
+                                                {formatDate(post.postDate)}
+                                            </p>
+                                        </div>
+                                    </CardHeader>
+                                    <Divider className="bg-violet-100" />
+                                    <CardBody
+                                        className="min-h-72"
+                                        style={{
+                                            backgroundImage: `url(${getBackgroundImage(post.kind)})`,
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center',
+                                        }}
                                     >
-                                        Learn More
-                                    </Button>
-                                </CardFooter>
-                            </Card>
-                        );
-                    })}
+                                        <div className="flex flex-row w-full">
+                                            <h4 className="text-zinc-600 font-bold text-large w-full">
+                                                {post.title}
+                                            </h4>
+                                        </div>
+                                        <p className="text-tiny text-zinc-600/80">
+                                            {post.description}
+                                        </p>
+                                    </CardBody>
+                                    <CardFooter className="absolute bg-white/50 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
+                                        <div>
+                                            <p className="text-small text-zinc-600 font-bold">
+                                                End Date:{' '}
+                                                <span
+                                                    className={
+                                                        post.endDate &&
+                                                        new Date(post.endDate) <
+                                                            new Date()
+                                                            ? 'text-rose-500'
+                                                            : 'text-blue-500'
+                                                    }
+                                                >
+                                                    {post.endDate
+                                                        ? new Date(
+                                                              post.endDate,
+                                                          ) >= new Date() // Check if end date is in the future
+                                                            ? formatDate(
+                                                                  post.endDate,
+                                                              )
+                                                            : 'Ended'
+                                                        : 'No end date'}
+                                                    !
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <Button
+                                            className="text-tiny"
+                                            color="primary"
+                                            radius="full"
+                                            size="sm"
+                                        >
+                                            Learn More
+                                        </Button>
+                                    </CardFooter>
+                                </Card>
+                            );
+                        })}
                 </div>
             )}
         </div>
