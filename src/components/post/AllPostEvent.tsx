@@ -19,7 +19,7 @@ import { GrStatusGoodSmall } from 'react-icons/gr';
 
 import { SearchIcon } from '../icons';
 
-import CreatePostModal from './createPostModal.tsx';
+import CreatePostModal from './createPost/createPostModal.tsx';
 
 import voteImage from '@/images/Vote.png';
 import formImage from '@/images/Form.png';
