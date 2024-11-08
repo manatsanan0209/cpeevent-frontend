@@ -1,27 +1,52 @@
 import { Input, Button, Image } from '@nextui-org/react';
 import { useState, useEffect } from 'react';
-import { UserAccountType } from '@/types/index';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-
 import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 
+import { UserAccountType } from '@/types/index';
 import { useSignup } from '@/hooks/use-signup';
 import { Logo } from '@/components/icons';
 import eventImg from '@/images/event.png';
 
-export default function SignupPage() {
-    interface InputFieldProps {
-        placeholder: string;
-        name: string;
-        control: any;
-        rules?: any;
-        error?: string;
-        type?: string;
-    }
+interface InputFieldProps {
+    placeholder: string;
+    name: string;
+    control: any;
+    rules?: any;
+    error?: string;
+    type?: string;
+}
 
+const InputField = ({
+    placeholder,
+    name,
+    control,
+    rules,
+    error,
+    type = 'text',
+}: InputFieldProps) => (
+    <div className="flex flex-col gap-2 w-full">
+        <Controller
+            control={control}
+            name={name}
+            render={({ field }) => (
+                <Input
+                    {...field}
+                    errorMessage={error}
+                    isInvalid={!!error}
+                    placeholder={placeholder}
+                    type={type}
+                />
+            )}
+            rules={rules}
+        />
+    </div>
+);
+
+export default function SignupPage() {
     interface UserSignup {
         studentID: string;
         password: string;
@@ -30,32 +55,6 @@ export default function SignupPage() {
         email: string;
         phoneNumber: string;
     }
-
-    const InputField = ({
-        placeholder,
-        name,
-        control,
-        rules,
-        error,
-        type = 'text',
-    }: InputFieldProps) => (
-        <div className="flex flex-col gap-2 w-full">
-            <Controller
-                control={control}
-                name={name}
-                render={({ field }) => (
-                    <Input
-                        {...field}
-                        errorMessage={error}
-                        isInvalid={!!error}
-                        placeholder={placeholder}
-                        type={type}
-                    />
-                )}
-                rules={rules}
-            />
-        </div>
-    );
 
     const schema = z.object({
         studentID: z
@@ -93,8 +92,11 @@ export default function SignupPage() {
     });
 
     const onSubmit = (data: UserSignup) => {
-        const year = new Date().getFullYear() - (1957 + parseInt(data.studentID.substring(0, 2), 10));
+        const year =
+            new Date().getFullYear() -
+            (1957 + parseInt(data.studentID.substring(0, 2), 10));
         const username = data.email.split('@')[0];
+
         signup(
             data.studentID,
             data.email,
@@ -165,25 +167,25 @@ export default function SignupPage() {
                                 />
                             </div>
                             <div className="flex gap-2">
-                                    <InputField
-                                        control={control}
-                                        error={errors.firstName?.message}
-                                        name="firstName"
-                                        placeholder="First Name"
-                                    />
-                                    <InputField
-                                        control={control}
-                                        error={errors.lastName?.message}
-                                        name="lastName"
-                                        placeholder="Last Name"
-                                    />
+                                <InputField
+                                    control={control}
+                                    error={errors.firstName?.message}
+                                    name="firstName"
+                                    placeholder="First Name"
+                                />
+                                <InputField
+                                    control={control}
+                                    error={errors.lastName?.message}
+                                    name="lastName"
+                                    placeholder="Last Name"
+                                />
                             </div>
                             <div className="">
                                 <InputField
                                     control={control}
                                     error={errors.email?.message}
                                     name="email"
-                                    placeholder='Email'
+                                    placeholder="Email"
                                 />
                             </div>
                             <div className="">
@@ -226,7 +228,7 @@ export default function SignupPage() {
                 </div>
                 {/* Right Section */}
                 <div className="hidden lg:flex flex-col gap-3 mx-auto lg:w-3/5 p-6 sm:p-12 justify-center items-center">
-                    <Image src={eventImg} alt="event" />
+                    <Image alt="event" src={eventImg} />
                 </div>
             </div>
         </div>
