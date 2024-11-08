@@ -45,7 +45,7 @@ export const Sidebar = () => {
         >
             <div className="flex items-center justify-center h-32">
                 <Link aria-label="Home" href="/">
-                    <img src={logo} alt="logo" className="w-32 h-32" />
+                    <img alt="logo" className="w-32 h-32" src={logo} />
                 </Link>
             </div>
             {siteConfig.sideItems.map((item) => (
@@ -100,7 +100,7 @@ export const Sidebar = () => {
                                                     }),
                                                     'data-[active=true]:text-primary data-[active=true]:font-medium cursor-pointer',
                                                     currentPath ===
-                                                        `/workspace/${event._id}` &&
+                                                        `/protected/workspace/${event._id}` &&
                                                         'text-violet-500 bg-default-100',
                                                     'flex items-center gap-2 p-2 rounded-lg hover:bg-default-100 dark:hover:bg-default-800 dark:hover:text-default-100',
                                                 )}
@@ -108,7 +108,7 @@ export const Sidebar = () => {
                                                     const eventID = event._id;
 
                                                     navigate(
-                                                        `/workspace/${eventID}`,
+                                                        `/protected/workspace/${eventID}`,
                                                         {
                                                             state: { event },
                                                         },
