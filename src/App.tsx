@@ -90,7 +90,7 @@ function App() {
                         <Navigate to="/login" />
                     )
                 }
-                path="*"
+                path="/protected/*"
             />
             <Route element={<Event />} path="/events" />
             <Route
