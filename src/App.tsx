@@ -21,7 +21,6 @@ import ProtectedLayout from '@/layouts/ProtectedLayout';
 import CalendarPage from '@/pages/calendar';
 import TodoPage from '@/pages/todo';
 
-
 function App() {
     const { user } = useContext(AuthContext);
 
@@ -60,6 +59,31 @@ function App() {
                                     element={<SettingsPage />}
                                     path="/settings/:section"
                                 />
+                                <Route element={<AboutPage />} path="/some" />
+                                <Route element={<BlogPage />} path="/another" />
+                                <Route
+                                    element={
+                                        <Post>
+                                            <Outlet />
+                                        </Post>
+                                    }
+                                    path="/workspace/:eventid"
+                                >
+                                    {/* <Route index element={<div>312312312</div>} /> */}
+                                    <Route index element={<AllPostEvent />} />
+                                    <Route
+                                        element={<PostDetail />}
+                                        path="post/:postid"
+                                    />
+                                    <Route
+                                        element={<MembersPage />}
+                                        path="/workspace/:eventid/members"
+                                    />
+                                    {/* <Route path="vote/:postid" element={<div>asd</div>} />
+                <Route path="pole/:postid" element={<div>asd</div>} /> */}
+                                    {/* <Route path="post/:postid" element={<Postcopy />} /> */}
+                                </Route>
+                                {/* Add more protected routes here */}
                             </Routes>
                         </ProtectedLayout>
                     ) : (
@@ -84,9 +108,9 @@ function App() {
                 <Route path="pole/:postid" element={<div>asd</div>} /> */}
                 {/* <Route path="post/:postid" element={<Postcopy />} /> */}
             </Route>
+
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<TodoPage />} path="/todo" />
-            <Route element={<MembersPage />} path="/members" />
         </Routes>
     );
 }

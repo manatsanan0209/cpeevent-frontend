@@ -1,4 +1,3 @@
-import React from 'react';
 import {
     Dropdown,
     DropdownItem,
@@ -14,7 +13,9 @@ import {
     useDisclosure,
     Button,
 } from '@nextui-org/react';
+import { useState } from 'react';
 import { LuMoreHorizontal } from 'react-icons/lu';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import CalendarPage from './calendar';
 
@@ -25,18 +26,17 @@ interface Props {
 }
 
 export default function Post(props: Props) {
-    // const location = useLocation();
-    // const { event } = location.state as { event: Event };
+    const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [backdrop, setBackdrop] = React.useState<
-        'opaque' | 'transparent' | 'blur'
-    >('opaque');
+    const [backdrop, setBackdrop] = useState<'opaque' | 'transparent' | 'blur'>(
+        'opaque',
+    );
 
     const handleOpen = (backdrop: 'opaque' | 'transparent' | 'blur') => {
         setBackdrop(backdrop);
         onOpen();
     };
-    // let { eventid } = useParams();
+    const { eventid } = useParams<{ eventid: string }>();
 
     return (
         <DefaultLayout>
@@ -54,7 +54,14 @@ export default function Post(props: Props) {
                         </div>
                     </DropdownTrigger>
                     <DropdownMenu>
-                        <DropdownItem className="text-zinc-600">
+                        <DropdownItem
+                            className="text-zinc-600"
+                            onClick={() => {
+                                navigate(
+                                    `/protected/workspace/${eventid}/members`,
+                                );
+                            }}
+                        >
                             Member
                         </DropdownItem>
                         <DropdownItem
