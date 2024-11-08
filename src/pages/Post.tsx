@@ -15,21 +15,17 @@ import {
     Button,
 } from '@nextui-org/react';
 import { LuMoreHorizontal } from 'react-icons/lu';
-import { useLocation, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+
+import CalendarPage from './calendar';
 
 import DefaultLayout from '@/layouts/default';
-import { axiosAPIInstance } from '@/api/axios-config';
-import { PostEventProps } from '@/types';
-import { ChildProcess } from 'child_process';
-import CalendarPage from './calendar';
 
 interface Props {
     children: React.ReactNode;
 }
 
 export default function Post(props: Props) {
-    const location = useLocation();
+    // const location = useLocation();
     // const { event } = location.state as { event: Event };
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [backdrop, setBackdrop] = React.useState<
@@ -40,7 +36,7 @@ export default function Post(props: Props) {
         setBackdrop(backdrop);
         onOpen();
     };
-    let { eventid } = useParams();
+    // let { eventid } = useParams();
 
     return (
         <DefaultLayout>

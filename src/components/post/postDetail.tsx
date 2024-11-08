@@ -7,9 +7,8 @@ import { useQuery } from '@tanstack/react-query';
 import { PostEventProps } from '@/types';
 
 export default function PostDetail() {
-    const { eventid, postid } = useParams();
-    const markdown1 =
-        '# Practice M1.3: Pyramid Time!! \n## Introduction \n\nLorem ipsum dolor sit amet consectetur adipisicing elit. In voluptatum, maxime reprehenderit repudiandae rerum facilis, reiciendis molestias at voluptate dolorum nobis quidem, iste velit ea quo provident obcaecati. Autem, quod. \n\n## Problem \n\nLorem ipsum dolor sit amet consectetur adipisicing elit. In voluptatum, maxime reprehenderit repudiandae rerum facilis, reiciendis molestias at voluptate dolorum nobis quidem, iste velit ea quo provident obcaecati. Autem, quod. \n\n## Solution \n\nLorem ipsum dolor sit amet consectetur adipisicing elit. In voluptatum, maxime reprehenderit repudiandae rerum facilis, reiciendis molestias at voluptate dolorum nobis quidem, iste velit ea quo provident obcaecati. Autem, quod. \n\n## Conclusion \n\nLorem ipsum dolor sit amet consectetur adipisicing elit. In voluptatum, maxime reprehenderit repudiandae rerum facilis, reiciendis molestias at voluptate dolorum nobis quidem, iste velit ea quo provident obcaecati. Autem, quod. \n\n## Reference \n\n';
+    const { postid } = useParams();
+
     const navigate = useNavigate();
 
     const fetchPosts = async () => {

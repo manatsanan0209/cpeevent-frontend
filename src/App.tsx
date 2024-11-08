@@ -18,7 +18,6 @@ import ProtectedLayout from '@/layouts/ProtectedLayout';
 import CalendarPage from '@/pages/calendar';
 import TodoPage from '@/pages/todo';
 import AllPostEvent from './components/post/AllPostEvent';
-import { posts } from './data/post';
 import PostDetail from './components/post/postDetail';
 
 function App() {
