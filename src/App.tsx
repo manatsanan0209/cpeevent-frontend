@@ -3,6 +3,7 @@ import { useContext } from 'react';
 
 import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
+import Event from './pages/Event';
 import Custom404 from './pages/Custom404';
 import { AuthContext } from './context/AuthContext';
 import MembersPage from './pages/members';
@@ -38,32 +39,22 @@ function App() {
                 path="/signup"
             />
             <Route element={<Custom404 />} path="/404" />
-            {/* <Route element={<Navigate replace to="/404" />} path="*" /> */}
-            <Route element={<CalendarPage />} path="/calendar" />
-            <Route element={<TodoPage />} path="/todo" />
+            <Route element={<Navigate replace to="/404" />} path="*" />
             <Route
                 element={
                     user ? (
                         <ProtectedLayout requiredAccess="1">
                             <Routes>
-                                <Route element={<Event />} path="/events" />
-                                <Route
-                                    element={
-                                        <Navigate to="/settings/profile" />
-                                    }
-                                    path="/settings"
-                                />
-                                <Route
-                                    element={<SettingsPage />}
-                                    path="/settings/:section"
-                                />
+                                <Route element={<AboutPage />} path="/some" />
+                                <Route element={<BlogPage />} path="/another" />
+                                {/* Add more protected routes here */}
                             </Routes>
                         </ProtectedLayout>
                     ) : (
                         <Navigate to="/login" />
                     )
                 }
-                path="*"
+                path="/protected/*"
             />
             <Route element={<Event />} path="/events" />
             <Route
