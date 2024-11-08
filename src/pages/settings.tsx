@@ -22,7 +22,7 @@ const SectionNavLink = ({
     onClick,
 }: SectionNavLinkProps): ReactNode => (
     <NavLink
-        className={`text-xl font-semibold text-zinc-600 cursor-pointer rounded-md pl-3 mb-1 ${
+        className={`text-xl font-semibold text-foreground-600 cursor-pointer rounded-md pl-3 mb-1 ${
             selectedSection === section ? 'bg-default-100' : ''
         }`}
         onClick={() => onClick(section)}
@@ -73,10 +73,10 @@ export default function SettingsPage() {
     return (
         <DefaultLayout>
             <div className="flex flex-col mb-4 text-left gap-1">
-                <h2 className="text-4xl font-bold text-zinc-600 capitalize">
+                <h2 className="text-4xl font-bold text-foreground-600 capitalize">
                     Settings
                 </h2>
-                <p className="text-zinc-400">
+                <p className="text-foreground-400">
                     Manage your account settings and set e-mail preferences.
                 </p>
             </div>

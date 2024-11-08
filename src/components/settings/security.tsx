@@ -12,7 +12,7 @@ const InputPasswordField = ({ label, placeholder }: InputFieldProps) => {
 
     return (
         <div className="flex flex-col gap-2">
-            <p className="text-zinc-500">{label}</p>
+            <p className="text-foreground-500">{label}</p>
             <Input
                 endContent={
                     <button
@@ -33,15 +33,15 @@ const InputPasswordField = ({ label, placeholder }: InputFieldProps) => {
 export default function Security() {
     return (
         <div className="flex flex-col">
-            <h3 className="text-2xl font-bold text-zinc-600">Security</h3>
-            <p className="text-zinc-400">
+            <h3 className="text-2xl font-bold text-foreground-600">Security</h3>
+            <p className="text-foreground-400">
                 Manage your account security settings to keep your information
                 safe.
             </p>
             <Divider className="my-3" />
 
             <div className="border p-4 rounded-md">
-                <h4 className="text-xl font-semibold text-zinc-600">
+                <h4 className="text-xl font-semibold text-foreground-600">
                     Password
                 </h4>
                 <div className="flex flex-col gap-6 mt-4">
@@ -66,7 +66,7 @@ export default function Security() {
             </div>
 
             <div className="border p-4 rounded-md mt-6">
-                <h4 className="text-xl font-semibold text-zinc-600">
+                <h4 className="text-xl font-semibold text-foreground-600">
                     Two-Factor Authentication
                 </h4>
                 <div className="mt-4">

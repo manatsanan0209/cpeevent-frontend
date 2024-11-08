@@ -30,12 +30,18 @@ export default function Appearance() {
 
     return (
         <div className="flex flex-col gap-6">
-            <h3 className="text-2xl font-bold text-zinc-600">Appearance</h3>
-            <p className="text-zinc-400">Customize the appearance settings.</p>
+            <h3 className="text-2xl font-bold text-foreground-600">
+                Appearance
+            </h3>
+            <p className="text-foreground-400">
+                Customize the appearance settings.
+            </p>
             <Divider className="my-3" />
 
             <div className="border p-4 rounded-md">
-                <h4 className="text-xl font-semibold text-zinc-600">Font</h4>
+                <h4 className="text-xl font-semibold text-foreground-600">
+                    Font
+                </h4>
                 <Select
                     disallowEmptySelection
                     defaultSelectedKeys={['Noto']}
@@ -46,7 +52,9 @@ export default function Appearance() {
             </div>
 
             <div className="border p-4 rounded-md mt-6">
-                <h4 className="text-xl font-semibold text-zinc-600">Theme</h4>
+                <h4 className="text-xl font-semibold text-foreground-600">
+                    Theme
+                </h4>
                 <p className="text-tiny text-foreground-400">
                     Select the theme for the website.
                 </p>
@@ -59,10 +67,10 @@ export default function Appearance() {
                         }`}
                         onClick={() => handleThemeChange('light')}
                     >
-                        <h5 className="text-lg font-semibold text-zinc-600">
+                        <h5 className="text-lg font-semibold text-foreground-600">
                             Light Theme
                         </h5>
-                        <p className="text-zinc-400">Bright and clear.</p>
+                        <p className="text-foreground-400">Bright and clear.</p>
                     </button>
                     <button
                         className={`border p-4 rounded-md cursor-pointer ${
@@ -72,10 +80,12 @@ export default function Appearance() {
                         }`}
                         onClick={() => handleThemeChange('dark')}
                     >
-                        <h5 className="text-lg font-semibold text-zinc-600">
+                        <h5 className="text-lg font-semibold text-foreground-600">
                             Dark Theme
                         </h5>
-                        <p className="text-zinc-400">Dark and soothing.</p>
+                        <p className="text-foreground-400">
+                            Dark and soothing.
+                        </p>
                     </button>
                 </div>
             </div>

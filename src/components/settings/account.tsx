@@ -17,6 +17,7 @@ interface InputFieldProps {
     control: any;
     rules?: any;
     error?: string;
+    type?: string;
 }
 
 interface UserAccountUpdate {
@@ -34,9 +35,10 @@ const InputField = ({
     control,
     rules,
     error,
+    type = 'text',
 }: InputFieldProps) => (
     <div className="flex flex-col gap-2">
-        <p className="text-zinc-500">{label}</p>
+        <p className="text-foreground-500">{label}</p>
         <Controller
             control={control}
             name={name}
@@ -46,7 +48,7 @@ const InputField = ({
                     errorMessage={error}
                     isInvalid={!!error}
                     placeholder={placeholder}
-                    type="text"
+                    type={type}
                 />
             )}
             rules={rules}
@@ -57,7 +59,7 @@ const InputField = ({
 const schema = z.object({
     firstName: z.string().min(1, 'First name is required'),
     lastName: z.string().min(1, 'Last name is required'),
-    year: z.number().min(1, 'Year is required'),
+    year: z.coerce.number().min(1, 'Year is required'),
     email: z.string().email('Invalid email address'),
     phoneNumber: z
         .string()
@@ -115,27 +117,20 @@ export default function Account() {
 
     const { mutate, isPending, isError, isSuccess } = useMutation({
         mutationFn: updateProfile,
-        onSuccess: (data) => {
-            console.log('Update successful:', data);
-        },
-        onError: (error: any) => {
-            console.error('Update failed:', error);
-        },
     });
 
     const onSubmit = (data: UserAccountType) => {
-        console.log(data);
-        mutate(data);
+        mutate(data, { onSuccess: () => reset(data) });
     };
 
     return (
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-            <h3 className="text-2xl font-bold text-zinc-600">Account</h3>
-            <p className="text-zinc-400">Update your account details.</p>
+            <h3 className="text-2xl font-bold text-foreground-600">Account</h3>
+            <p className="text-foreground-400">Update your account details.</p>
             <Divider className="my-3" />
 
             <div className="border p-4 rounded-md">
-                <h4 className="text-xl font-semibold text-zinc-600">
+                <h4 className="text-xl font-semibold text-foreground-600">
                     Student ID
                 </h4>
                 <div className="flex flex-col gap-2 mt-4">
@@ -150,7 +145,7 @@ export default function Account() {
             </div>
 
             <div className="border p-4 rounded-md mt-6">
-                <h4 className="text-xl font-semibold text-zinc-600">
+                <h4 className="text-xl font-semibold text-foreground-600">
                     Personal Information
                 </h4>
                 <div className="w-full flex flex-row gap-2 gap-x-4 mt-4">
@@ -180,6 +175,7 @@ export default function Account() {
                         label="Year"
                         name="year"
                         placeholder="Year"
+                        type="number"
                     />
                 </div>
                 <div className="mt-4">
