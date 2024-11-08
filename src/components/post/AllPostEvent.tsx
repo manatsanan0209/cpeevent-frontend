@@ -173,10 +173,10 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
 
         if (diffDays === 0) {
             if (diffHours === 0) {
-                return `${diffMinutes} minutes ago`;
+                return `${diffMinutes} minutes`;
             }
 
-            return `${diffHours} hours ago`;
+            return `${diffHours} hours`;
         } else if (diffDays === 1) {
             return 'Yesterday';
         } else if (diffDays === -1) {
