@@ -16,22 +16,20 @@ export default function PostKindVote({
     voteQuestions,
     setVoteQuestions,
 }: PostKindVoteProps) {
-    // Ensure the component has at least one question on initial render
     useEffect(() => {
         if (voteQuestions.length === 0) {
-            setVoteQuestions([{ question: '', maxSel: '1', options: [] }]);
+            setVoteQuestions([{ question: '', maxSel: '1', options: [''] }]);
         }
     }, [voteQuestions, setVoteQuestions]);
 
     function addQuestion() {
         setVoteQuestions([
             ...voteQuestions,
-            { question: '', maxSel: '1', options: [] },
+            { question: '', maxSel: '1', options: [''] },
         ]);
     }
 
     function deleteQuestion(index: number) {
-        // Prevent deletion if there is only one question left
         if (voteQuestions.length > 1) {
             const updatedQuestions = voteQuestions.filter(
                 (_, i) => i !== index,
@@ -103,7 +101,17 @@ export default function PostKindVote({
                     <Input
                         isRequired
                         className="my-2 w-1/3"
-                        errorMessage="This field is required"
+                        errorMessage={
+                            question.maxSel === ''
+                                ? 'This field is required'
+                                : 'Error max select value'
+                        }
+                        isInvalid={
+                            parseInt(question.maxSel) >
+                                question.options.length ||
+                            question.maxSel === '' ||
+                            question.maxSel === '0'
+                        }
                         label="Max Select"
                         type="number"
                         validationBehavior="native"
