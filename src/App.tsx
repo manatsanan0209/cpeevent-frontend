@@ -59,8 +59,6 @@ function App() {
                                     element={<SettingsPage />}
                                     path="/settings/:section"
                                 />
-                                <Route element={<AboutPage />} path="/some" />
-                                <Route element={<BlogPage />} path="/another" />
                                 <Route
                                     element={
                                         <Post>

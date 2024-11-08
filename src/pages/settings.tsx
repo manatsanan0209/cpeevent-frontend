@@ -67,7 +67,7 @@ export default function SettingsPage() {
 
     const handleSectionChange = (newSection: string) => {
         setSelectedSection(newSection);
-        navigate(`/settings/${newSection.toLowerCase()}`);
+        navigate(`/protected/settings/${newSection.toLowerCase()}`);
     };
 
     return (
