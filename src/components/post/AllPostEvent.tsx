@@ -1,5 +1,6 @@
 import type { PostEventProps } from '@/types/index';
 
+import { IoAdd } from 'react-icons/io5';
 import React, { useState, useEffect } from 'react';
 import {
     Card,
@@ -10,6 +11,8 @@ import {
     Select,
     SelectItem,
     Kbd,
+    useDisclosure,
+    Modal,
     Divider,
     CardBody,
     Chip,
@@ -19,13 +22,32 @@ import { IoFilter } from 'react-icons/io5';
 
 import { SearchIcon } from '../icons';
 
+import CreatePostModal from './createPost/createPostModal.tsx';
+
 import voteImage from '@/images/Vote.png';
 import formImage from '@/images/Form.png';
 import postImage from '@/images/Post.png';
 import pollImage from '@/images/Poll.png';
+import { useNavigate, useParams } from 'react-router-dom';
+import { axiosAPIInstance } from '@/api/axios-config';
+import { useQuery } from '@tanstack/react-query';
 
-export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
+export default function AllPostEvent() {
     // const [sortOption, setSortOption] = useState<string>('DateDSC');
+    const { eventid } = useParams<{ eventid: string }>();
+    const fetchPosts = async () => {
+        const response = await axiosAPIInstance.get(
+            `v1/event/${eventid}/posts`,
+        );
+
+        return response.data.data;
+    };
+    console.log(eventid);
+
+    const { data: posts = [] } = useQuery<PostEventProps[]>({
+        queryKey: ['posts', eventid],
+        queryFn: fetchPosts,
+    });
     const [searchInput, setSearchInput] = useState<string>('');
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<
@@ -33,6 +55,8 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
     >([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [filterOption, setFilterOption] = useState<string>('all');
+    const navigate = useNavigate();
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     useEffect(() => {
         setSortedAndSearchEvents(
@@ -50,7 +74,7 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
         searchTerm: string,
         filter: string,
     ): PostEventProps[] {
-        let newSortedArray = [...posts];
+        let newSortedArray = Array.isArray(posts) ? [...posts] : [];
 
         switch (option) {
             case 'DateASC':
@@ -167,10 +191,10 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
 
         if (diffDays === 0) {
             if (diffHours === 0) {
-                return `${diffMinutes} minutes ago`;
+                return `${diffMinutes} minutes`;
             }
 
-            return `${diffHours} hours ago`;
+            return `${diffHours} hours`;
         } else if (diffDays === 1) {
             return 'Yesterday';
         } else if (diffDays === -1) {
@@ -291,14 +315,46 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
             </div>
             {!isLoading && (
                 <div className="max-w-full gap-6 grid grid-cols-12 px-8 my-8">
+                    <Card
+                        className="col-span-12 sm:col-span-4 w-full"
+                        style={{ backgroundColor: '#efefef' }}
+                    >
+                        <Button
+                            className="flex flex-col w-full h-full justify-center items-center text-xl bg-transparent"
+                            onPress={onOpen}
+                        >
+                            <div className="flex rounded-full bg-violet-500">
+                                <IoAdd className="text-6xl text-slate-200" />
+                            </div>
+                            <div className="text-zinc-600">Add new post</div>
+                        </Button>
+                        <Modal
+                            isOpen={isOpen}
+                            scrollBehavior="outside"
+                            size="lg"
+                            onOpenChange={onOpenChange}
+                        >
+                            <CreatePostModal />
+                        </Modal>
+                    </Card>
                     {sortedAndSearchEvents.length > 0 &&
                         sortedAndSearchEvents.map((post) => {
                             return (
                                 <Card
                                     key={post._id}
                                     className="col-span-12 sm:col-span-4 w-full"
-                                >
-                                    {/* absolute z-10 top-1 */}
+                                    isPressable
+                                    onPress={() => {
+                                    console.log('Clicked');
+                                    console.log(post._id);
+                                    // router.push(
+                                    //     `/workspace/${eventId}/post/${post._id}`,
+                                    // );
+                                    navigate(
+                                        `/workspace/${eventid}/post/${post._id}`,
+                                    );
+                                }}
+                            >
                                     <CardHeader className="flex gap-3 flex-col bg-zinc-75  items-start">
                                         <div className="flex flex-row w-full justify-between">
                                             <div className="flex flex-col">
@@ -336,7 +392,9 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                                     <CardBody
                                         className="min-h-72"
                                         style={{
-                                            backgroundImage: `url(${getBackgroundImage(post.kind)})`,
+                                            backgroundImage: `url(${getBackgroundImage(
+                                                post.kind,
+                                            )})`,
                                             backgroundSize: 'cover',
                                             backgroundPosition: 'center',
                                         }}
@@ -377,7 +435,17 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                                             </p>
                                         </div>
                                         <Button
-                                            className="text-tiny"
+                                            onClick={() => {
+                                            console.log('Clicked');
+                                            console.log(post._id);
+                                            // router.push(
+                                            //     `/workspace/${eventId}/post/${post._id}`,
+                                            // );
+                                            navigate(
+                                                `/workspace/${eventid}/post/${post._id}`,
+                                            );
+                                        }}
+                                        className="text-tiny"
                                             color="primary"
                                             radius="full"
                                             size="sm"

@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate, Outlet } from 'react-router-dom';
 import { useContext } from 'react';
 
 import LoginPage from './pages/login';
@@ -17,6 +17,8 @@ import AboutPage from '@/pages/about';
 import ProtectedLayout from '@/layouts/ProtectedLayout';
 import CalendarPage from '@/pages/calendar';
 import TodoPage from '@/pages/todo';
+import AllPostEvent from './components/post/AllPostEvent';
+import PostDetail from './components/post/postDetail';
 
 function App() {
     const { user } = useContext(AuthContext);
@@ -32,7 +34,10 @@ function App() {
                 element={user ? <Navigate to="/" /> : <LoginPage />}
                 path="/login"
             />
-            <Route element={user ? <Navigate to="/" /> : <SignupPage />} path='/signup' />
+            <Route
+                element={user ? <Navigate to="/" /> : <SignupPage />}
+                path="/signup"
+            />
             <Route element={<Custom404 />} path="/404" />
             <Route element={<Navigate replace to="/404" />} path="*" />
             <Route
@@ -52,7 +57,24 @@ function App() {
                 path="/protected/*"
             />
             <Route element={<Event />} path="/events" />
-            <Route element={<Post />} path="/workspace/:eventid" />
+            <Route
+                element={
+                    <Post>
+                        <Outlet />
+                    </Post>
+                }
+                path="/workspace/:eventid"
+            >
+                {/* <Route index element={<div>312312312</div>} /> */}
+                <Route index element={<AllPostEvent></AllPostEvent>} />
+                <Route
+                    path="post/:postid"
+                    element={<PostDetail></PostDetail>}
+                />
+                {/* <Route path="vote/:postid" element={<div>asd</div>} />
+                <Route path="pole/:postid" element={<div>asd</div>} /> */}
+                {/* <Route path="post/:postid" element={<Postcopy />} /> */}
+            </Route>
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<TodoPage />} path="/todo" />
             <Route element={<MembersPage />} path="/workspace/:eventid/members" />
