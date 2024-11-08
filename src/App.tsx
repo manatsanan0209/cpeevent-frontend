@@ -61,6 +61,10 @@ function App() {
                                         element={<PostDetail />}
                                         path="post/:postid"
                                     />
+                                    <Route
+                                        element={<MembersPage />}
+                                        path="/workspace/:eventid/members"
+                                    />
                                     {/* <Route path="vote/:postid" element={<div>asd</div>} />
                 <Route path="pole/:postid" element={<div>asd</div>} /> */}
                                     {/* <Route path="post/:postid" element={<Postcopy />} /> */}
@@ -75,10 +79,6 @@ function App() {
                 path="/protected/*"
             />
             <Route element={<Event />} path="/events" />
-            <Route
-                element={<MembersPage />}
-                path="/protected/workspace/:eventid/members"
-            />
 
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<TodoPage />} path="/todo" />
