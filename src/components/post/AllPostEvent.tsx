@@ -28,9 +28,26 @@ import voteImage from '@/images/Vote.png';
 import formImage from '@/images/Form.png';
 import postImage from '@/images/Post.png';
 import pollImage from '@/images/Poll.png';
+import { useNavigate, useParams } from 'react-router-dom';
+import { axiosAPIInstance } from '@/api/axios-config';
+import { useQuery } from '@tanstack/react-query';
 
-export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
+export default function AllPostEvent() {
     // const [sortOption, setSortOption] = useState<string>('DateDSC');
+    const { eventid } = useParams<{ eventid: string }>();
+    const fetchPosts = async () => {
+        const response = await axiosAPIInstance.get(
+            `v1/event/${eventid}/posts`,
+        );
+
+        return response.data.data;
+    };
+    console.log(eventid);
+
+    const { data: posts = [] } = useQuery<PostEventProps[]>({
+        queryKey: ['posts', eventid],
+        queryFn: fetchPosts,
+    });
     const [searchInput, setSearchInput] = useState<string>('');
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<
@@ -38,6 +55,7 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
     >([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [filterOption, setFilterOption] = useState<string>('all');
+    const navigate = useNavigate();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     useEffect(() => {
@@ -325,7 +343,18 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                                 <Card
                                     key={post._id}
                                     className="col-span-12 sm:col-span-4 w-full"
-                                >
+                                    isPressable
+                                    onPress={() => {
+                                    console.log('Clicked');
+                                    console.log(post._id);
+                                    // router.push(
+                                    //     `/workspace/${eventId}/post/${post._id}`,
+                                    // );
+                                    navigate(
+                                        `/workspace/${eventid}/post/${post._id}`,
+                                    );
+                                }}
+                            >
                                     <CardHeader className="flex gap-3 flex-col bg-zinc-75  items-start">
                                         <div className="flex flex-row w-full justify-between">
                                             <div className="flex flex-col">
@@ -406,7 +435,17 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                                             </p>
                                         </div>
                                         <Button
-                                            className="text-tiny"
+                                            onClick={() => {
+                                            console.log('Clicked');
+                                            console.log(post._id);
+                                            // router.push(
+                                            //     `/workspace/${eventId}/post/${post._id}`,
+                                            // );
+                                            navigate(
+                                                `/workspace/${eventid}/post/${post._id}`,
+                                            );
+                                        }}
+                                        className="text-tiny"
                                             color="primary"
                                             radius="full"
                                             size="sm"
