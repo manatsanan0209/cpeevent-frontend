@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     Dropdown,
     DropdownItem,
@@ -5,13 +6,20 @@ import {
     DropdownTrigger,
     Tabs,
     Tab,
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    useDisclosure,
+    Button,
 } from '@nextui-org/react';
 import { LuMoreHorizontal } from 'react-icons/lu';
 import { useLocation, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 import DefaultLayout from '@/layouts/default';
 import { axiosAPIInstance } from '@/api/axios-config';
-import { useQuery } from '@tanstack/react-query';
 import { PostEventProps } from '@/types';
 import { ChildProcess } from 'child_process';
 import CalendarPage from './calendar';
@@ -23,6 +31,15 @@ interface Props {
 export default function Post(props: Props) {
     const location = useLocation();
     // const { event } = location.state as { event: Event };
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [backdrop, setBackdrop] = React.useState<
+        'opaque' | 'transparent' | 'blur'
+    >('opaque');
+
+    const handleOpen = (backdrop: 'opaque' | 'transparent' | 'blur') => {
+        setBackdrop(backdrop);
+        onOpen();
+    };
     let { eventid } = useParams();
 
     
@@ -43,17 +60,14 @@ export default function Post(props: Props) {
                         </div>
                     </DropdownTrigger>
                     <DropdownMenu>
-                        <DropdownItem
-                            // href="/post/create"
-                            className="text-zinc-600"
-                        >
+                        <DropdownItem className="text-zinc-600">
                             Member
                         </DropdownItem>
                         <DropdownItem
-                            // href="/post/create"
                             key="leave"
                             className="text-danger"
                             color="danger"
+                            onPress={() => handleOpen('opaque')}
                         >
                             Leave Event
                         </DropdownItem>
@@ -80,6 +94,38 @@ export default function Post(props: Props) {
                     </Tab>
                 </Tabs>
             </div>
+            <Modal backdrop={backdrop} isOpen={isOpen} onClose={onClose}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">
+                                Leave Event Confirmation
+                            </ModalHeader>
+                            <ModalBody className="flex flex-row">
+                                Do you want to leave event?
+                            
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button
+                                    color="danger"
+                                    variant="light"
+                                    onPress={onClose}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    color="primary"
+                                    onPress={() => {
+                                        onClose();
+                                    }}
+                                >
+                                    Confirm
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
         </DefaultLayout>
     );
 }

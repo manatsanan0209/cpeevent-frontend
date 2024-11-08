@@ -1,21 +1,28 @@
 import type { PostEventProps } from '@/types/index';
 
+import { IoAdd } from 'react-icons/io5';
 import React, { useState, useEffect } from 'react';
 import {
     Card,
     CardHeader,
     CardFooter,
-    Image,
     Button,
     Input,
     Select,
     SelectItem,
     Kbd,
+    useDisclosure,
+    Modal,
+    Divider,
+    CardBody,
+    Chip,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 import { IoFilter } from 'react-icons/io5';
 
 import { SearchIcon } from '../icons';
+
+import CreatePostModal from './createPost/createPostModal.tsx';
 
 import voteImage from '@/images/Vote.png';
 import formImage from '@/images/Form.png';
@@ -49,6 +56,7 @@ export default function AllPostEvent() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [filterOption, setFilterOption] = useState<string>('all');
     const navigate = useNavigate();
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     useEffect(() => {
         setSortedAndSearchEvents(
@@ -66,7 +74,7 @@ export default function AllPostEvent() {
         searchTerm: string,
         filter: string,
     ): PostEventProps[] {
-        let newSortedArray = [...posts];
+        let newSortedArray = Array.isArray(posts) ? [...posts] : [];
 
         switch (option) {
             case 'DateASC':
@@ -183,25 +191,25 @@ export default function AllPostEvent() {
 
         if (diffDays === 0) {
             if (diffHours === 0) {
-                return `${diffMinutes} minutes ago`;
+                return `${diffMinutes} minutes`;
             }
 
-            return `${diffHours} hours ago`;
+            return `${diffHours} hours`;
         } else if (diffDays === 1) {
             return 'Yesterday';
         } else if (diffDays === -1) {
             return 'Tomorrow';
         } else {
-            return date.toLocaleDateString('eg-GB', {
-                // day: '2-digit',
-                // month: '2-digit',
-                // year: 'numeric',
+            return date.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
             });
         }
     };
 
     return (
-        <div>
+        <div className="w-full ">
             <div className="grid grid-cols-4 gap-4 mt-4 items-center px-8  ">
                 {/* Search bar */}
                 <div className="flex justify-center items-center content-center">
@@ -306,14 +314,37 @@ export default function AllPostEvent() {
                 </div>
             </div>
             {!isLoading && (
-                <div className="max-w-full gap-6 grid grid-cols-12 grid-rows-2 px-8 my-8">
-                    {sortedAndSearchEvents.map((post) => {
-                        return (
-                            <Card
-                                key={post._id}
-                                className="col-span-12 sm:col-span-4 h-[300px]"
-                                isPressable
-                                onPress={() => {
+                <div className="max-w-full gap-6 grid grid-cols-12 px-8 my-8">
+                    <Card
+                        className="col-span-12 sm:col-span-4 w-full"
+                        style={{ backgroundColor: '#efefef' }}
+                    >
+                        <Button
+                            className="flex flex-col w-full h-full justify-center items-center text-xl bg-transparent"
+                            onPress={onOpen}
+                        >
+                            <div className="flex rounded-full bg-violet-500">
+                                <IoAdd className="text-6xl text-slate-200" />
+                            </div>
+                            <div className="text-zinc-600">Add new post</div>
+                        </Button>
+                        <Modal
+                            isOpen={isOpen}
+                            scrollBehavior="outside"
+                            size="lg"
+                            onOpenChange={onOpenChange}
+                        >
+                            <CreatePostModal />
+                        </Modal>
+                    </Card>
+                    {sortedAndSearchEvents.length > 0 &&
+                        sortedAndSearchEvents.map((post) => {
+                            return (
+                                <Card
+                                    key={post._id}
+                                    className="col-span-12 sm:col-span-4 w-full"
+                                    isPressable
+                                    onPress={() => {
                                     console.log('Clicked');
                                     console.log(post._id);
                                     // router.push(
@@ -324,59 +355,87 @@ export default function AllPostEvent() {
                                     );
                                 }}
                             >
-                                <CardHeader className="absolute z-10 top-1 flex-col items-start">
-                                    <div className="flex flex-row w-full justify-between">
-                                        <p className="flex items-center px-2 py-1 ">
-                                            {displayPostStatus(post.kind)}
+                                    <CardHeader className="flex gap-3 flex-col bg-zinc-75  items-start">
+                                        <div className="flex flex-row w-full justify-between">
+                                            <div className="flex flex-col">
+                                                <p className="flex items-center px-2 py-1">
+                                                    {displayPostStatus(
+                                                        post.kind,
+                                                    )}
+                                                </p>
+                                                <div className="mx-2.5 ">
+                                                    {post.assignTo.map(
+                                                        (assignee, index) => (
+                                                            <Chip
+                                                                key={index}
+                                                                className="mr-1"
+                                                                color={
+                                                                    assignee ===
+                                                                    'everyone'
+                                                                        ? 'danger'
+                                                                        : 'secondary'
+                                                                }
+                                                                variant="flat"
+                                                            >
+                                                                {assignee}
+                                                            </Chip>
+                                                        ),
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <p className="flex text-zinc-600 mr-4 mt-1.5 font-semibold text-xs">
+                                                {formatDate(post.postDate)}
+                                            </p>
+                                        </div>
+                                    </CardHeader>
+                                    <Divider className="bg-violet-100" />
+                                    <CardBody
+                                        className="min-h-72"
+                                        style={{
+                                            backgroundImage: `url(${getBackgroundImage(
+                                                post.kind,
+                                            )})`,
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center',
+                                        }}
+                                    >
+                                        <div className="flex flex-row w-full">
+                                            <h4 className="text-zinc-600 font-bold text-large w-full">
+                                                {post.title}
+                                            </h4>
+                                        </div>
+                                        <p className="text-tiny text-zinc-600/80">
+                                            {post.description}
                                         </p>
-                                        <p className="flex text-zinc-600 text-tiny items-center mr-4">
-                                            {formatDate(post.postDate)}
-                                        </p>
-                                    </div>
-                                    <div className="flex flex-row w-full">
-                                        <h4 className="text-zinc-600 font-bold text-large w-full">
-                                            {post.title}
-                                        </h4>
-                                        <p className="flex  text-sm bg-gray-50 text-rose-600 px-1 h-6 items-center rounded-lg">
-                                            {post.assignTo}
-                                        </p>
-                                    </div>
-                                    <p className="text-tiny text-zinc-600/80">
-                                        {post.description}
-                                    </p>
-                                </CardHeader>
-                                <Image
-                                    removeWrapper
-                                    alt="Card background"
-                                    className="z-0 w-full h-full object-cover"
-                                    src={getBackgroundImage(post.kind)}
-                                />
-                                <CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
-                                    <div>
-                                        <p className="text-tiny text-zinc-600">
-                                            End Date:{' '}
-                                            <span
-                                                className={
-                                                    post.endDate &&
-                                                    new Date(post.endDate) <
-                                                        new Date()
-                                                        ? 'text-rose-500'
-                                                        : 'text-blue-500'
-                                                }
-                                            >
-                                                {post.endDate
-                                                    ? new Date(post.endDate) >=
-                                                      new Date() // Check if end date is in the future
-                                                        ? formatDate(
+                                    </CardBody>
+                                    <CardFooter className="absolute bg-white/50 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
+                                        <div>
+                                            <p className="text-small text-zinc-600 font-bold">
+                                                End Date:{' '}
+                                                <span
+                                                    className={
+                                                        post.endDate &&
+                                                        new Date(post.endDate) <
+                                                            new Date()
+                                                            ? 'text-rose-500'
+                                                            : 'text-blue-500'
+                                                    }
+                                                >
+                                                    {post.endDate
+                                                        ? new Date(
                                                               post.endDate,
-                                                          )
-                                                        : 'Ended'
-                                                    : 'No end date'}
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <Button
-                                        onClick={() => {
+                                                          ) >= new Date() // Check if end date is in the future
+                                                            ? formatDate(
+                                                                  post.endDate,
+                                                              )
+                                                            : 'Ended'
+                                                        : 'No end date'}
+                                                    !
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <Button
+                                            onClick={() => {
                                             console.log('Clicked');
                                             console.log(post._id);
                                             // router.push(
@@ -387,16 +446,16 @@ export default function AllPostEvent() {
                                             );
                                         }}
                                         className="text-tiny"
-                                        color="primary"
-                                        radius="full"
-                                        size="sm"
-                                    >
-                                        Learn More
-                                    </Button>
-                                </CardFooter>
-                            </Card>
-                        );
-                    })}
+                                            color="primary"
+                                            radius="full"
+                                            size="sm"
+                                        >
+                                            Learn More
+                                        </Button>
+                                    </CardFooter>
+                                </Card>
+                            );
+                        })}
                 </div>
             )}
         </div>

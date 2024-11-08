@@ -14,6 +14,9 @@ const config = {
       fontFamily: {
         sans: ['Noto Sans', 'sans-serif'],
       },
+      colors: {
+        'zinc-75': 'rgba(247,247,247,1)',
+      },
     },
     darkMode: "class",
   },

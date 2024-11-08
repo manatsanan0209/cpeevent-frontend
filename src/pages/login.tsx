@@ -82,17 +82,17 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center">
-            <div className="max-w-screen-xl m-0 sm:m-10  bg-violet-700 drop-shadow-lg flex justify-center flex-1 rounded-lg">
+            <div className="max-w-screen-xl m-0 sm:m-10  lg:bg-violet-700 drop-shadow-lg flex justify-center flex-1 rounded-lg">
                 {/* Left Section */}
-                <div className="md:flex flex-col gap-3 mx-auto lg:w-3/5 p-6 sm:p-12 justify-center items-center">
+                <div className="hidden lg:flex flex-col gap-3 mx-auto lg:w-3/5 p-6 sm:p-12 justify-center items-center">
                     <Image src={eventImg} alt="event" />
                 </div>
                 {/* Right Section */}
-                <div className="flex flex-col items-center mx-auto bg-white lg:w-2/5 rounded-r-lg">
+                <div className="flex flex-col items-center mx-auto bg-white lg:w-2/5 sm:rounded-lg lg:rounded-r-lg lg:rounded-l-none">
                     <Logo className="w-32 h-32 mt-14" />
                     <div className="flex flex-col w-full flex-grow">
                         {/* Sign In */}
-                        <div className="my-6 ml-8">
+                        <div className="my-6 mx-8">
                             <p className="text-2xl font-bold text-zinc-600 my-2">
                                 Welcome Back!
                             </p>
@@ -101,7 +101,7 @@ export default function LoginPage() {
                             </p>
                         </div>
                         <form
-                            className="w-full max-w-md flex flex-col gap-4 mx-auto"
+                            className="w-full max-w-md flex flex-col gap-4 mx-auto px-6 xl:px-0"
                             onSubmit={handleSubmit}
                         >
                             <div className="">
