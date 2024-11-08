@@ -55,7 +55,7 @@ function App() {
             <Route element={<Post />} path="/workspace/:eventid" />
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<TodoPage />} path="/todo" />
-            <Route element={<MembersPage />} path="/members" />
+            <Route element={<MembersPage />} path="/workspace/:eventid/members" />
         </Routes>
     );
 }

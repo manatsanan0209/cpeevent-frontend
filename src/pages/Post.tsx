@@ -17,7 +17,7 @@ import {
     Button,
 } from '@nextui-org/react';
 import { LuMoreHorizontal } from 'react-icons/lu';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { axiosAPIInstance } from '@/api/axios-config.ts';
 
 import DefaultLayout from '@/layouts/default';
@@ -30,6 +30,7 @@ export default function Post() {
     const location = useLocation();
     const { event } = location.state as { event: Event };
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const navigate = useNavigate();
     const [backdrop, setBackdrop] = React.useState<
         'opaque' | 'transparent' | 'blur'
     >('opaque');
@@ -55,6 +56,10 @@ export default function Post() {
     console.log(event._id);
     console.log(posts);
 
+    function memberPage() {
+        navigate(`/workspace/${event._id}/members`);   
+    }
+
     return (
         <DefaultLayout>
             <div className="flex mb-4 text-left ml">
@@ -71,7 +76,7 @@ export default function Post() {
                         </div>
                     </DropdownTrigger>
                     <DropdownMenu>
-                        <DropdownItem className="text-zinc-600">
+                        <DropdownItem className="text-zinc-600" onClick={memberPage}>
                             Member
                         </DropdownItem>
                         <DropdownItem
