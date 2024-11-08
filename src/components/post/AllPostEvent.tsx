@@ -317,7 +317,7 @@ export default function AllPostEvent() {
             {!isLoading && (
                 <div className="max-w-full gap-6 grid grid-cols-12 px-8 my-8">
                     <Card
-                        className="col-span-12 sm:col-span-4 w-full"
+                        className="col-span-12 sm:col-span-4 w-full min-h-[369px]"
                         style={{ backgroundColor: '#efefef' }}
                     >
                         <Button
