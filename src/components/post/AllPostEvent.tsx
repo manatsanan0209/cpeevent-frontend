@@ -305,8 +305,10 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                             className="flex flex-col w-full h-full justify-center items-center text-xl bg-transparent"
                             onPress={onOpen}
                         >
-                            <IoAdd className="text-6xl" />
-                            Add new post
+                            <div className="flex rounded-full bg-violet-500">
+                                <IoAdd className="text-6xl text-slate-200" />
+                            </div>
+                            <div className="text-zinc-600">Add new post</div>
                         </Button>
                         <Modal
                             isOpen={isOpen}
@@ -324,7 +326,6 @@ export default function AllPostEvent({ posts }: { posts: PostEventProps[] }) {
                                     key={post._id}
                                     className="col-span-12 sm:col-span-4 w-full"
                                 >
-                                    {/* absolute z-10 top-1 */}
                                     <CardHeader className="flex gap-3 flex-col bg-zinc-75  items-start">
                                         <div className="flex flex-row w-full justify-between">
                                             <div className="flex flex-col">

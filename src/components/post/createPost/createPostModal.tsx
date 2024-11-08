@@ -93,8 +93,7 @@ export default function CreatePostModal() {
                 questions: formQuestions,
             });
         }
-        console.log(newPost);
-        console.log('Complete !');
+        console.log('Complete !', newPost);
     }
 
     return (
@@ -165,9 +164,10 @@ export default function CreatePostModal() {
                                 </Select>
                                 <Select
                                     isRequired
-                                    required
                                     className="pl-1"
                                     defaultSelectedKeys={['everyone']}
+                                    errorMessage="This field is required"
+                                    isInvalid={newPost.assignTo[0] === ''}
                                     label="Assign To"
                                     selectionMode="multiple"
                                     onChange={(e) =>
@@ -274,9 +274,6 @@ export default function CreatePostModal() {
                             <Button
                                 className="bg-violet-700 text-white"
                                 type="submit"
-                                // onPress={() => {
-                                //     completePost(newPost.kind);
-                                // }}
                             >
                                 Create Post
                             </Button>
