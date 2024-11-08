@@ -77,7 +77,7 @@ function App() {
             </Route>
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<TodoPage />} path="/todo" />
-            <Route element={<MembersPage />} path="/members" />
+            <Route element={<MembersPage />} path="/workspace/:eventid/members" />
         </Routes>
     );
 }
