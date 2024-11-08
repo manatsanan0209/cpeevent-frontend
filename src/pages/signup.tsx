@@ -4,15 +4,15 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { FcGoogle } from 'react-icons/fc';
-
 import { UserAccountType } from '@/types/index';
+
+import { FcGoogle } from 'react-icons/fc';
 import { useSignup } from '@/hooks/use-signup';
 import { Logo } from '@/components/icons';
 import eventImg from '@/images/event.png';
 
 interface InputFieldProps {
-    placeholder: string;
+    label: string;
     name: string;
     control: any;
     rules?: any;
@@ -21,7 +21,7 @@ interface InputFieldProps {
 }
 
 const InputField = ({
-    placeholder,
+    label,
     name,
     control,
     rules,
@@ -35,10 +35,11 @@ const InputField = ({
             render={({ field }) => (
                 <Input
                     {...field}
+                    label={label}
                     errorMessage={error}
                     isInvalid={!!error}
-                    placeholder={placeholder}
                     type={type}
+                    size='sm'
                 />
             )}
             rules={rules}
@@ -94,7 +95,7 @@ export default function SignupPage() {
     const onSubmit = (data: UserSignup) => {
         const year =
             new Date().getFullYear() -
-            (1957 + parseInt(data.studentID.substring(0, 2), 10));
+            (1956 + parseInt(data.studentID.substring(0, 2), 10));
         const username = data.email.split('@')[0];
 
         signup(
@@ -146,54 +147,54 @@ export default function SignupPage() {
                             </p>
                         </div>
                         <form
-                            className="w-full max-w-md flex flex-col gap-4 mx-auto px-6 xl:px-0"
+                            className="w-full max-w-md flex flex-col gap-2 mx-auto px-6 xl:px-0"
                             onSubmit={handleSubmit(onSubmit)}
                         >
-                            <div className="">
+                            <div className={errors.studentID ? "" : "mb-2"}>
                                 <InputField
+                                    label='Student ID'
                                     control={control}
                                     error={errors.studentID?.message}
                                     name="studentID"
-                                    placeholder="Student ID"
                                 />
                             </div>
-                            <div className="">
+                            <div className={errors.password ? "" : "mb-2"}>
                                 <InputField
+                                    label='Password'
                                     control={control}
                                     error={errors.password?.message}
                                     name="password"
-                                    placeholder="Password"
                                     type="password"
                                 />
                             </div>
-                            <div className="flex gap-2">
+                            <div className={(errors.firstName || errors.lastName) ? "flex gap-2" : "flex gap-2 mb-2"}>
                                 <InputField
+                                    label='First Name'
                                     control={control}
                                     error={errors.firstName?.message}
                                     name="firstName"
-                                    placeholder="First Name"
                                 />
                                 <InputField
+                                    label='Last Name'
                                     control={control}
                                     error={errors.lastName?.message}
                                     name="lastName"
-                                    placeholder="Last Name"
                                 />
                             </div>
-                            <div className="">
+                            <div className={errors.email ? "" : "mb-2"}>
                                 <InputField
+                                    label='Email'
                                     control={control}
                                     error={errors.email?.message}
                                     name="email"
-                                    placeholder="Email"
                                 />
                             </div>
-                            <div className="">
+                            <div className={errors.phoneNumber ? "" : "mb-2"}>
                                 <InputField
+                                    label='Phone Number'
                                     control={control}
                                     error={errors.phoneNumber?.message}
                                     name="phoneNumber"
-                                    placeholder="Phone Number"
                                 />
                             </div>
                             <Button
@@ -203,7 +204,14 @@ export default function SignupPage() {
                             >
                                 {loading ? 'Signing up...' : 'Sign up'}
                             </Button>
-                            {error && <p className="text-red-500">{error}</p>}
+                            {error && (
+                                <p className="text-red-500">
+                                    {error ===
+                                    'Request failed with status code 409'
+                                        ? 'This student ID is already registered'
+                                        : 'Sign up failed'}
+                                </p>
+                            )}
                             <div className="relative flex items-center">
                                 <div className="flex-grow border-t border-gray-400" />
                                 <span className="flex-shrink mx-4 text-sm text-gray-400">
