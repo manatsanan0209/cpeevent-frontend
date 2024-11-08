@@ -15,26 +15,19 @@ import {
     Button,
 } from '@nextui-org/react';
 import { LuMoreHorizontal } from 'react-icons/lu';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 import CalendarPage from './calendar';
 
-
 import DefaultLayout from '@/layouts/default';
-
-interface Event {
-    _id: string;
-}
 
 interface Props {
     children: React.ReactNode;
 }
 
 export default function Post(props: Props) {
-    const location = useLocation();
-    const { event } = location.state as { event: Event };
+    // const location = useLocation();
+    // const { event } = location.state as { event: Event };
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const navigate = useNavigate();
     const [backdrop, setBackdrop] = React.useState<
         'opaque' | 'transparent' | 'blur'
     >('opaque');
@@ -44,11 +37,6 @@ export default function Post(props: Props) {
         onOpen();
     };
     // let { eventid } = useParams();
-
-    function memberPage() {
-        console.log(event);
-        navigate(`/workspace/${event._id}/members`);   
-    }
 
     return (
         <DefaultLayout>
@@ -66,7 +54,7 @@ export default function Post(props: Props) {
                         </div>
                     </DropdownTrigger>
                     <DropdownMenu>
-                        <DropdownItem className="text-zinc-600" onClick={memberPage}>
+                        <DropdownItem className="text-zinc-600">
                             Member
                         </DropdownItem>
                         <DropdownItem
