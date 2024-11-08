@@ -37,8 +37,8 @@ export default function CreatePostModal() {
     >([]);
 
     const [newPost, setNewPost] = useState<PostEventProps>({
-        kind: '',
-        assignTo: [],
+        kind: 'post',
+        assignTo: ['everyone'],
         title: '',
         description: '',
         postDate: new Date().toISOString(),
@@ -93,8 +93,7 @@ export default function CreatePostModal() {
                 questions: formQuestions,
             });
         }
-        console.log(newPost);
-        console.log('Complete !');
+        console.log('Complete !', newPost);
     }
 
     return (
@@ -143,7 +142,9 @@ export default function CreatePostModal() {
                                     isRequired
                                     className="pr-1 w-2/5"
                                     errorMessage="This field is required"
+                                    isInvalid={newPost.kind === ''}
                                     label="Post Kind"
+                                    selectedKeys={[newPost.kind]}
                                     onChange={(e) =>
                                         setNewPost({
                                             ...newPost,
@@ -163,8 +164,10 @@ export default function CreatePostModal() {
                                 </Select>
                                 <Select
                                     isRequired
-                                    required
                                     className="pl-1"
+                                    defaultSelectedKeys={['everyone']}
+                                    errorMessage="This field is required"
+                                    isInvalid={newPost.assignTo[0] === ''}
                                     label="Assign To"
                                     selectionMode="multiple"
                                     onChange={(e) =>
@@ -271,9 +274,6 @@ export default function CreatePostModal() {
                             <Button
                                 className="bg-violet-700 text-white"
                                 type="submit"
-                                // onPress={() => {
-                                //     completePost(newPost.kind);
-                                // }}
                             >
                                 Create Post
                             </Button>

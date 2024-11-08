@@ -10,16 +10,13 @@ import {
     Select,
     SelectItem,
     useDisclosure,
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
 
 import { SearchIcon } from '../icons';
+
+import JoinEventModal from './joinEventModal';
 
 interface User {
     _id: string;
@@ -325,50 +322,11 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                     <strong>Joined</strong>
                                                 )}
                                             </Button>
-
-                                            <Modal
+                                            <JoinEventModal
                                                 isOpen={isOpen}
                                                 onOpenChange={onOpenChange}
-                                            >
-                                                <ModalContent>
-                                                    {(onClose) => (
-                                                        <>
-                                                            <ModalHeader className="flex flex-col gap-1">
-                                                                Join Workspace
-                                                                Confirmation
-                                                            </ModalHeader>
-                                                            <ModalBody>
-                                                                <p>
-                                                                    Are you sure
-                                                                    you want to
-                                                                    join the
-                                                                    workspace?
-                                                                </p>
-                                                            </ModalBody>
-                                                            <ModalFooter>
-                                                                <Button
-                                                                    color="danger"
-                                                                    variant="light"
-                                                                    onPress={
-                                                                        onClose
-                                                                    }
-                                                                >
-                                                                    Cancel
-                                                                </Button>
-                                                                <Button
-                                                                    color="primary"
-                                                                    onPress={
-                                                                        onClose
-                                                                    }
-                                                                >
-                                                                    Confirm
-                                                                </Button>
-                                                            </ModalFooter>
-                                                        </>
-                                                    )}
-                                                </ModalContent>
-                                            </Modal>
-
+                                                eventID = {event._id}
+                                            />
                                             <Button
                                                 aria-label="Go to Workspace"
                                                 className={`mx-12 my-5 ${

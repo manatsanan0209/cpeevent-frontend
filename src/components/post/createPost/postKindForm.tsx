@@ -24,6 +24,10 @@ export default function PostKindForm({
         }
     }, [formQuestions, setFormQuestions]);
 
+    useEffect(() => {
+        console.log(formQuestions);
+    }, [formQuestions]);
+
     function addQuestion() {
         setFormQuestions([
             ...formQuestions,
@@ -48,8 +52,12 @@ export default function PostKindForm({
     ) {
         const updatedQuestions = [...formQuestions];
 
-        if (key === 'inputType' && value !== 'option') {
-            updatedQuestions[index].options = [];
+        if (key === 'inputType') {
+            if (value === 'option') {
+                updatedQuestions[index].options = [''];
+            } else {
+                updatedQuestions[index].options = [];
+            }
         }
 
         updatedQuestions[index][key] = value;
@@ -107,7 +115,10 @@ export default function PostKindForm({
                     <Select
                         isRequired
                         className="my-2"
+                        errorMessage="This field is required"
+                        isInvalid={question.inputType === ''}
                         label="Input Type"
+                        selectedKeys={[question.inputType]}
                         value={question.inputType}
                         onChange={(e) =>
                             updateQuestion(
