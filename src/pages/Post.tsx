@@ -42,8 +42,6 @@ export default function Post(props: Props) {
     };
     let { eventid } = useParams();
 
-    
-
     return (
         <DefaultLayout>
             <div className="flex mb-4 text-left ml">
@@ -103,7 +101,6 @@ export default function Post(props: Props) {
                             </ModalHeader>
                             <ModalBody className="flex flex-row">
                                 Do you want to leave event?
-                            
                             </ModalBody>
                             <ModalFooter>
                                 <Button
