@@ -1,5 +1,6 @@
-import type { Event } from '@/types/index';
+import type { PostEventProps, Event } from '@/types/index';
 
+import React from 'react';
 import {
     Tabs,
     Tab,
@@ -7,18 +8,52 @@ import {
     DropdownTrigger,
     DropdownMenu,
     DropdownItem,
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    useDisclosure,
+    Button,
 } from '@nextui-org/react';
 import { LuMoreHorizontal } from 'react-icons/lu';
 import { useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
+import { axiosAPIInstance } from '@/api/axios-config.ts';
 import DefaultLayout from '@/layouts/default';
 import AllPostEvent from '@/components/post/AllPostEvent';
 import CalendarPage from '@/components/post/CalendarEvent';
-import { posts } from '@/data/post';
+// import { posts } from '@/data/post';
 
 export default function Post() {
     const location = useLocation();
     const { event } = location.state as { event: Event };
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [backdrop, setBackdrop] = React.useState<
+        'opaque' | 'transparent' | 'blur'
+    >('opaque');
+
+    const handleOpen = (backdrop: 'opaque' | 'transparent' | 'blur') => {
+        setBackdrop(backdrop);
+        onOpen();
+    };
+
+    const fetchPosts = async () => {
+        const response = await axiosAPIInstance.get(
+            `v1/event/${event._id}/posts`,
+        );
+
+        return response.data.data;
+    };
+
+    const { data: posts = [] } = useQuery<PostEventProps[]>({
+        queryKey: ['posts', event._id],
+        queryFn: fetchPosts,
+    });
+
+    console.log(event._id);
+    console.log(posts);
 
     return (
         <DefaultLayout>
@@ -36,17 +71,14 @@ export default function Post() {
                         </div>
                     </DropdownTrigger>
                     <DropdownMenu>
-                        <DropdownItem
-                            // href="/post/create"
-                            className="text-zinc-600"
-                        >
+                        <DropdownItem className="text-zinc-600">
                             Member
                         </DropdownItem>
                         <DropdownItem
-                            // href="/post/create"
                             key="leave"
                             className="text-danger"
                             color="danger"
+                            onPress={() => handleOpen('opaque')}
                         >
                             Leave Event
                         </DropdownItem>
@@ -71,6 +103,41 @@ export default function Post() {
                     <CalendarPage />
                 </Tab>
             </Tabs>
+            <Modal backdrop={backdrop} isOpen={isOpen} onClose={onClose}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">
+                                Leave Event Confirmation
+                            </ModalHeader>
+                            <ModalBody className="flex flex-row">
+                                Do you want to leave the{' '}
+                                <p className="text-violet-700 font-semibold">
+                                    {event.eventName}
+                                </p>{' '}
+                                event ?
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button
+                                    color="danger"
+                                    variant="light"
+                                    onPress={onClose}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    color="primary"
+                                    onPress={() => {
+                                        onClose();
+                                    }}
+                                >
+                                    Confirm
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
         </DefaultLayout>
     );
 }

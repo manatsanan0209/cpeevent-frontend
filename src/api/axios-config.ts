@@ -38,13 +38,22 @@ axiosAPIInstance.interceptors.response.use(
             try {
                 const token = localStorage.getItem('token'); // Retrieve the stored access token.
                 const refresh_token = localStorage.getItem('refresh_token'); // Retrieve the stored refresh token.
+                const user = localStorage.getItem('user'); // Retrieve the stored user.
                 // Make a request to your auth server to refresh the token.
-                const response = await axios.post('v1/user/refresh', {
-                    token,
-                    refresh_token,
-                });
+                const response = await axios.post(
+                    'v1/user/refresh',
+                    {
+                        userID: user,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            refresh_token: refresh_token,
+                        },
+                    },
+                );
                 const { token: newToken, refresh_token: newRefreshToken } =
-                    response.data;
+                    response.data.data;
 
                 console.log('Token refreshed:', newToken);
 

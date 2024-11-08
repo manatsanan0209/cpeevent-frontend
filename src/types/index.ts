@@ -28,7 +28,7 @@ export interface Event {
 export interface PostEventProps {
     _id?: string;
     kind: string;
-    assignTo: string;
+    assignTo: string[];
     title: string;
     description: string;
     postDate: string;
@@ -37,7 +37,21 @@ export interface PostEventProps {
     markdown?: string;
     questions?: {
         question: string;
-        type: string;
+        maxSel?: string;
+        inputType?: string;
         options: string[];
     }[];
+}
+
+export interface UserAccountType {
+    studentID: string;
+    firstName: string;
+    lastName: string;
+    year: number;
+    imgProfile: string;
+    email: string;
+    password: string;
+    phoneNumber: string;
+    username: string;
+    created_at: Date;
 }

@@ -3,7 +3,6 @@ import { useContext } from 'react';
 
 import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
-import Event from './pages/Event';
 import Custom404 from './pages/Custom404';
 import { AuthContext } from './context/AuthContext';
 import MembersPage from './pages/members';
@@ -17,6 +16,8 @@ import AboutPage from '@/pages/about';
 import ProtectedLayout from '@/layouts/ProtectedLayout';
 import CalendarPage from '@/pages/calendar';
 import TodoPage from '@/pages/todo';
+import Event from '@/pages/Event';
+import SettingsPage from '@/pages/settings';
 
 function App() {
     const { user } = useContext(AuthContext);
@@ -32,24 +33,37 @@ function App() {
                 element={user ? <Navigate to="/" /> : <LoginPage />}
                 path="/login"
             />
-            <Route element={user ? <Navigate to="/" /> : <SignupPage />} path='/signup' />
+            <Route
+                element={user ? <Navigate to="/" /> : <SignupPage />}
+                path="/signup"
+            />
             <Route element={<Custom404 />} path="/404" />
-            <Route element={<Navigate replace to="/404" />} path="*" />
+            {/* <Route element={<Navigate replace to="/404" />} path="*" /> */}
+            <Route element={<CalendarPage />} path="/calendar" />
+            <Route element={<TodoPage />} path="/todo" />
             <Route
                 element={
                     user ? (
                         <ProtectedLayout requiredAccess="1">
                             <Routes>
-                                <Route element={<AboutPage />} path="/some" />
-                                <Route element={<BlogPage />} path="/another" />
-                                {/* Add more protected routes here */}
+                                <Route element={<Event />} path="/events" />
+                                <Route
+                                    element={
+                                        <Navigate to="/settings/profile" />
+                                    }
+                                    path="/settings"
+                                />
+                                <Route
+                                    element={<SettingsPage />}
+                                    path="/settings/:section"
+                                />
                             </Routes>
                         </ProtectedLayout>
                     ) : (
                         <Navigate to="/login" />
                     )
                 }
-                path="/protected/*"
+                path="*"
             />
             <Route element={<Event />} path="/events" />
             <Route element={<Post />} path="/workspace/:eventid" />
