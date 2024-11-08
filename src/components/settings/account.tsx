@@ -92,7 +92,7 @@ export default function Account() {
         },
     });
 
-    const fetchProfile = async () => {
+    const fetchAccount = async () => {
         const response = await axiosAPIInstance.get('v1/account');
 
         return response.data.data;
@@ -100,7 +100,7 @@ export default function Account() {
 
     const { data: userData } = useQuery<UserAccountType>({
         queryKey: ['studentid'],
-        queryFn: fetchProfile,
+        queryFn: fetchAccount,
     });
 
     useEffect(() => {
@@ -109,14 +109,14 @@ export default function Account() {
         }
     }, [userData, setValue]);
 
-    const updateProfile = async (data: UserAccountUpdate) => {
+    const updateAccount = async (data: UserAccountUpdate) => {
         const response = await axiosAPIInstance.patch('v1/account', data);
 
         return response.data;
     };
 
     const { mutate, isPending, isError, isSuccess } = useMutation({
-        mutationFn: updateProfile,
+        mutationFn: updateAccount,
     });
 
     const onSubmit = (data: UserAccountType) => {
