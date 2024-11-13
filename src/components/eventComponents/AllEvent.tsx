@@ -349,7 +349,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                     const eventID = event._id;
 
                                                     navigate(
-                                                        `/protected/workspace/${eventID}`,
+                                                        `/workspace/${eventID}`,
                                                         {
                                                             state: { event },
                                                         },

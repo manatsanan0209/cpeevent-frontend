@@ -52,9 +52,7 @@ export default function Post(props: Props) {
                         <DropdownItem
                             className="text-zinc-600"
                             onClick={() => {
-                                navigate(
-                                    `/protected/workspace/${eventid}/members`,
-                                );
+                                navigate(`/workspace/${eventid}/members`);
                             }}
                         >
                             Member

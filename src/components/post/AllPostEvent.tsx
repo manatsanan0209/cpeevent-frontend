@@ -348,7 +348,7 @@ export default function AllPostEvent() {
                                     className="col-span-12 sm:col-span-4 w-full"
                                     onPress={() => {
                                         navigate(
-                                            `/protected/workspace/${eventid}/post/${post._id}`,
+                                            `/workspace/${eventid}/post/${post._id}`,
                                         );
                                     }}
                                 >
@@ -438,7 +438,7 @@ export default function AllPostEvent() {
                                             size="sm"
                                             onClick={() => {
                                                 navigate(
-                                                    `/protected/workspace/${eventid}/post/${post._id}`,
+                                                    `/workspace/${eventid}/post/${post._id}`,
                                                 );
                                             }}
                                         >

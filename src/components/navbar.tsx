@@ -201,9 +201,7 @@ export const Navbar = () => {
                                     <DropdownItem
                                         key="ViewProfile"
                                         onClick={() =>
-                                            navigate(
-                                                '/protected/settings/profile',
-                                            )
+                                            navigate('/settings/profile')
                                         }
                                     >
                                         View Profile
@@ -211,9 +209,7 @@ export const Navbar = () => {
                                     <DropdownItem
                                         key="Setting"
                                         onClick={() =>
-                                            navigate(
-                                                '/protected/settings/account',
-                                            )
+                                            navigate('/settings/account')
                                         }
                                     >
                                         Setting
