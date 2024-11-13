@@ -5,13 +5,7 @@ import {
     DropdownTrigger,
     Tabs,
     Tab,
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
     useDisclosure,
-    Button,
 } from '@nextui-org/react';
 import { useState } from 'react';
 import { LuMoreHorizontal } from 'react-icons/lu';
@@ -19,6 +13,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import CalendarPage from './calendar';
 
+import LeaveEventModal from '@/components/post/leaveEventModal';
 import DefaultLayout from '@/layouts/default';
 
 interface Props {
@@ -36,7 +31,7 @@ export default function Post(props: Props) {
         setBackdrop(backdrop);
         onOpen();
     };
-    const { eventid } = useParams<{ eventid: string }>();
+    const { eventid = '' } = useParams<{ eventid: string }>();
 
     return (
         <DefaultLayout>
@@ -95,37 +90,12 @@ export default function Post(props: Props) {
                     </Tab>
                 </Tabs>
             </div>
-            <Modal backdrop={backdrop} isOpen={isOpen} onClose={onClose}>
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1">
-                                Leave Event Confirmation
-                            </ModalHeader>
-                            <ModalBody className="flex flex-row">
-                                Do you want to leave event?
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button
-                                    color="danger"
-                                    variant="light"
-                                    onPress={onClose}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    color="primary"
-                                    onPress={() => {
-                                        onClose();
-                                    }}
-                                >
-                                    Confirm
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
+            <LeaveEventModal
+                backdrop={backdrop}
+                eventID={eventid}
+                isOpen={isOpen}
+                onClose={onClose}
+            />
         </DefaultLayout>
     );
 }
