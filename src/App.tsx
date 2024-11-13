@@ -88,7 +88,7 @@ function App() {
                         <Navigate to="/login" />
                     )
                 }
-                path="/*"
+                path="*"
             />
             <Route element={<Event />} path="/events" />
             <Route
