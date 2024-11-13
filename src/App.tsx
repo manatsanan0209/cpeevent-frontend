@@ -8,6 +8,9 @@ import Custom404 from './pages/Custom404';
 import { AuthContext } from './context/AuthContext';
 import MembersPage from './pages/members';
 import Post from './pages/Post';
+import AllPostEvent from './components/post/AllPostEvent';
+import PostDetail from './components/post/postDetail';
+import VoteDetail from './components/post/voteDetail';
 
 import IndexPage from '@/pages/index';
 import DocsPage from '@/pages/docs';
@@ -17,8 +20,6 @@ import AboutPage from '@/pages/about';
 import ProtectedLayout from '@/layouts/ProtectedLayout';
 import CalendarPage from '@/pages/calendar';
 import TodoPage from '@/pages/todo';
-import AllPostEvent from './components/post/AllPostEvent';
-import PostDetail from './components/post/postDetail';
 
 function App() {
     const { user } = useContext(AuthContext);
@@ -66,14 +67,11 @@ function App() {
                 path="/workspace/:eventid"
             >
                 {/* <Route index element={<div>312312312</div>} /> */}
-                <Route index element={<AllPostEvent></AllPostEvent>} />
-                <Route
-                    path="post/:postid"
-                    element={<PostDetail></PostDetail>}
-                />
-                {/* <Route path="vote/:postid" element={<div>asd</div>} />
-                <Route path="pole/:postid" element={<div>asd</div>} /> */}
-                {/* <Route path="post/:postid" element={<Postcopy />} /> */}
+                <Route index element={<AllPostEvent />} />
+                <Route element={<PostDetail />} path="post/:postid" />
+                <Route element={<VoteDetail />} path="vote/:postid" />
+                {/* <Route path="pole/:postid" element={<div>asd</div>} /> */}
+                {/* {/* <Route path="post/:postid" element={<Postcopy />} /> */}
             </Route>
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<TodoPage />} path="/todo" />

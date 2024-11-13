@@ -19,6 +19,8 @@ import {
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 import { IoFilter } from 'react-icons/io5';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 import { SearchIcon } from '../icons';
 
@@ -28,9 +30,7 @@ import voteImage from '@/images/Vote.png';
 import formImage from '@/images/Form.png';
 import postImage from '@/images/Post.png';
 import pollImage from '@/images/Poll.png';
-import { useNavigate, useParams } from 'react-router-dom';
 import { axiosAPIInstance } from '@/api/axios-config';
-import { useQuery } from '@tanstack/react-query';
 
 export default function AllPostEvent() {
     // const [sortOption, setSortOption] = useState<string>('DateDSC');
@@ -42,6 +42,7 @@ export default function AllPostEvent() {
 
         return response.data.data;
     };
+
     console.log(eventid);
 
     const { data: posts = [] } = useQuery<PostEventProps[]>({
@@ -122,7 +123,7 @@ export default function AllPostEvent() {
                 return (
                     <span className="flex flex-row">
                         <GrStatusGoodSmall className="text-xs mt-0.5 mr-3 text-green-500" />
-                        <span className="text-zinc-600 text-sm font-semibold">
+                        <span className="text-green-500 text-sm font-semibold">
                             Poll
                         </span>
                     </span>
@@ -149,7 +150,7 @@ export default function AllPostEvent() {
                 return (
                     <span className="flex flex-row">
                         <GrStatusGoodSmall className="text-xs mt-0.5 mr-3 text-blue-500" />
-                        <span className="text-zinc-600 text-sm font-medium">
+                        <span className="text-blue-500 text-sm font-semibold">
                             Form
                         </span>
                     </span>
@@ -342,19 +343,25 @@ export default function AllPostEvent() {
                             return (
                                 <Card
                                     key={post._id}
-                                    className="col-span-12 sm:col-span-4 w-full"
                                     isPressable
+                                    className="col-span-12 sm:col-span-4 w-full"
                                     onPress={() => {
-                                    console.log('Clicked');
-                                    console.log(post._id);
-                                    // router.push(
-                                    //     `/workspace/${eventId}/post/${post._id}`,
-                                    // );
-                                    navigate(
-                                        `/workspace/${eventid}/post/${post._id}`,
-                                    );
-                                }}
-                            >
+                                        console.log('Clicked');
+                                        console.log(post._id);
+                                        // router.push(
+                                        //     `/workspace/${eventId}/post/${post._id}`,
+                                        // );
+                                        post.kind === 'post'
+                                            ? navigate(
+                                                  `/workspace/${eventid}/post/${post._id}`,
+                                              )
+                                            : post.kind === 'vote'
+                                              ? navigate(
+                                                    `/workspace/${eventid}/vote/${post._id}`,
+                                                )
+                                              : null;
+                                    }}
+                                >
                                     <CardHeader className="flex gap-3 flex-col bg-zinc-75  items-start">
                                         <div className="flex flex-row w-full justify-between">
                                             <div className="flex flex-col">
@@ -435,20 +442,20 @@ export default function AllPostEvent() {
                                             </p>
                                         </div>
                                         <Button
-                                            onClick={() => {
-                                            console.log('Clicked');
-                                            console.log(post._id);
-                                            // router.push(
-                                            //     `/workspace/${eventId}/post/${post._id}`,
-                                            // );
-                                            navigate(
-                                                `/workspace/${eventid}/post/${post._id}`,
-                                            );
-                                        }}
-                                        className="text-tiny"
+                                            className="text-tiny"
                                             color="primary"
                                             radius="full"
                                             size="sm"
+                                            onClick={() => {
+                                                console.log('Clicked');
+                                                console.log(post._id);
+                                                // router.push(
+                                                //     `/workspace/${eventId}/post/${post._id}`,
+                                                // );
+                                                navigate(
+                                                    `/workspace/${eventid}/post/${post._id}`,
+                                                );
+                                            }}
                                         >
                                             Learn More
                                         </Button>
