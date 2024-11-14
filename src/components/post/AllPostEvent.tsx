@@ -134,7 +134,7 @@ export default function AllPostEvent() {
                 return (
                     <span className="flex flex-row">
                         <GrStatusGoodSmall className="text-xs mt-0.5 mr-3 text-green-500" />
-                        <span className="text-zinc-600 text-sm font-semibold">
+                        <span className="text-green-500 text-sm font-semibold">
                             Poll
                         </span>
                     </span>
@@ -161,7 +161,7 @@ export default function AllPostEvent() {
                 return (
                     <span className="flex flex-row">
                         <GrStatusGoodSmall className="text-xs mt-0.5 mr-3 text-blue-500" />
-                        <span className="text-zinc-600 text-sm font-medium">
+                        <span className="text-blue-500 text-sm font-semibold">
                             Form
                         </span>
                     </span>
@@ -347,9 +347,20 @@ export default function AllPostEvent() {
                                     isPressable
                                     className="col-span-12 sm:col-span-4 w-full"
                                     onPress={() => {
-                                        navigate(
-                                            `/workspace/${eventid}/post/${post._id}`,
-                                        );
+                                        console.log('Clicked');
+                                        console.log(post._id);
+                                        // router.push(
+                                        //     `/workspace/${eventId}/post/${post._id}`,
+                                        // );
+                                        post.kind === 'post'
+                                            ? navigate(
+                                                  `/workspace/${eventid}/post/${post._id}`,
+                                              )
+                                            : post.kind === 'vote'
+                                              ? navigate(
+                                                    `/workspace/${eventid}/vote/${post._id}`,
+                                                )
+                                              : null;
                                     }}
                                 >
                                     <CardHeader className="flex gap-3 flex-col bg-zinc-75  items-start">
