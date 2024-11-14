@@ -16,14 +16,31 @@ const config = {
       },
       colors: {
         'zinc-75': 'rgba(247,247,247,1)',
+        primary: {
+          DEFAULT: '#6d28d9',
+        }
       },
     },
     darkMode: "class",
   },
-  plugins: [
-    nextui(),
-    require('@tailwindcss/typography'),
-  ],
+  plugins: [nextui({
+    themes: {
+      light: {
+        colors: {
+          primary: {
+            DEFAULT: "#6d28d9",
+          },
+        },
+      },
+      dark: {
+        colors: {
+          primary: {
+            DEFAULT: "#6d28d9",
+          },
+        },
+      },
+    },
+  })],
 };
 
 export default config;

@@ -323,9 +323,9 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                 )}
                                             </Button>
                                             <JoinEventModal
+                                                eventID={event._id}
                                                 isOpen={isOpen}
                                                 onOpenChange={onOpenChange}
-                                                eventID = {event._id}
                                             />
                                             <Button
                                                 aria-label="Go to Workspace"
