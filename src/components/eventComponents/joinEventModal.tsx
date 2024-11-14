@@ -47,7 +47,7 @@ const JoinEventModal: React.FC<JoinEventModalProps> = ({
         mutate(
             { eventID, role: selectedRole },
             {
-                onSuccess: () => navigate(`/protected/workspace/${eventID}`),
+                onSuccess: () => navigate(`/workspace/${eventID}`),
                 onError: (error: any) => {
                     if (error.response?.status === 409) {
                         setErrorMessage('You have already joined this event.');
