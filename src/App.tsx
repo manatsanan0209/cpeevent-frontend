@@ -11,7 +11,6 @@ import MembersPage from './pages/members';
 import Post from './pages/Post';
 import AllPostEvent from './components/post/AllPostEvent';
 import PostDetail from './components/post/postDetail';
-import VoteDetail from './components/post/voteDetail';
 
 import IndexPage from '@/pages/index';
 import DocsPage from '@/pages/docs';
@@ -79,7 +78,7 @@ function App() {
                                         path="/workspace/:eventid/members"
                                     />
                                     {/* <Route path="vote/:postid" element={<div>asd</div>} />
-                <Route path="pole/:postid" element={<div>asd</div>} /> */}
+                                    <Route path="pole/:postid" element={<div>asd</div>} /> */}
                                     {/* <Route path="post/:postid" element={<Postcopy />} /> */}
                                 </Route>
                                 {/* Add more protected routes here */}
@@ -92,22 +91,6 @@ function App() {
                 path="*"
             />
             <Route element={<Event />} path="/events" />
-            <Route
-                element={
-                    <Post>
-                        <Outlet />
-                    </Post>
-                }
-                path="/workspace/:eventid"
-            >
-                {/* <Route index element={<div>312312312</div>} /> */}
-                <Route index element={<AllPostEvent />} />
-                <Route element={<PostDetail />} path="post/:postid" />
-                <Route element={<VoteDetail />} path="vote/:postid" />
-                {/* <Route path="pole/:postid" element={<div>asd</div>} /> */}
-                {/* {/* <Route path="post/:postid" element={<Postcopy />} /> */}
-            </Route>
-
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<TodoPage />} path="/todo" />
         </Routes>
