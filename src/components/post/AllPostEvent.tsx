@@ -16,13 +16,14 @@ import {
     Divider,
     CardBody,
     Chip,
+    Skeleton,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 import { IoFilter } from 'react-icons/io5';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
-import { SearchIcon } from '../icons';
+import { SearchIcon } from '../icons.tsx';
 
 import CreatePostModal from './createPost/createPostModal.tsx';
 
@@ -31,6 +32,14 @@ import formImage from '@/images/Form.png';
 import postImage from '@/images/Post.png';
 import pollImage from '@/images/Poll.png';
 import { axiosAPIInstance } from '@/api/axios-config';
+
+const selectItems = [
+    { key: 'all', value: 'all', label: 'All' },
+    { key: 'poll', value: 'poll', label: 'Poll' },
+    { key: 'vote', value: 'vote', label: 'Vote' },
+    { key: 'post', value: 'post', label: 'Post' },
+    { key: 'form', value: 'form', label: 'Form' },
+];
 
 export default function AllPostEvent() {
     // const [sortOption, setSortOption] = useState<string>('DateDSC');
@@ -45,7 +54,11 @@ export default function AllPostEvent() {
 
     console.log(eventid);
 
-    const { data: posts = [] } = useQuery<PostEventProps[]>({
+    const {
+        data: posts = [],
+        isLoading,
+        isError,
+    } = useQuery<PostEventProps[]>({
         queryKey: ['posts', eventid],
         queryFn: fetchPosts,
     });
@@ -54,7 +67,6 @@ export default function AllPostEvent() {
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<
         PostEventProps[]
     >([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [filterOption, setFilterOption] = useState<string>('all');
     const navigate = useNavigate();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -63,7 +75,6 @@ export default function AllPostEvent() {
         setSortedAndSearchEvents(
             sortedAndSearchEventsFunc(sortOption, searchInput, filterOption),
         );
-        setIsLoading(false);
     }, [sortOption, searchInput, filterOption, posts]);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,7 +134,7 @@ export default function AllPostEvent() {
                 return (
                     <span className="flex flex-row">
                         <GrStatusGoodSmall className="text-xs mt-0.5 mr-3 text-green-500" />
-                        <span className="text-zinc-600 text-sm font-semibold">
+                        <span className="text-green-500 text-sm font-semibold">
                             Poll
                         </span>
                     </span>
@@ -150,7 +161,7 @@ export default function AllPostEvent() {
                 return (
                     <span className="flex flex-row">
                         <GrStatusGoodSmall className="text-xs mt-0.5 mr-3 text-blue-500" />
-                        <span className="text-zinc-600 text-sm font-medium">
+                        <span className="text-blue-500 text-sm font-semibold">
                             Form
                         </span>
                     </span>
@@ -262,21 +273,11 @@ export default function AllPostEvent() {
                                 setFilterOption(e.target.value as string)
                             }
                         >
-                            <SelectItem key="all" value="all">
-                                All
-                            </SelectItem>
-                            <SelectItem key="poll" value="poll">
-                                Poll
-                            </SelectItem>
-                            <SelectItem key="vote" value="vote">
-                                Vote
-                            </SelectItem>
-                            <SelectItem key="post" value="post">
-                                Post
-                            </SelectItem>
-                            <SelectItem key="form" value="form">
-                                Form
-                            </SelectItem>
+                            {selectItems.map((item) => (
+                                <SelectItem key={item.key} value={item.value}>
+                                    {item.label}
+                                </SelectItem>
+                            ))}
                         </Select>
                     </div>
                 </div>
@@ -314,7 +315,7 @@ export default function AllPostEvent() {
                     </Select>
                 </div>
             </div>
-            {!isLoading && (
+            <Skeleton isLoaded={!isLoading}>
                 <div className="max-w-full gap-6 grid grid-cols-12 px-8 my-8">
                     <Card
                         className="col-span-12 sm:col-span-4 w-full min-h-[369px]"
@@ -351,7 +352,9 @@ export default function AllPostEvent() {
                                                   `/workspace/${eventid}/post/${post._id}`,
                                               )
                                             : post.kind === 'vote'
-                                              ? null
+                                              ? navigate(
+                                                    `/workspace/${eventid}/vote/${post._id}`,
+                                                )
                                               : navigate(
                                                     `/workspace/${eventid}/form/${post._id}`,
                                                 );
@@ -442,14 +445,17 @@ export default function AllPostEvent() {
                                             radius="full"
                                             size="sm"
                                             onClick={() => {
-                                                console.log('Clicked');
-                                                console.log(post._id);
-                                                // router.push(
-                                                //     `/workspace/${eventId}/post/${post._id}`,
-                                                // );
-                                                navigate(
-                                                    `/workspace/${eventid}/post/${post._id}`,
-                                                );
+                                                post.kind === 'post'
+                                                    ? navigate(
+                                                          `/workspace/${eventid}/post/${post._id}`,
+                                                      )
+                                                    : post.kind === 'vote'
+                                                      ? navigate(
+                                                            `/workspace/${eventid}/vote/${post._id}`,
+                                                        )
+                                                      : navigate(
+                                                            `/workspace/${eventid}/form/${post._id}`,
+                                                        );
                                             }}
                                         >
                                             Learn More
@@ -458,6 +464,11 @@ export default function AllPostEvent() {
                                 </Card>
                             );
                         })}
+                </div>
+            </Skeleton>
+            {isError && (
+                <div className="text-red-500 text-center my-4">
+                    An error occurred. Please try again later.
                 </div>
             )}
         </div>

@@ -1,3 +1,5 @@
+import type { Event } from '@/types/index';
+
 import React from 'react';
 import {
     Dropdown,
@@ -6,28 +8,26 @@ import {
     DropdownTrigger,
     Tabs,
     Tab,
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
     useDisclosure,
-    Button,
 } from '@nextui-org/react';
+import { useNavigate } from 'react-router-dom';
 import { LuMoreHorizontal } from 'react-icons/lu';
+import { useParams } from 'react-router-dom';
 
 import CalendarPage from './calendar';
 
+import LeaveEventModal from '@/components/post/leaveEventModal';
 import DefaultLayout from '@/layouts/default';
-
+import { axiosAPIInstance } from '@/api/axios-config';
 interface Props {
     children: React.ReactNode;
 }
 
 export default function Post(props: Props) {
-    // const location = useLocation();
-    // const { event } = location.state as { event: Event };
+    const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [eventName, setEventName] = React.useState<string | null>(null);
+
     const [backdrop, setBackdrop] = React.useState<
         'opaque' | 'transparent' | 'blur'
     >('opaque');
@@ -37,12 +37,34 @@ export default function Post(props: Props) {
         onOpen();
     };
     // let { eventid } = useParams();
+    const { eventid } = useParams<{ eventid: string }>();
+
+    React.useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await axiosAPIInstance.get('v1/events');
+                const events: Event[] = response.data.data;
+
+                const event = events.find((event) => event._id === eventid);
+
+                if (event) {
+                    setEventName(event.eventName);
+                } else {
+                    setEventName('Event not found');
+                }
+            } catch (error) {
+                setEventName('Error fetching event');
+            }
+        };
+
+        fetchEvents();
+    }, [eventid]);
 
     return (
         <DefaultLayout>
             <div className="flex mb-4 text-left ml">
                 <h2 className="flex-col m-0 text-4xl font-bold w-11/12 text-zinc-600 capitalize">
-                    {/* {event.eventName} */}
+                    {eventName}
                 </h2>
                 <Dropdown className="flex justify-end">
                     <DropdownTrigger>
@@ -54,7 +76,12 @@ export default function Post(props: Props) {
                         </div>
                     </DropdownTrigger>
                     <DropdownMenu>
-                        <DropdownItem className="text-zinc-600">
+                        <DropdownItem
+                            className="text-zinc-600"
+                            onClick={() => {
+                                navigate(`/workspace/${eventid}/members`);
+                            }}
+                        >
                             Member
                         </DropdownItem>
                         <DropdownItem
@@ -88,37 +115,20 @@ export default function Post(props: Props) {
                     </Tab>
                 </Tabs>
             </div>
-            <Modal backdrop={backdrop} isOpen={isOpen} onClose={onClose}>
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1">
-                                Leave Event Confirmation
-                            </ModalHeader>
-                            <ModalBody className="flex flex-row">
-                                Do you want to leave event?
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button
-                                    color="danger"
-                                    variant="light"
-                                    onPress={onClose}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    color="primary"
-                                    onPress={() => {
-                                        onClose();
-                                    }}
-                                >
-                                    Confirm
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
+            {eventid ? (
+                <LeaveEventModal
+                    backdrop={backdrop}
+                    eventID={eventid}
+                    isOpen={isOpen}
+                    onClose={onClose}
+                />
+            ) : null}
+            {/* <LeaveEventModal
+                backdrop={backdrop}
+                eventID={eventid}
+                isOpen={isOpen}
+                onClose={onClose}
+            /> */}
         </DefaultLayout>
     );
 }
