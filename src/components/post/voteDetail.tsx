@@ -6,6 +6,8 @@ import {
     cn,
     Card,
     CardHeader,
+    Divider,
+    CardBody,
 } from '@nextui-org/react';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
@@ -52,49 +54,55 @@ export default function VoteDetail() {
             <Card className="py-4">
                 <CardHeader className="pb-0 pt-2 px-4 flex-col items-start m-5">
                     <h1 className="font-bold text-5xl mb-2">{posts?.title}</h1>
-                    <p className="text-gray-500 text-tiny">
+                    <p className="text-gray-500 text-default-500 p-2">
                         {posts?.description}
                     </p>
+                    <small className="text-default-500 mt-3">
+                        Author : {posts?.author}
+                    </small>
                 </CardHeader>
-                <div className="flex flex-col gap-1 w-full">
-                    {posts?.questions?.map((question, index) => (
-                        <>
-                            <RadioGroup
-                                key={index}
-                                classNames={{
-                                    base: 'w-full',
-                                }}
-                                label={question.question}
-                                value={selected[index] || ''}
-                                onValueChange={(value) =>
-                                    handleValueChange(index, value)
-                                }
-                            >
-                                {question.options.map((option, idx) => (
-                                    <Radio
-                                        key={idx}
-                                        classNames={{
-                                            base: cn(
-                                                'inline-flex w-full max-w-md bg-content1',
-                                                'hover:bg-content2 items-center',
-                                                'cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent',
-                                                'data-[selected=true]:border-primary',
-                                                'bg-[selected=false]:bg-content1',
-                                            ),
-                                            label: 'w-full',
-                                        }}
-                                        value={option}
-                                    >
-                                        <p>{option}</p>
-                                    </Radio>
-                                ))}
-                            </RadioGroup>
-                            <p className="mt-4 ml-1 text-default-500">
-                                Selected: {selected[index]}
-                            </p>
-                        </>
-                    ))}
-                </div>
+                <Divider />
+                <CardBody className='overflow-visible py-2 m-5'>
+                    <div className="flex flex-col gap-1 w-full prose">
+                        {posts?.questions?.map((question, index) => (
+                            <>
+                                <RadioGroup
+                                    key={index}
+                                    classNames={{
+                                        base: 'w-full',
+                                    }}
+                                    label={question.question}
+                                    value={selected[index] || ''}
+                                    onValueChange={(value) =>
+                                        handleValueChange(index, value)
+                                    }
+                                >
+                                    {question.options.map((option, idx) => (
+                                        <Radio
+                                            key={idx}
+                                            classNames={{
+                                                base: cn(
+                                                    'inline-flex w-full max-w-md bg-content1',
+                                                    'hover:bg-content2 items-center',
+                                                    'cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent',
+                                                    'data-[selected=true]:border-primary',
+                                                    'bg-[selected=false]:bg-content1',
+                                                ),
+                                                label: 'w-full',
+                                            }}
+                                            value={option}
+                                        >
+                                            <p>{option}</p>
+                                        </Radio>
+                                    ))}
+                                </RadioGroup>
+                                <p className="mt-4 ml-1 text-default-500">
+                                    Selected: {selected[index]}
+                                </p>
+                            </>
+                        ))}
+                    </div>
+                </CardBody>
             </Card>
         </>
     );
