@@ -35,6 +35,7 @@ export default function CreatePostModal() {
     const [formQuestions, setFormQuestions] = useState<
         { question: string; inputType: string; options: string[] }[]
     >([]);
+    const [postAsPublic, setPostAsPublic] = useState<boolean>(false);
 
     const [newPost, setNewPost] = useState<PostEventProps>({
         kind: 'post',
@@ -74,6 +75,9 @@ export default function CreatePostModal() {
     }
 
     function completePost(kind: string) {
+        if (postAsPublic) {
+            newPost.assignTo = ['public'];
+        }
         if (kind === 'post') {
             setNewPost({
                 ...newPost,
@@ -162,31 +166,44 @@ export default function CreatePostModal() {
                                         Vote
                                     </SelectItem>
                                 </Select>
-                                <Select
-                                    isRequired
-                                    className="pl-1"
-                                    defaultSelectedKeys={['everyone']}
-                                    errorMessage="This field is required"
-                                    isInvalid={newPost.assignTo[0] === ''}
-                                    label="Assign To"
-                                    selectionMode="multiple"
-                                    onChange={(e) =>
-                                        setNewPost({
-                                            ...newPost,
-                                            assignTo: Array.isArray(
-                                                e.target.value,
-                                            )
-                                                ? e.target.value
-                                                : [e.target.value],
-                                        })
-                                    }
-                                >
-                                    {event.role.map((role) => (
-                                        <SelectItem key={role} value={role}>
-                                            {role}
-                                        </SelectItem>
-                                    ))}
-                                </Select>
+                                <div className="flex flex-col w-full">
+                                    <Select
+                                        isRequired
+                                        className="pl-1"
+                                        defaultSelectedKeys={['everyone']}
+                                        errorMessage="This field is required"
+                                        isDisabled={postAsPublic}
+                                        isInvalid={newPost.assignTo[0] === ''}
+                                        label="Assign To"
+                                        selectionMode="multiple"
+                                        onChange={(e) =>
+                                            setNewPost({
+                                                ...newPost,
+                                                assignTo: Array.isArray(
+                                                    e.target.value,
+                                                )
+                                                    ? e.target.value
+                                                    : [e.target.value],
+                                            })
+                                        }
+                                    >
+                                        {event.role.map((role) => (
+                                            <SelectItem key={role} value={role}>
+                                                {role}
+                                            </SelectItem>
+                                        ))}
+                                    </Select>
+                                    <Checkbox
+                                        className="pl-4"
+                                        defaultSelected={postAsPublic}
+                                        size="sm"
+                                        onChange={() => {
+                                            setPostAsPublic(!postAsPublic);
+                                        }}
+                                    >
+                                        Post as Public
+                                    </Checkbox>
+                                </div>
                             </div>
 
                             {newPost.kind === 'form' ? (
