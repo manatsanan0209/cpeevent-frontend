@@ -10,7 +10,7 @@ import {
     Tab,
     useDisclosure,
 } from '@nextui-org/react';
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LuMoreHorizontal } from 'react-icons/lu';
 import { useParams } from 'react-router-dom';
 
@@ -115,12 +115,20 @@ export default function Post(props: Props) {
                     </Tab>
                 </Tabs>
             </div>
-            <LeaveEventModal
+            {eventid ? (
+                <LeaveEventModal
+                    backdrop={backdrop}
+                    eventID={eventid}
+                    isOpen={isOpen}
+                    onClose={onClose}
+                />
+            ) : null}
+            {/* <LeaveEventModal
                 backdrop={backdrop}
                 eventID={eventid}
                 isOpen={isOpen}
                 onClose={onClose}
-            />
+            /> */}
         </DefaultLayout>
     );
 }
