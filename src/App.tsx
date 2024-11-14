@@ -11,6 +11,8 @@ import MembersPage from './pages/members';
 import Post from './pages/Post';
 import AllPostEvent from './components/post/AllPostEvent';
 import PostDetail from './components/post/postDetail';
+import VoteDetail from './components/post/voteDetail';
+import FormDetail from './components/post/formDetail';
 
 import IndexPage from '@/pages/index';
 import DocsPage from '@/pages/docs';
@@ -91,6 +93,19 @@ function App() {
                 path="*"
             />
             <Route element={<Event />} path="/events" />
+            <Route
+                element={
+                    <Post>
+                        <Outlet />
+                    </Post>
+                }
+                path="/workspace/:eventid"
+            >
+                <Route index element={<AllPostEvent />} />
+                <Route element={<PostDetail />} path="post/:postid" />
+                <Route element={<VoteDetail />} path="vote/:postid" />
+                <Route element={<FormDetail />} path="form/:postid" />
+            </Route>
             <Route element={<CalendarPage />} path="/calendar" />
             <Route element={<TodoPage />} path="/todo" />
         </Routes>

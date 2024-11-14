@@ -210,6 +210,7 @@ export default function CreatePostModal() {
                             ) : null}
                             <DatePicker
                                 hideTimeZone
+                                showMonthAndYearPickers
                                 className="pr-1"
                                 defaultValue={now(getLocalTimeZone())}
                                 errorMessage={'Date is invalid'}
