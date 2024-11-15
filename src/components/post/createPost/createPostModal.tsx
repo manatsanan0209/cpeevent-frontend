@@ -35,13 +35,13 @@ export default function CreatePostModal() {
     const [formQuestions, setFormQuestions] = useState<
         { question: string; inputType: string; options: string[] }[]
     >([]);
-    const [postAsPublic, setPostAsPublic] = useState<boolean>(false);
 
     const [newPost, setNewPost] = useState<PostEventProps>({
         kind: 'post',
         assignTo: ['everyone'],
         title: '',
         description: '',
+        public: false,
         postDate: new Date().toISOString(),
         endDate: null,
         author: user as string,
@@ -75,8 +75,8 @@ export default function CreatePostModal() {
     }
 
     function completePost(kind: string) {
-        if (postAsPublic) {
-            newPost.assignTo = ['public'];
+        if (newPost.public) {
+            newPost.assignTo = [];
         }
         if (kind === 'post') {
             setNewPost({
@@ -172,7 +172,7 @@ export default function CreatePostModal() {
                                         className="pl-1"
                                         defaultSelectedKeys={['everyone']}
                                         errorMessage="This field is required"
-                                        isDisabled={postAsPublic}
+                                        isDisabled={newPost.public}
                                         isInvalid={newPost.assignTo[0] === ''}
                                         label="Assign To"
                                         selectionMode="multiple"
@@ -195,10 +195,14 @@ export default function CreatePostModal() {
                                     </Select>
                                     <Checkbox
                                         className="pl-4"
-                                        defaultSelected={postAsPublic}
+                                        color="default"
+                                        defaultSelected={newPost.public}
                                         size="sm"
                                         onChange={() => {
-                                            setPostAsPublic(!postAsPublic);
+                                            setNewPost({
+                                                ...newPost,
+                                                public: !newPost.public,
+                                            });
                                         }}
                                     >
                                         Post as Public
@@ -262,6 +266,7 @@ export default function CreatePostModal() {
                             <Checkbox
                                 defaultSelected
                                 className="pl-4 h-4"
+                                color="default"
                                 size="sm"
                                 onChange={() => {
                                     setDisableEndDate(!disableEndDate);
@@ -292,6 +297,7 @@ export default function CreatePostModal() {
                             <Button
                                 className="bg-violet-700 text-white"
                                 type="submit"
+                                onPress={onClose}
                             >
                                 Create Post
                             </Button>
