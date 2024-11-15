@@ -88,9 +88,9 @@ export const Sidebar = () => {
                         <ul className="flex flex-col gap-2 ml-2 list-disc">
                             {allEventData.map(
                                 (event) =>
-                                    event.staff?.some(
+                                    (event.staff?.some(
                                         (staff) => staff.stdID === user_id._id,
-                                    ) && (
+                                    ) || event.participants.includes(user_id._id)) && (
                                         <li key={event._id} className="ml-4">
                                             <Link
                                                 aria-label={event.eventName}
@@ -99,8 +99,7 @@ export const Sidebar = () => {
                                                         color: 'foreground',
                                                     }),
                                                     'data-[active=true]:text-primary data-[active=true]:font-medium cursor-pointer',
-                                                    currentPath ===
-                                                        `/workspace/${event._id}` &&
+                                                    currentPath.includes(event._id) &&
                                                         'text-violet-500 bg-default-100',
                                                     'flex items-center gap-2 p-2 rounded-lg hover:bg-default-100 dark:hover:bg-default-800 dark:hover:text-default-100',
                                                 )}
