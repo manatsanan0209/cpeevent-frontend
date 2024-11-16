@@ -318,7 +318,7 @@ export default function AllPostEvent() {
             <Skeleton isLoaded={!isLoading}>
                 <div className="max-w-full gap-6 grid grid-cols-12 px-8 my-8">
                     <Card
-                        className="col-span-12 sm:col-span-4 w-full"
+                        className="col-span-12 sm:col-span-4 w-full min-h-[369px]"
                         style={{ backgroundColor: '#efefef' }}
                     >
                         <Button
@@ -347,11 +347,6 @@ export default function AllPostEvent() {
                                     isPressable
                                     className="col-span-12 sm:col-span-4 w-full"
                                     onPress={() => {
-                                        console.log('Clicked');
-                                        console.log(post._id);
-                                        // router.push(
-                                        //     `/workspace/${eventId}/post/${post._id}`,
-                                        // );
                                         post.kind === 'post'
                                             ? navigate(
                                                   `/workspace/${eventid}/post/${post._id}`,
@@ -360,7 +355,9 @@ export default function AllPostEvent() {
                                               ? navigate(
                                                     `/workspace/${eventid}/vote/${post._id}`,
                                                 )
-                                              : null;
+                                              : navigate(
+                                                    `/workspace/${eventid}/form/${post._id}`,
+                                                );
                                     }}
                                 >
                                     <CardHeader className="flex gap-3 flex-col bg-zinc-75  items-start">
@@ -448,9 +445,17 @@ export default function AllPostEvent() {
                                             radius="full"
                                             size="sm"
                                             onClick={() => {
-                                                navigate(
-                                                    `/workspace/${eventid}/post/${post._id}`,
-                                                );
+                                                post.kind === 'post'
+                                                    ? navigate(
+                                                          `/workspace/${eventid}/post/${post._id}`,
+                                                      )
+                                                    : post.kind === 'vote'
+                                                      ? navigate(
+                                                            `/workspace/${eventid}/vote/${post._id}`,
+                                                        )
+                                                      : navigate(
+                                                            `/workspace/${eventid}/form/${post._id}`,
+                                                        );
                                             }}
                                         >
                                             Learn More

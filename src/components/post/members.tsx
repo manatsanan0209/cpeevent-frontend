@@ -1,45 +1,61 @@
-import type { Event } from '@/types/index';
-
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 import { axiosAPIInstance } from '@/api/axios-config.ts';
 
+interface StaffMember {
+    stdID: string;
+    name: string;
+    role: string;
+    phoneNumber: string;
+}
+
+interface Participant {
+    stdID: string;
+    name: string;
+    phoneNumber: string;
+}
+
+interface EventMembersType {
+    _id: string;
+    eventID: string;
+    staff: StaffMember[];
+    participants: Participant[];
+}
+
 export default function MembersPage() {
-    const [members, setMembers] = useState<
-        { stdID: string; role: string; name: string; tel: string }[]
-    >([]);
+    const location = useLocation();
+    const eventID = location.pathname.split("/")[2];
+
+    const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
+    const [participants, setParticipants] = useState<Participant[]>([]);
 
     const fetchEvents = async () => {
-        const response = await axiosAPIInstance.get('v1/events');
-
-        return response.data.data as Event[];
+        const response = await axiosAPIInstance.get(`v1/event/${eventID}/members`);
+        return response.data as EventMembersType;
     };
 
-    const { data: eventsData } = useQuery<Event[]>({
-        queryKey: ['events'],
+    const { data: eventsData } = useQuery<EventMembersType>({
+        queryKey: ['events', eventID],
         queryFn: fetchEvents,
     });
 
     useEffect(() => {
         if (eventsData) {
-            const allMembers = eventsData.flatMap((event) =>
-                event.staff.map((staffMember) => ({
-                    stdID: staffMember.stdID,
-                    role: staffMember.role,
-                    name: '',
-                    tel: '',
-                })),
-            );
-
-            setMembers(allMembers);
+            setStaffMembers(eventsData.staff);
+            console.log(staffMembers)
+            setParticipants(eventsData.participants);
         }
-    }, [eventsData]);
+        else {
+            console.log("No data")
+        }
+    }, [eventsData, eventID]);
 
     return (
         <div>
             <div className="font-bold text-4xl m-10 text-gray-700">Members</div>
-            <title>Members</title>
+            <div className="font-medium text-2xl ml-24 mb-2 text-gray-600 ">All staff</div>
             <div className="h-fit mx-20 rounded-xl shadow-md border border-gray-100 p-8">
                 <table className="w-full">
                     <thead>
@@ -59,7 +75,7 @@ export default function MembersPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {members
+                        {staffMembers
                             .sort((a, b) => {
                                 const roleComparison = a.role.localeCompare(
                                     b.role,
@@ -75,28 +91,46 @@ export default function MembersPage() {
                                 <tr
                                     key={index}
                                     className={
-                                        index === 0 ||
-                                        (index > 0 &&
-                                            member.role ===
-                                                members[index - 1].role)
-                                            ? 'border-t-0'
-                                            : 'border-t border-gray-300'
+                                        index === 0 || (index > 0 && member.role === staffMembers[index - 1].role)
+                                            ? "border-t-0"
+                                            : "border-t border-gray-300"
                                     }
                                 >
-                                    <td className="px-4 py-3 text-center text-gray-700">
-                                        {member.stdID}
-                                    </td>
-                                    <td className="px-4 py-3 text-center text-gray-700">
-                                        {member.name}
-                                    </td>
-                                    <td className="px-4 py-3 text-center text-gray-700">
-                                        {member.role}
-                                    </td>
-                                    <td className="px-4 py-3 text-center text-gray-700">
-                                        {member.tel}
-                                    </td>
+                                    <td className="px-4 py-3 text-center text-gray-700">{member.stdID}</td>
+                                    <td className="px-4 py-3 text-center text-gray-700">{member.name}</td>
+                                    <td className="px-4 py-3 text-center text-gray-700">{member.role}</td>
+                                    <td className="px-4 py-3 text-center text-gray-700">{member.phoneNumber}</td>
                                 </tr>
                             ))}
+                    </tbody>
+                </table>
+            </div>
+            <div className="font-medium text-2xl ml-24 mb-2 text-gray-600 mt-10">Participants</div>
+            <div className="h-fit mx-20 rounded-xl shadow-md border border-gray-100 p-8">
+                <table className="w-full">
+                    <thead>
+                        <tr className="bg-purple-200 w-fit">
+                            <th className="px-4 py-2 text-gray-700 rounded-l-lg">Student ID</th>
+                            <th className="px-4 py-2 text-gray-700 ">Name</th>
+                            <th className="px-4 py-2 text-gray-700 rounded-r-lg">Tel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {participants.length > 0 ? (
+                            participants.map((participant, index) => (
+                                <tr key={index} className="border-t border-gray-300">
+                                    <td className="px-4 py-3 text-center text-gray-700">{participant.stdID}</td>
+                                    <td className="px-4 py-3 text-center text-gray-700">{participant.name}</td>
+                                    <td className="px-4 py-3 text-center text-gray-700">{participant.phoneNumber}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={3} className="px-4 py-3 text-center text-gray-500">
+                                    No participants available.
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
