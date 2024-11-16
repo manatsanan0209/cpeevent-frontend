@@ -62,47 +62,54 @@ export default function VoteDetail() {
                     </small>
                 </CardHeader>
                 <Divider />
-                <CardBody className='overflow-visible py-2 m-5'>
-                    <div className="flex flex-col gap-1 w-full prose">
-                        {posts?.questions?.map((question, index) => (
-                            <>
-                                <RadioGroup
-                                    key={index}
-                                    classNames={{
-                                        base: 'w-full',
-                                    }}
-                                    label={question.question}
-                                    value={selected[index] || ''}
-                                    onValueChange={(value) =>
-                                        handleValueChange(index, value)
-                                    }
-                                >
-                                    {question.options.map((option, idx) => (
-                                        <Radio
-                                            key={idx}
-                                            classNames={{
-                                                base: cn(
-                                                    'inline-flex w-full max-w-md bg-content1',
-                                                    'hover:bg-content2 items-center',
-                                                    'cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent',
-                                                    'data-[selected=true]:border-primary',
-                                                    'bg-[selected=false]:bg-content1',
+                <Card>
+                    <CardBody className="overflow-visible py-2 m-5">
+                        <div className="flex flex-col gap-1 w-full prose">
+                            {posts?.questions?.map((question, index) => (
+                                <>
+                                    <RadioGroup
+                                        key={index}
+                                        label={
+                                            <p className="text-medium font-bold text-zinc-600">
+                                                {question.question}
+                                            </p>
+                                        }
+                                        value={selected[index] || ''}
+                                        onValueChange={(value) =>
+                                            handleValueChange(index, value)
+                                        }
+                                    >
+                                        <div className="flex flex-row">
+                                            {question.options.map(
+                                                (option, idx) => (
+                                                    <Radio
+                                                        key={idx}
+                                                        classNames={{
+                                                            base: cn(
+                                                                'inline-flex w-1/4 mx-4 max-w-md bg-content1',
+                                                                'hover:bg-content2 items-center',
+                                                                'cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent',
+                                                                'data-[selected=true]:border-primary',
+                                                                'bg-[selected=false]:bg-content1',
+                                                            ),
+                                                            label: 'w-full',
+                                                        }}
+                                                        value={option}
+                                                    >
+                                                        <p>{option}</p>
+                                                    </Radio>
                                                 ),
-                                                label: 'w-full',
-                                            }}
-                                            value={option}
-                                        >
-                                            <p>{option}</p>
-                                        </Radio>
-                                    ))}
-                                </RadioGroup>
-                                <p className="mt-4 ml-1 text-default-500">
-                                    Selected: {selected[index]}
-                                </p>
-                            </>
-                        ))}
-                    </div>
-                </CardBody>
+                                            )}
+                                        </div>
+                                    </RadioGroup>
+                                    <p className="mt-4 ml-1 text-default-500">
+                                        Selected: {selected[index]}
+                                    </p>
+                                </>
+                            ))}
+                        </div>
+                    </CardBody>
+                </Card>
             </Card>
         </>
     );

@@ -77,14 +77,6 @@ export default function Post(props: Props) {
                     </DropdownTrigger>
                     <DropdownMenu>
                         <DropdownItem
-                            className="text-zinc-600"
-                            onClick={() => {
-                                navigate(`/workspace/${eventid}/members`);
-                            }}
-                        >
-                            Member
-                        </DropdownItem>
-                        <DropdownItem
                             key="leave"
                             className="text-danger"
                             color="danger"
@@ -110,7 +102,7 @@ export default function Post(props: Props) {
                     <Tab key="Calendar" title="Calendar">
                         <CalendarPage />
                     </Tab>
-                    <Tab key="Notification" title="Notifications">
+                    <Tab key="Member" title="Member">
                         <CalendarPage />
                     </Tab>
                 </Tabs>
