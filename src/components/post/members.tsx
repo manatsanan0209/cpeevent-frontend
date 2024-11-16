@@ -56,8 +56,7 @@ export default function MembersPage() {
 
     return (
         <div>
-            <div className="font-bold text-4xl m-10 text-gray-700">Members</div>
-            <div className="font-medium text-2xl ml-24 mb-2 text-gray-600 ">
+            <div className=" ml-24 mb-2 text-zinc-600 font-bold text-large w-full  mt-4">
                 All staff
             </div>
             <div className="h-fit mx-20 rounded-xl shadow-md border border-gray-100 p-8">
@@ -120,7 +119,7 @@ export default function MembersPage() {
                     </tbody>
                 </table>
             </div>
-            <div className="font-medium text-2xl ml-24 mb-2 text-gray-600 mt-10">
+            <div className=" ml-24 mb-2 mt-10 text-zinc-600 font-bold text-large w-full">
                 Participants
             </div>
             <div className="h-fit mx-20 rounded-xl shadow-md border border-gray-100 p-8">
