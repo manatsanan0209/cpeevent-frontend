@@ -52,7 +52,7 @@ export default function CreatePostModal() {
         if (!event.role.includes('everyone')) {
             event.role.push('everyone');
         }
-    }, []);
+    }, [event.role]);
 
     useEffect(() => {
         if (newPost.kind === 'form') {
@@ -107,6 +107,7 @@ export default function CreatePostModal() {
         } else if (kind === 'form') {
             updatedPost.questions = formQuestions;
         }
+        console.log(updatedPost);
 
         postToAPI(updatedPost);
     }
@@ -181,12 +182,15 @@ export default function CreatePostModal() {
                                     <Select
                                         isRequired
                                         className="pl-1"
-                                        defaultSelectedKeys={['everyone']}
                                         errorMessage="This field is required"
                                         isDisabled={newPost.public}
                                         isInvalid={newPost.assignTo[0] === ''}
                                         label="Assign To"
+                                        selectedKeys={newPost.assignTo.filter(
+                                            (key) => event.role.includes(key),
+                                        )}
                                         selectionMode="multiple"
+                                        value={newPost.assignTo}
                                         onChange={(e) =>
                                             setNewPost({
                                                 ...newPost,
@@ -194,7 +198,11 @@ export default function CreatePostModal() {
                                                     e.target.value,
                                                 )
                                                     ? e.target.value
-                                                    : [e.target.value],
+                                                    : e.target.value
+                                                          .split(',')
+                                                          .map((value) =>
+                                                              value.trim(),
+                                                          ),
                                             })
                                         }
                                     >
