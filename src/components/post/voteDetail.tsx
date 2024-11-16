@@ -13,12 +13,11 @@ const CountdownTimer = ({ endDate }: { endDate: string }) => {
 
     useEffect(() => {
         if (endDate) {
-            const end = new Date(endDate).getTime() - 7 * 60 * 60 * 1000;
+            const end = new Date(endDate); // ใช้ endDate ตรงๆ เลย
+
             const updateCountdown = () => {
                 const now = new Date();
-
-                now.setHours(now.getHours());
-                const difference = end - now.getTime();
+                const difference = end.getTime() - now.getTime();
 
                 if (difference <= 0) {
                     setTimeLeft('Time up!');
@@ -48,7 +47,7 @@ const CountdownTimer = ({ endDate }: { endDate: string }) => {
                     setTimeLeft('Tomorrow');
                 } else {
                     setTimeLeft(
-                        new Date(end).toLocaleDateString('en-GB', {
+                        end.toLocaleDateString('en-GB', {
                             day: '2-digit',
                             month: '2-digit',
                             year: 'numeric',
