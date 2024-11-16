@@ -91,6 +91,7 @@ export default function CreatePostModal() {
         } catch (error) {
             console.error('Error creating post:', error);
         }
+        window.location.reload();
     }
 
     function completePost(kind: string) {
@@ -98,6 +99,16 @@ export default function CreatePostModal() {
 
         if (newPost.public) {
             updatedPost.assignTo = [];
+        }
+
+        updatedPost.postDate = new Date(
+            new Date().getTime() + 7 * 60 * 60 * 1000,
+        ).toISOString();
+
+        if (updatedPost.endDate) {
+            updatedPost.endDate = new Date(
+                new Date(updatedPost.endDate).getTime() + 7 * 60 * 60 * 1000,
+            ).toISOString();
         }
 
         if (kind === 'post') {
