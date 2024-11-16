@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Button,
     RadioGroup,
@@ -17,12 +17,49 @@ import { useParams } from 'react-router-dom';
 import { axiosAPIInstance } from '@/api/axios-config';
 import { PostEventProps } from '@/types';
 
+const CountdownTimer = ({ endDate }: { endDate: string }) => {
+    const [timeLeft, setTimeLeft] = useState('');
+
+    useEffect(() => {
+        if (endDate) {
+            const end = new Date(endDate);
+            const updateCountdown = () => {
+                const now = new Date().getTime() + 7 * 60 * 60 * 1000;
+                const difference = end.getTime() - now;
+
+                if (difference <= 0) {
+                    setTimeLeft('Time up!');
+                } else if (difference <= 24 * 60 * 60 * 1000) {
+                    const hours = Math.floor(difference / (1000 * 60 * 60));
+                    const minutes = Math.floor(
+                        (difference % (1000 * 60 * 60)) / (1000 * 60),
+                    );
+                    const seconds = Math.floor(
+                        (difference % (1000 * 60)) / 1000,
+                    );
+
+                    setTimeLeft(
+                        `${hours} hrs. ${minutes} mint. ${seconds} sec.`,
+                    );
+                } else {
+                    setTimeLeft(end.toLocaleString());
+                }
+            };
+
+            updateCountdown();
+            const intervalId = setInterval(updateCountdown, 1000);
+
+            return () => clearInterval(intervalId);
+        }
+    }, [endDate]);
+
+    return <p>{timeLeft}</p>;
+};
+
 export default function VoteDetail() {
     const { postid } = useParams();
     const navigate = useNavigate();
-    const [selected, setSelected] = React.useState<{ [key: number]: string }>(
-        {},
-    );
+    const [selected, setSelected] = useState<{ [key: number]: string }>({});
 
     const fetchPosts = async () => {
         const response = await axiosAPIInstance.get(`v1/posts/${postid}`);
@@ -34,8 +71,6 @@ export default function VoteDetail() {
         queryKey: ['posts', postid],
         queryFn: fetchPosts,
     });
-
-    console.log(posts);
 
     const handleValueChange = (index: number, value: string) => {
         setSelected((prevSelected) => ({
@@ -53,7 +88,12 @@ export default function VoteDetail() {
             </div>
             <Card className="py-4">
                 <CardHeader className="pb-0 pt-2 px-4 flex-col items-start m-5">
-                    <h1 className="font-bold text-5xl mb-2">{posts?.title}</h1>
+                    <div>
+                        <h1 className="font-bold text-5xl mb-2">
+                            {posts?.title}
+                        </h1>
+                        <CountdownTimer endDate={posts?.endDate || ''} />
+                    </div>
                     <p className="text-gray-500 text-default-500 p-2">
                         {posts?.description}
                     </p>
@@ -62,13 +102,12 @@ export default function VoteDetail() {
                     </small>
                 </CardHeader>
                 <Divider />
-                <Card>
-                    <CardBody className="overflow-visible py-2 m-5">
+                <CardBody className="overflow-visible py-2 m-5">
+                    <Card className="w-2/3 mx-auto my-3 py-3">
                         <div className="flex flex-col gap-1 w-full prose">
                             {posts?.questions?.map((question, index) => (
-                                <>
+                                <React.Fragment key={index}>
                                     <RadioGroup
-                                        key={index}
                                         label={
                                             <p className="text-medium font-bold text-zinc-600">
                                                 {question.question}
@@ -105,11 +144,11 @@ export default function VoteDetail() {
                                     <p className="mt-4 ml-1 text-default-500">
                                         Selected: {selected[index]}
                                     </p>
-                                </>
+                                </React.Fragment>
                             ))}
                         </div>
-                    </CardBody>
-                </Card>
+                    </Card>
+                </CardBody>
             </Card>
         </>
     );

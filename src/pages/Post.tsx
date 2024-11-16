@@ -13,6 +13,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { LuMoreHorizontal } from 'react-icons/lu';
 import { useParams } from 'react-router-dom';
+import MembersPage from '@/components/post/members';
 
 import CalendarPage from './calendar';
 
@@ -103,7 +104,7 @@ export default function Post(props: Props) {
                         <CalendarPage />
                     </Tab>
                     <Tab key="Member" title="Member">
-                        <CalendarPage />
+                        <MembersPage />
                     </Tab>
                 </Tabs>
             </div>
