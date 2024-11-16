@@ -16,6 +16,7 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getLocalTimeZone, now } from '@internationalized/date';
+import axios from 'axios';
 
 import PostKindPost from './postKindPost';
 import PostKindVote from './postKindVote';
@@ -74,30 +75,40 @@ export default function CreatePostModal() {
         return false;
     }
 
+    async function postToAPI(updatedPost: PostEventProps) {
+        const token = localStorage.getItem('token');
+        const eventid = window.location.pathname.split('/')[2];
+        const final = { eventID: eventid, updatedPost: { ...updatedPost } };
+
+        try {
+            const response = await axios.post('v1/posts/create', final, {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Replace with your actual access token
+                },
+            });
+
+            console.log('Post created successfully:', response.data);
+        } catch (error) {
+            console.error('Error creating post:', error);
+        }
+    }
+
     function completePost(kind: string) {
+        let updatedPost = { ...newPost, postDate: new Date().toISOString() };
+
         if (newPost.public) {
-            newPost.assignTo = [];
+            updatedPost.assignTo = [];
         }
+
         if (kind === 'post') {
-            setNewPost({
-                ...newPost,
-                postDate: new Date().toISOString(),
-                markdown,
-            });
+            updatedPost.markdown = markdown;
         } else if (kind === 'vote') {
-            setNewPost({
-                ...newPost,
-                postDate: new Date().toISOString(),
-                questions: voteQuestions,
-            });
+            updatedPost.questions = voteQuestions;
         } else if (kind === 'form') {
-            setNewPost({
-                ...newPost,
-                postDate: new Date().toISOString(),
-                questions: formQuestions,
-            });
+            updatedPost.questions = formQuestions;
         }
-        console.log('Complete !', newPost);
+
+        postToAPI(updatedPost);
     }
 
     return (
