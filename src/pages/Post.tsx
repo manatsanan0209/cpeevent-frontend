@@ -10,13 +10,12 @@ import {
     Tab,
     useDisclosure,
 } from '@nextui-org/react';
-import { useNavigate } from 'react-router-dom';
 import { LuMoreHorizontal } from 'react-icons/lu';
 import { useParams } from 'react-router-dom';
-import MembersPage from '@/components/post/members';
 
 import CalendarPage from './calendar';
 
+import MembersPage from '@/components/post/members';
 import LeaveEventModal from '@/components/post/leaveEventModal';
 import DefaultLayout from '@/layouts/default';
 import { axiosAPIInstance } from '@/api/axios-config';
@@ -25,7 +24,6 @@ interface Props {
 }
 
 export default function Post(props: Props) {
-    const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [eventName, setEventName] = React.useState<string | null>(null);
 
