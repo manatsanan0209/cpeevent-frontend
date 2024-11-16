@@ -16,6 +16,7 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getLocalTimeZone, now } from '@internationalized/date';
+import axios from 'axios';
 
 import PostKindPost from './postKindPost';
 import PostKindVote from './postKindVote';
@@ -51,7 +52,7 @@ export default function CreatePostModal() {
         if (!event.role.includes('everyone')) {
             event.role.push('everyone');
         }
-    }, []);
+    }, [event.role]);
 
     useEffect(() => {
         if (newPost.kind === 'form') {
@@ -74,30 +75,52 @@ export default function CreatePostModal() {
         return false;
     }
 
+    async function postToAPI(updatedPost: PostEventProps) {
+        const token = localStorage.getItem('token');
+        const eventid = window.location.pathname.split('/')[2];
+        const final = { eventID: eventid, updatedPost: { ...updatedPost } };
+
+        try {
+            const response = await axios.post('v1/posts/create', final, {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Replace with your actual access token
+                },
+            });
+
+            console.log('Post created successfully:', response.data);
+        } catch (error) {
+            console.error('Error creating post:', error);
+        }
+        window.location.reload();
+    }
+
     function completePost(kind: string) {
+        let updatedPost = { ...newPost, postDate: new Date().toISOString() };
+
         if (newPost.public) {
-            newPost.assignTo = [];
+            updatedPost.assignTo = [];
         }
+
+        updatedPost.postDate = new Date(
+            new Date().getTime() + 7 * 60 * 60 * 1000,
+        ).toISOString();
+
+        if (updatedPost.endDate) {
+            updatedPost.endDate = new Date(
+                new Date(updatedPost.endDate).getTime() + 7 * 60 * 60 * 1000,
+            ).toISOString();
+        }
+
         if (kind === 'post') {
-            setNewPost({
-                ...newPost,
-                postDate: new Date().toISOString(),
-                markdown,
-            });
+            updatedPost.markdown = markdown;
         } else if (kind === 'vote') {
-            setNewPost({
-                ...newPost,
-                postDate: new Date().toISOString(),
-                questions: voteQuestions,
-            });
+            updatedPost.questions = voteQuestions;
         } else if (kind === 'form') {
-            setNewPost({
-                ...newPost,
-                postDate: new Date().toISOString(),
-                questions: formQuestions,
-            });
+            updatedPost.questions = formQuestions;
         }
-        console.log('Complete !', newPost);
+        console.log(updatedPost);
+
+        postToAPI(updatedPost);
     }
 
     return (
@@ -170,12 +193,15 @@ export default function CreatePostModal() {
                                     <Select
                                         isRequired
                                         className="pl-1"
-                                        defaultSelectedKeys={['everyone']}
                                         errorMessage="This field is required"
                                         isDisabled={newPost.public}
                                         isInvalid={newPost.assignTo[0] === ''}
                                         label="Assign To"
+                                        selectedKeys={newPost.assignTo.filter(
+                                            (key) => event.role.includes(key),
+                                        )}
                                         selectionMode="multiple"
+                                        value={newPost.assignTo}
                                         onChange={(e) =>
                                             setNewPost({
                                                 ...newPost,
@@ -183,7 +209,11 @@ export default function CreatePostModal() {
                                                     e.target.value,
                                                 )
                                                     ? e.target.value
-                                                    : [e.target.value],
+                                                    : e.target.value
+                                                          .split(',')
+                                                          .map((value) =>
+                                                              value.trim(),
+                                                          ),
                                             })
                                         }
                                     >
