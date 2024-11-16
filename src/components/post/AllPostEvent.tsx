@@ -203,17 +203,29 @@ export default function AllPostEvent() {
 
     const formatDate = (dateString: string, Kinddate: string) => {
         let date = new Date(dateString);
-
         const now = new Date();
-        const diff = now.getTime() - date.getTime();
-
+        const diff = now.getTime() - date.getTime() + 7 * 60 * 60 * 1000;
         let diffMinutes = diff / (1000 * 60);
         let diffHours = diff / (1000 * 60 * 60);
         let diffDays = diff / (1000 * 60 * 60 * 24);
 
-        diffMinutes = Math.floor(Math.abs(diffMinutes));
-        diffHours = Math.floor(Math.abs(diffHours));
-        diffDays = Math.floor(Math.abs(diffDays));
+        if (diffMinutes < 0 && diffMinutes > -1) {
+            diffMinutes = 0;
+        } else {
+            diffMinutes = Math.floor(diffMinutes);
+        }
+
+        if (diffHours < 0 && diffHours > -1) {
+            diffHours = 0;
+        } else {
+            diffHours = Math.floor(diffHours);
+        }
+
+        if (diffDays < 0 && diffDays > -1) {
+            diffDays = 0;
+        } else {
+            diffDays = Math.floor(diffDays);
+        }
 
         if (diff > 0 && Kinddate === 'end') {
             return 'Ended';
@@ -221,7 +233,14 @@ export default function AllPostEvent() {
 
         if (diffDays === 0) {
             if (diffHours === 0) {
+                if (diffMinutes < 0) {
+                    diffMinutes = -diffMinutes;
+                }
+
                 return `${diffMinutes} minutes`;
+            }
+            if (diffHours < 0) {
+                diffHours = -diffHours;
             }
 
             return `${diffHours} hours`;
@@ -230,8 +249,7 @@ export default function AllPostEvent() {
         } else if (diffDays === -2) {
             return 'Tomorrow';
         } else {
-            //  (UTC+7)
-            date.setHours(date.getHours() + 7);
+            date = new Date(date.getTime() - 7 * 60 * 60 * 1000);
 
             return date.toLocaleDateString('en-GB', {
                 day: '2-digit',
