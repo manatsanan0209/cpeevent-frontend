@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-    Button,
-    RadioGroup,
-    Radio,
-    cn,
-    Card,
-    CardHeader,
-    Divider,
-    CardBody,
-} from '@nextui-org/react';
+import { Button, cn, Card, CardHeader, CardBody } from '@nextui-org/react';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -22,10 +13,12 @@ const CountdownTimer = ({ endDate }: { endDate: string }) => {
 
     useEffect(() => {
         if (endDate) {
-            const end = new Date(endDate);
+            const end = new Date(endDate).getTime() - 7 * 60 * 60 * 1000;
             const updateCountdown = () => {
-                const now = new Date().getTime() + 7 * 60 * 60 * 1000;
-                const difference = end.getTime() - now;
+                const now = new Date();
+
+                now.setHours(now.getHours());
+                const difference = end - now.getTime();
 
                 if (difference <= 0) {
                     setTimeLeft('Time up!');
@@ -38,11 +31,29 @@ const CountdownTimer = ({ endDate }: { endDate: string }) => {
                         (difference % (1000 * 60)) / 1000,
                     );
 
-                    setTimeLeft(
-                        `${hours} hrs. ${minutes} mint. ${seconds} sec.`,
-                    );
+                    let timeString = '';
+
+                    if (hours > 0) {
+                        timeString += `${hours} hrs `;
+                    }
+                    if (minutes > 0) {
+                        timeString += `${minutes} mins `;
+                    }
+                    if (hours === 0) {
+                        timeString += `${seconds} secs `;
+                    }
+
+                    setTimeLeft(timeString.trim());
+                } else if (difference <= 48 * 60 * 60 * 1000) {
+                    setTimeLeft('Tomorrow');
                 } else {
-                    setTimeLeft(end.toLocaleString());
+                    setTimeLeft(
+                        new Date(end).toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                        }),
+                    );
                 }
             };
 
@@ -53,7 +64,15 @@ const CountdownTimer = ({ endDate }: { endDate: string }) => {
         }
     }, [endDate]);
 
-    return <p>{timeLeft}</p>;
+    return (
+        <p
+            className={
+                timeLeft === 'Time up!' ? 'text-red-500' : 'text-blue-500'
+            }
+        >
+            {timeLeft}
+        </p>
+    );
 };
 
 export default function VoteDetail() {
@@ -88,60 +107,63 @@ export default function VoteDetail() {
             </div>
             <Card className="py-4">
                 <CardHeader className="pb-0 pt-2 px-4 flex-col items-start m-5">
-                    <div>
-                        <h1 className="font-bold text-5xl mb-2">
+                    <div className="flex justify-between w-full">
+                        <h1 className="flex font-bold text-5xl mb-2">
                             {posts?.title}
                         </h1>
-                        <CountdownTimer endDate={posts?.endDate || ''} />
+                        {posts?.endDate && (
+                            <div className="flex flex-row justify-end items-center text-md text-zinc-600 font-bold ml-auto mr-10">
+                                <span className="flex mr-1">End Date:</span>
+                                <span className="flex">
+                                    <CountdownTimer endDate={posts.endDate} />
+                                </span>
+                            </div>
+                        )}
                     </div>
-                    <p className="text-gray-500 text-default-500 p-2">
-                        {posts?.description}
-                    </p>
+                    <p className="text-default-500 p-2">{posts?.description}</p>
                     <small className="text-default-500 mt-3">
                         Author : {posts?.author}
                     </small>
                 </CardHeader>
-                <Divider />
+
+                {/* <Divider /> */}
                 <CardBody className="overflow-visible py-2 m-5">
-                    <Card className="w-2/3 mx-auto my-3 py-3">
-                        <div className="flex flex-col gap-1 w-full prose">
+                    <Card className="w-4/6 mx-auto my-3 py-3 ">
+                        <div className="flex flex-col gap-1 w-full prose px-10 py-3">
                             {posts?.questions?.map((question, index) => (
                                 <React.Fragment key={index}>
-                                    <RadioGroup
-                                        label={
-                                            <p className="text-medium font-bold text-zinc-600">
-                                                {question.question}
-                                            </p>
-                                        }
-                                        value={selected[index] || ''}
-                                        onValueChange={(value) =>
-                                            handleValueChange(index, value)
-                                        }
-                                    >
-                                        <div className="flex flex-row">
-                                            {question.options.map(
-                                                (option, idx) => (
-                                                    <Radio
-                                                        key={idx}
-                                                        classNames={{
-                                                            base: cn(
-                                                                'inline-flex w-1/4 mx-4 max-w-md bg-content1',
-                                                                'hover:bg-content2 items-center',
-                                                                'cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent',
-                                                                'data-[selected=true]:border-primary',
-                                                                'bg-[selected=false]:bg-content1',
-                                                            ),
-                                                            label: 'w-full',
-                                                        }}
-                                                        value={option}
-                                                    >
-                                                        <p>{option}</p>
-                                                    </Radio>
-                                                ),
-                                            )}
-                                        </div>
-                                    </RadioGroup>
-                                    <p className="mt-4 ml-1 text-default-500">
+                                    <p className="text-medium font-semibold text-zinc-700 py-3">
+                                        {question.question}
+                                    </p>
+                                    <div className="flex flex-row flex-wrap justify-center gap-4">
+                                        {question.options.map((option, idx) => (
+                                            <button
+                                                key={idx}
+                                                aria-pressed={
+                                                    selected[index] === option
+                                                }
+                                                className={cn(
+                                                    'w-5/12 px-8 py-3 mr-5 mt-8 text-sm font-medium transition-all duration-200 ease-in-out',
+                                                    'bg-neutral-100 text-violet-700 shadow-sm font-bold',
+                                                    'hover:bg-violet-100 hover:text-violet-500 hover:shadow-md hover:scale-105',
+                                                    'active:scale-95 active:shadow-sm',
+                                                    'rounded-xl',
+                                                    selected[index] === option
+                                                        ? 'bg-purple-200 border-2 border-violet-500 ring-1 ring-violet-300'
+                                                        : 'border-transparent',
+                                                )}
+                                                onClick={() =>
+                                                    handleValueChange(
+                                                        index,
+                                                        option,
+                                                    )
+                                                }
+                                            >
+                                                {option}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <p className="mt-4 ml-1 text-gray-600">
                                         Selected: {selected[index]}
                                     </p>
                                 </React.Fragment>
