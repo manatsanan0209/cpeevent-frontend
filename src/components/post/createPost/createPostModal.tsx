@@ -41,6 +41,7 @@ export default function CreatePostModal() {
         assignTo: ['everyone'],
         title: '',
         description: '',
+        public: false,
         postDate: new Date().toISOString(),
         endDate: null,
         author: user as string,
@@ -74,6 +75,9 @@ export default function CreatePostModal() {
     }
 
     function completePost(kind: string) {
+        if (newPost.public) {
+            newPost.assignTo = [];
+        }
         if (kind === 'post') {
             setNewPost({
                 ...newPost,
@@ -162,31 +166,48 @@ export default function CreatePostModal() {
                                         Vote
                                     </SelectItem>
                                 </Select>
-                                <Select
-                                    isRequired
-                                    className="pl-1"
-                                    defaultSelectedKeys={['everyone']}
-                                    errorMessage="This field is required"
-                                    isInvalid={newPost.assignTo[0] === ''}
-                                    label="Assign To"
-                                    selectionMode="multiple"
-                                    onChange={(e) =>
-                                        setNewPost({
-                                            ...newPost,
-                                            assignTo: Array.isArray(
-                                                e.target.value,
-                                            )
-                                                ? e.target.value
-                                                : [e.target.value],
-                                        })
-                                    }
-                                >
-                                    {event.role.map((role) => (
-                                        <SelectItem key={role} value={role}>
-                                            {role}
-                                        </SelectItem>
-                                    ))}
-                                </Select>
+                                <div className="flex flex-col w-full">
+                                    <Select
+                                        isRequired
+                                        className="pl-1"
+                                        defaultSelectedKeys={['everyone']}
+                                        errorMessage="This field is required"
+                                        isDisabled={newPost.public}
+                                        isInvalid={newPost.assignTo[0] === ''}
+                                        label="Assign To"
+                                        selectionMode="multiple"
+                                        onChange={(e) =>
+                                            setNewPost({
+                                                ...newPost,
+                                                assignTo: Array.isArray(
+                                                    e.target.value,
+                                                )
+                                                    ? e.target.value
+                                                    : [e.target.value],
+                                            })
+                                        }
+                                    >
+                                        {event.role.map((role) => (
+                                            <SelectItem key={role} value={role}>
+                                                {role}
+                                            </SelectItem>
+                                        ))}
+                                    </Select>
+                                    <Checkbox
+                                        className="pl-4"
+                                        color="default"
+                                        defaultSelected={newPost.public}
+                                        size="sm"
+                                        onChange={() => {
+                                            setNewPost({
+                                                ...newPost,
+                                                public: !newPost.public,
+                                            });
+                                        }}
+                                    >
+                                        Post as Public
+                                    </Checkbox>
+                                </div>
                             </div>
 
                             {newPost.kind === 'form' ? (
@@ -245,6 +266,7 @@ export default function CreatePostModal() {
                             <Checkbox
                                 defaultSelected
                                 className="pl-4 h-4"
+                                color="default"
                                 size="sm"
                                 onChange={() => {
                                     setDisableEndDate(!disableEndDate);
@@ -275,6 +297,7 @@ export default function CreatePostModal() {
                             <Button
                                 className="bg-violet-700 text-white"
                                 type="submit"
+                                onPress={onClose}
                             >
                                 Create Post
                             </Button>
