@@ -11,15 +11,7 @@ import {
     ModalContent,
     ModalFooter,
 } from '@nextui-org/react';
-import {
-    BarChart,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    Bar,
-} from 'recharts';
+import { BarChart, CartesianGrid } from 'recharts';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -39,11 +31,12 @@ const CountdownTimer = ({
 
     useEffect(() => {
         if (endDate) {
-            const end = new Date(endDate);
-
+            const end = new Date(endDate).getTime() - 7 * 60 * 60 * 1000;
             const updateCountdown = () => {
                 const now = new Date();
-                const difference = end.getTime() - now.getTime();
+
+                now.setHours(now.getHours());
+                const difference = end - now.getTime();
 
                 if (difference <= 0) {
                     setTimeLeft('Time up!');
@@ -74,7 +67,7 @@ const CountdownTimer = ({
                     setTimeLeft('Tomorrow');
                 } else {
                     setTimeLeft(
-                        end.toLocaleDateString('en-GB', {
+                        new Date(end).toLocaleDateString('en-GB', {
                             day: '2-digit',
                             month: '2-digit',
                             year: 'numeric',
@@ -88,7 +81,7 @@ const CountdownTimer = ({
 
             return () => clearInterval(intervalId);
         }
-    }, [endDate, onTimeup]);
+    }, [endDate]);
 
     return (
         <p
