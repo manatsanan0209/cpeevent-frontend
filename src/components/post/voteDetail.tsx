@@ -144,7 +144,7 @@ export default function VoteDetail() {
         posts?.questions?.forEach((_, index) => {
             if (!selected[index]?.length) {
                 isValid = false;
-                newErrors[index] = 'You must select at least one option.';
+                newErrors[index] = '( You must select at least one option. )';
             }
         });
 
@@ -205,7 +205,7 @@ export default function VoteDetail() {
                 </CardHeader>
 
                 {timeUp ? (
-                    <div className="w-4/6 mx-auto my-3 py-3">
+                    <div className="w-4/6 mx-auto py-3">
                         <h2 className="text-center font-bold text-xl mb-4">
                             Voting Results
                         </h2>
@@ -224,8 +224,8 @@ export default function VoteDetail() {
                         </BarChart>
                     </div>
                 ) : (
-                    <CardBody className="overflow-visible py-2 m-5">
-                        <Card className="w-4/6 mx-auto my-3 py-3">
+                    <CardBody className="overflow-visible">
+                        <Card className="w-4/6 mx-auto my-3">
                             <div className="flex flex-col gap-1 w-full prose px-10 py-3">
                                 {posts?.questions?.map((question, index) => (
                                     <React.Fragment key={index}>
@@ -246,7 +246,7 @@ export default function VoteDetail() {
                                                     </div>
                                                 )}
                                                 {errors[index] && (
-                                                    <p className="text-red-500 text-sm mt-2">
+                                                    <p className="text-red-500 text-sm items-center ml-2">
                                                         {errors[index]}
                                                     </p>
                                                 )}
