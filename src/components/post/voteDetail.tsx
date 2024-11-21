@@ -160,11 +160,6 @@ export default function VoteDetail() {
         setIsModalVisible(false);
     };
 
-    const handleLeaveEvent = () => {
-        console.log('Event left');
-        setIsModalVisible(false);
-    };
-
     const data = [
         { name: 'Option 1', votes: 400 },
         { name: 'Option 2', votes: 300 },
@@ -311,16 +306,21 @@ export default function VoteDetail() {
             <Modal isOpen={isModalVisible} onClose={handleModalClose}>
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">
-                        Leave Event Confirmation
+                        Are you sure you want to submit your answers?
                     </ModalHeader>
                     <ModalBody className="flex flex-row">
-                        Are you sure you want to leave this event?
+                        You will not be able to change your answers after
+                        submission.
                     </ModalBody>
                     <ModalFooter>
-                        <Button variant="light" onPress={handleModalClose}>
+                        <Button
+                            color="danger"
+                            variant="light"
+                            onPress={handleModalClose}
+                        >
                             Cancel
                         </Button>
-                        <Button color="danger" onPress={handleLeaveEvent}>
+                        <Button color="secondary" onPress={handleModalClose}>
                             Confirm
                         </Button>
                     </ModalFooter>
