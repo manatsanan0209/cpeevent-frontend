@@ -320,7 +320,7 @@ export default function VoteDetail() {
                         >
                             Cancel
                         </Button>
-                        <Button color="secondary" onPress={handleLeaveEvent}>
+                        <Button color="secondary" onPress={handleModalClose}>
                             Confirm
                         </Button>
                     </ModalFooter>
