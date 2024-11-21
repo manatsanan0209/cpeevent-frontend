@@ -16,6 +16,7 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getLocalTimeZone, now } from '@internationalized/date';
+import axios from 'axios';
 
 import PostKindPost from './postKindPost';
 import PostKindVote from './postKindVote';
@@ -41,6 +42,7 @@ export default function CreatePostModal() {
         assignTo: ['everyone'],
         title: '',
         description: '',
+        public: false,
         postDate: new Date().toISOString(),
         endDate: null,
         author: user as string,
@@ -50,7 +52,7 @@ export default function CreatePostModal() {
         if (!event.role.includes('everyone')) {
             event.role.push('everyone');
         }
-    }, []);
+    }, [event.role]);
 
     useEffect(() => {
         if (newPost.kind === 'form') {
@@ -73,27 +75,52 @@ export default function CreatePostModal() {
         return false;
     }
 
-    function completePost(kind: string) {
-        if (kind === 'post') {
-            setNewPost({
-                ...newPost,
-                postDate: new Date().toISOString(),
-                markdown,
+    async function postToAPI(updatedPost: PostEventProps) {
+        const token = localStorage.getItem('token');
+        const eventid = window.location.pathname.split('/')[2];
+        const final = { eventID: eventid, updatedPost: { ...updatedPost } };
+
+        try {
+            const response = await axios.post('v1/posts/create', final, {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Replace with your actual access token
+                },
             });
-        } else if (kind === 'vote') {
-            setNewPost({
-                ...newPost,
-                postDate: new Date().toISOString(),
-                questions: voteQuestions,
-            });
-        } else if (kind === 'form') {
-            setNewPost({
-                ...newPost,
-                postDate: new Date().toISOString(),
-                questions: formQuestions,
-            });
+
+            console.log('Post created successfully:', response.data);
+        } catch (error) {
+            console.error('Error creating post:', error);
         }
-        console.log('Complete !', newPost);
+        window.location.reload();
+    }
+
+    function completePost(kind: string) {
+        let updatedPost = { ...newPost, postDate: new Date().toISOString() };
+
+        if (newPost.public) {
+            updatedPost.assignTo = [];
+        }
+
+        updatedPost.postDate = new Date(
+            new Date().getTime() + 7 * 60 * 60 * 1000,
+        ).toISOString();
+
+        if (updatedPost.endDate) {
+            updatedPost.endDate = new Date(
+                new Date(updatedPost.endDate).getTime() + 7 * 60 * 60 * 1000,
+            ).toISOString();
+        }
+
+        if (kind === 'post') {
+            updatedPost.markdown = markdown;
+        } else if (kind === 'vote') {
+            updatedPost.questions = voteQuestions;
+        } else if (kind === 'form') {
+            updatedPost.questions = formQuestions;
+        }
+        console.log(updatedPost);
+
+        postToAPI(updatedPost);
     }
 
     return (
@@ -162,31 +189,55 @@ export default function CreatePostModal() {
                                         Vote
                                     </SelectItem>
                                 </Select>
-                                <Select
-                                    isRequired
-                                    className="pl-1"
-                                    defaultSelectedKeys={['everyone']}
-                                    errorMessage="This field is required"
-                                    isInvalid={newPost.assignTo[0] === ''}
-                                    label="Assign To"
-                                    selectionMode="multiple"
-                                    onChange={(e) =>
-                                        setNewPost({
-                                            ...newPost,
-                                            assignTo: Array.isArray(
-                                                e.target.value,
-                                            )
-                                                ? e.target.value
-                                                : [e.target.value],
-                                        })
-                                    }
-                                >
-                                    {event.role.map((role) => (
-                                        <SelectItem key={role} value={role}>
-                                            {role}
-                                        </SelectItem>
-                                    ))}
-                                </Select>
+                                <div className="flex flex-col w-full">
+                                    <Select
+                                        isRequired
+                                        className="pl-1"
+                                        errorMessage="This field is required"
+                                        isDisabled={newPost.public}
+                                        isInvalid={newPost.assignTo[0] === ''}
+                                        label="Assign To"
+                                        selectedKeys={newPost.assignTo.filter(
+                                            (key) => event.role.includes(key),
+                                        )}
+                                        selectionMode="multiple"
+                                        value={newPost.assignTo}
+                                        onChange={(e) =>
+                                            setNewPost({
+                                                ...newPost,
+                                                assignTo: Array.isArray(
+                                                    e.target.value,
+                                                )
+                                                    ? e.target.value
+                                                    : e.target.value
+                                                          .split(',')
+                                                          .map((value) =>
+                                                              value.trim(),
+                                                          ),
+                                            })
+                                        }
+                                    >
+                                        {event.role.map((role) => (
+                                            <SelectItem key={role} value={role}>
+                                                {role}
+                                            </SelectItem>
+                                        ))}
+                                    </Select>
+                                    <Checkbox
+                                        className="pl-4"
+                                        color="default"
+                                        defaultSelected={newPost.public}
+                                        size="sm"
+                                        onChange={() => {
+                                            setNewPost({
+                                                ...newPost,
+                                                public: !newPost.public,
+                                            });
+                                        }}
+                                    >
+                                        Post as Public
+                                    </Checkbox>
+                                </div>
                             </div>
 
                             {newPost.kind === 'form' ? (
@@ -245,6 +296,7 @@ export default function CreatePostModal() {
                             <Checkbox
                                 defaultSelected
                                 className="pl-4 h-4"
+                                color="default"
                                 size="sm"
                                 onChange={() => {
                                     setDisableEndDate(!disableEndDate);
@@ -275,6 +327,7 @@ export default function CreatePostModal() {
                             <Button
                                 className="bg-violet-700 text-white"
                                 type="submit"
+                                onPress={onClose}
                             >
                                 Create Post
                             </Button>

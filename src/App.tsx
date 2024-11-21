@@ -7,7 +7,7 @@ import SettingsPage from './pages/settings';
 import SignupPage from './pages/signup';
 import Custom404 from './pages/Custom404';
 import { AuthContext } from './context/AuthContext';
-import MembersPage from './pages/members';
+import MembersPage from './components/post/members';
 import Post from './pages/Post';
 import AllPostEvent from './components/post/AllPostEvent';
 import PostDetail from './components/post/postDetail';

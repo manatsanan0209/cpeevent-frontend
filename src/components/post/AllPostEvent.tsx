@@ -193,25 +193,64 @@ export default function AllPostEvent() {
         }
     };
 
-    const formatDate = (dateString: string) => {
+    function diffDateVal(dateString: string) {
         const date = new Date(dateString);
         const now = new Date();
         const diff = now.getTime() - date.getTime() + 7 * 60 * 60 * 1000;
-        const diffMinutes = Math.floor(diff / (1000 * 60));
-        const diffHours = Math.floor(diff / (1000 * 60 * 60));
-        const diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+        return diff;
+    }
+
+    const formatDate = (dateString: string, Kinddate: string) => {
+        let date = new Date(dateString);
+        const now = new Date();
+        const diff = now.getTime() - date.getTime() + 7 * 60 * 60 * 1000;
+        let diffMinutes = diff / (1000 * 60);
+        let diffHours = diff / (1000 * 60 * 60);
+        let diffDays = diff / (1000 * 60 * 60 * 24);
+
+        if (diffMinutes < 0 && diffMinutes > -1) {
+            diffMinutes = 0;
+        } else {
+            diffMinutes = Math.floor(diffMinutes);
+        }
+
+        if (diffHours < 0 && diffHours > -1) {
+            diffHours = 0;
+        } else {
+            diffHours = Math.floor(diffHours);
+        }
+
+        if (diffDays < 0 && diffDays > -1) {
+            diffDays = 0;
+        } else {
+            diffDays = Math.floor(diffDays);
+        }
+
+        if (diff > 0 && Kinddate === 'end') {
+            return 'Ended';
+        }
 
         if (diffDays === 0) {
             if (diffHours === 0) {
+                if (diffMinutes < 0) {
+                    diffMinutes = -diffMinutes;
+                }
+
                 return `${diffMinutes} minutes`;
+            }
+            if (diffHours < 0) {
+                diffHours = -diffHours;
             }
 
             return `${diffHours} hours`;
         } else if (diffDays === 1) {
             return 'Yesterday';
-        } else if (diffDays === -1) {
+        } else if (diffDays === -2) {
             return 'Tomorrow';
         } else {
+            date = new Date(date.getTime() - 7 * 60 * 60 * 1000);
+
             return date.toLocaleDateString('en-GB', {
                 day: '2-digit',
                 month: '2-digit',
@@ -389,7 +428,10 @@ export default function AllPostEvent() {
                                                 </div>
                                             </div>
                                             <p className="flex text-zinc-600 mr-4 mt-1.5 font-semibold text-xs">
-                                                {formatDate(post.postDate)}
+                                                {formatDate(
+                                                    post.postDate,
+                                                    'post',
+                                                )}
                                             </p>
                                         </div>
                                     </CardHeader>
@@ -420,8 +462,9 @@ export default function AllPostEvent() {
                                                 <span
                                                     className={
                                                         post.endDate &&
-                                                        new Date(post.endDate) <
-                                                            new Date()
+                                                        diffDateVal(
+                                                            post.endDate,
+                                                        ) > 0
                                                             ? 'text-rose-500'
                                                             : 'text-blue-500'
                                                     }
@@ -432,6 +475,7 @@ export default function AllPostEvent() {
                                                           ) >= new Date() // Check if end date is in the future
                                                             ? formatDate(
                                                                   post.endDate,
+                                                                  'end',
                                                               )
                                                             : 'Ended'
                                                         : 'No end date'}

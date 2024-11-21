@@ -35,6 +35,7 @@ export interface PostEventProps {
     endDate: string | null;
     author: string;
     markdown?: string;
+    public?: boolean;
     questions?: {
         question: string;
         maxSel?: string;
