@@ -61,13 +61,13 @@ export default function AllEvent({ events, user }: AllEventProps) {
     const displayEventStatus = (event: Event) => {
         const status = eventStatus(event);
 
-        if (status == 'Upcoming') {
+        if (status == 'Ongoing') {
             return (
                 <span className="flex flex-row">
                     <span>
                         <GrStatusGoodSmall className="text-xs mt-0.5 mr-7 text-green-500" />
                     </span>
-                    <span className="text-blue-500">Upcoming</span>
+                    <span className="text-blue-500">Ongoing</span>
                 </span>
             );
         } else if (status == 'Ended') {
@@ -81,7 +81,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
             return (
                 <span className="flex flex-row">
                     <GrStatusGoodSmall className="text-xs mt-0.5 mr-7 text-yellow-500" />
-                    <span className="text-blue-500">Ongoing</span>
+                    <span className="text-blue-500">Upcoming</span>
                 </span>
             );
         }
@@ -131,21 +131,23 @@ export default function AllEvent({ events, user }: AllEventProps) {
         );
     }
     const eventStatus = (event: Event) => {
-        const current_time = getCurrentTime();
+        const current_time = new Date(
+            getCurrentTime().getTime() + 7 * 60 * 60 * 1000,
+        );
 
-        if (current_time < event.startDate) {
+        console.log(current_time);
+
+        if (current_time < new Date(event.startDate)) {
             return 'Upcoming';
-        } else if (current_time > event.endDate) {
+        } else if (current_time > new Date(event.endDate)) {
             return 'Ended';
         } else {
             return 'Ongoing';
         }
     };
 
-    const getCurrentTime = (): string => {
-        const now = new Date();
-
-        return now.toISOString();
+    const getCurrentTime = (): Date => {
+        return new Date();
     };
 
     const formatDate = (dateString: string) => {

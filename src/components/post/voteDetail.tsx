@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
     Button,
     cn,
@@ -18,15 +18,10 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
 import { axiosAPIInstance } from '@/api/axios-config';
-import { PostEventProps } from '@/types';
+import { PostEventProps, voteAnswer } from '@/types';
+import { AuthContext } from '@/context/AuthContext';
 
-const CountdownTimer = ({
-    endDate,
-    onTimeup,
-}: {
-    endDate: string;
-    onTimeup: () => void;
-}) => {
+const CountdownTimer = ({ endDate }: { endDate: string }) => {
     const [timeLeft, setTimeLeft] = useState('');
 
     useEffect(() => {
@@ -40,7 +35,6 @@ const CountdownTimer = ({
 
                 if (difference <= 0) {
                     setTimeLeft('Time up!');
-                    onTimeup();
                 } else if (difference <= 24 * 60 * 60 * 1000) {
                     const hours = Math.floor(difference / (1000 * 60 * 60));
                     const minutes = Math.floor(
@@ -96,12 +90,18 @@ const CountdownTimer = ({
 
 export default function VoteDetail() {
     const { postid } = useParams();
+    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [selected, setSelected] = useState<{ [key: number]: string }>({});
     const [errors, setErrors] = useState<{ [key: number]: string }>({});
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
-    const [timeUp, setTimeUp] = useState(false); // Added timeUp state
+    const [timeUp, setTimeUp] = useState(false); // Added timeUp
+    const [answers, setAnswers] = useState<voteAnswer>({
+        postID: postid as string,
+        studentID: user as string,
+        answer: '',
+    });
 
     const fetchPosts = async () => {
         const response = await axiosAPIInstance.get(`v1/posts/${postid}`);
@@ -118,6 +118,19 @@ export default function VoteDetail() {
         setSelected({ [index]: value });
     };
 
+    async function submitVote() {
+        try {
+            const response = await axiosAPIInstance.post(
+                'v1/posts/submit',
+                answers,
+            );
+
+            console.log(response);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     const handleSubmit = () => {
         let isValid = true;
         const newErrors: { [key: number]: string } = {};
@@ -133,11 +146,22 @@ export default function VoteDetail() {
             setSelectedAnswers(Object.values(selected));
             setIsModalVisible(true);
         }
+
+        setAnswers({ ...answers, answer: Object.values(selected)[0] });
+    };
+    const handleConfirm = async () => {
+        try {
+            await submitVote();
+            setIsModalVisible(false);
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     const handleModalClose = () => {
         setIsModalVisible(false);
     };
+    const filteredSelected = Object.values(selected)[0] || '';
 
     const data = [
         { name: 'Option 1', votes: 400 },
@@ -146,6 +170,11 @@ export default function VoteDetail() {
         { name: 'Option 4', votes: 278 },
         { name: 'Option 5', votes: 189 },
     ];
+
+    useEffect(() => {
+        setAnswers({ ...answers, answer: filteredSelected });
+        console.log(answers);
+    }, [filteredSelected]);
 
     return (
         <>
@@ -164,10 +193,7 @@ export default function VoteDetail() {
                             <div className="flex flex-row justify-end items-center text-md text-zinc-600 font-bold ml-auto mr-12">
                                 <span className="flex mr-1">End Date:</span>
                                 <span className="flex">
-                                    <CountdownTimer
-                                        endDate={posts.endDate}
-                                        onTimeup={() => setTimeUp(true)}
-                                    />
+                                    <CountdownTimer endDate={posts.endDate} />
                                 </span>
                             </div>
                         )}
@@ -247,10 +273,7 @@ export default function VoteDetail() {
                                 </div>
 
                                 <p className="mt-4 ml-1 text-gray-600">
-                                    Selected:{' '}
-                                    {Object.values(selected)
-                                        .filter((v) => v !== '')
-                                        .join(', ')}
+                                    Selected: {filteredSelected}
                                 </p>
                             </div>
                         </Card>
@@ -285,7 +308,7 @@ export default function VoteDetail() {
                         >
                             Cancel
                         </Button>
-                        <Button color="secondary" onPress={handleModalClose}>
+                        <Button color="secondary" onPress={handleConfirm}>
                             Confirm
                         </Button>
                     </ModalFooter>

@@ -59,3 +59,10 @@ export interface UserAccountType {
     username: string;
     created_at: Date;
 }
+
+export interface voteAnswer {
+    _id?: string;
+    postID: string;
+    studentID: string;
+    answer: string;
+}
