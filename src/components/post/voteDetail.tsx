@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Button,
     cn,
@@ -105,6 +105,7 @@ export default function VoteDetail() {
 
     const fetchPosts = async () => {
         const response = await axiosAPIInstance.get(`v1/posts/${postid}`);
+
         return response.data.data;
     };
 
@@ -130,6 +131,23 @@ export default function VoteDetail() {
                 return prevSelected;
             }
         });
+    };
+
+    const handleSubmit = () => {
+        let isValid = true;
+        const newErrors: { [key: number]: string } = {};
+
+        if (!Object.values(selected).some((v) => v !== '')) {
+            isValid = false;
+            newErrors[0] = '( You must select at least one option. )';
+        }
+
+        if (!isValid) {
+            setErrors(newErrors);
+        } else {
+            setSelectedAnswers(Object.values(selected).flat());
+            setIsModalVisible(true);
+        }
     };
 
     const handleModalClose = () => {
@@ -201,6 +219,22 @@ export default function VoteDetail() {
                                 <p className="text-medium font-semibold text-zinc-700 py-3">
                                     {posts?.voteQuestions?.question}
                                 </p>
+                                <span className="flex items-center">
+                                    {posts?.voteQuestions?.maxSel && (
+                                        <div className="text-zinc-600 text-sm">
+                                            Choose up to{' '}
+                                            {posts.voteQuestions.maxSel} options
+                                            <span className="text-red-500 ml-1">
+                                                *
+                                            </span>
+                                        </div>
+                                    )}
+                                    {errors[0] && (
+                                        <div className="text-red-500 text-sm items-center ml-2">
+                                            {errors[0]}
+                                        </div>
+                                    )}
+                                </span>
                                 <div className="flex flex-row flex-wrap justify-center gap-4">
                                     {posts?.voteQuestions?.options.map(
                                         (option, idx) => (
@@ -239,6 +273,15 @@ export default function VoteDetail() {
                                 </p>
                             </div>
                         </Card>
+                        <p className="flex justify-center">
+                            <Button
+                                className="flex justify-center mx-12 my-5 w-2/12 bg-violet-700"
+                                type="submit"
+                                onClick={handleSubmit}
+                            >
+                                <strong className="text-white">Submit</strong>
+                            </Button>
+                        </p>
                     </CardBody>
                 )}
             </Card>
