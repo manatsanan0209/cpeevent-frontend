@@ -32,7 +32,7 @@ const JoinEventModal: React.FC<JoinEventModalProps> = ({
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
     const [selectedRole, setSelectedRole] = useState('staff');
-    const isParticipantDisabled = true;
+    const isParticipantDisabled = false;
     const joinEvent = async (data: JoinEventRequest) => {
         const response = await axiosAPIInstance.patch(`v1/event/join`, data);
 

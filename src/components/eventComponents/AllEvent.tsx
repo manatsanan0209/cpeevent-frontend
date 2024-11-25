@@ -297,7 +297,10 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                             user._id,
                                                     ) ||
                                                     eventStatus(event) !=
-                                                        'Upcoming'
+                                                        'Upcoming' ||
+                                                    event.participants.includes(
+                                                        user._id,
+                                                    )
                                                         ? 'bg-zinc-300 text-violet-700'
                                                         : 'bg-violet-700 text-white'
                                                 }`}
@@ -308,14 +311,22 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                             user._id,
                                                     ) ||
                                                     eventStatus(event) !=
-                                                        'Upcoming'
+                                                        'Upcoming' ||
+                                                    event.participants.includes(
+                                                        user._id,
+                                                    )
                                                 }
                                                 onPress={onOpen}
                                             >
-                                                {!event.staff?.some(
-                                                    (staff) =>
-                                                        staff.stdID ===
+                                                {!(
+                                                    event.staff?.some(
+                                                        (staff) =>
+                                                            staff.stdID ===
+                                                            user._id,
+                                                    ) ||
+                                                    event.participants.includes(
                                                         user._id,
+                                                    )
                                                 ) ? (
                                                     <strong>Join</strong>
                                                 ) : (
@@ -333,7 +344,10 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                     !event.staff?.some(
                                                         (staff) =>
                                                             staff.stdID ===
-                                                            user._id,
+                                                                user._id ||
+                                                            event.participants.includes(
+                                                                user._id,
+                                                            ),
                                                     )
                                                         ? 'bg-gray-300 text-blue-600'
                                                         : 'bg-blue-500 text-white'
@@ -342,7 +356,10 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                     !event.staff?.some(
                                                         (staff) =>
                                                             staff.stdID ===
-                                                            user._id,
+                                                                user._id ||
+                                                            event.participants.includes(
+                                                                user._id,
+                                                            ),
                                                     )
                                                 }
                                                 onClick={() => {
