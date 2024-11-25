@@ -115,37 +115,22 @@ export default function VoteDetail() {
     });
 
     const handleValueChange = (index: number, value: string) => {
-        setSelected((prevSelected) => {
-            const selectedOptions = Object.values(prevSelected).filter(
-                (v) => v !== '',
-            ).length;
-
-            if (prevSelected[index] === value) {
-                return { ...prevSelected, [index]: '' };
-            } else if (
-                posts?.voteQuestions &&
-                selectedOptions < parseInt(posts.voteQuestions.maxSel || '1')
-            ) {
-                return { ...prevSelected, [index]: value };
-            } else {
-                return prevSelected;
-            }
-        });
+        setSelected({ [index]: value });
     };
 
     const handleSubmit = () => {
         let isValid = true;
         const newErrors: { [key: number]: string } = {};
 
-        if (!Object.values(selected).some((v) => v !== '')) {
+        if (Object.keys(selected).length === 0 || !Object.values(selected)[0]) {
             isValid = false;
-            newErrors[0] = '( You must select at least one option. )';
+            newErrors[0] = '( You must select an option. )';
         }
 
         if (!isValid) {
             setErrors(newErrors);
         } else {
-            setSelectedAnswers(Object.values(selected).flat());
+            setSelectedAnswers(Object.values(selected));
             setIsModalVisible(true);
         }
     };
@@ -216,25 +201,28 @@ export default function VoteDetail() {
                     <CardBody className="overflow-visible py-2 m-5">
                         <Card className="w-4/6 mx-auto my-3 py-3 ">
                             <div className="flex flex-col gap-1 w-full prose px-10 py-3">
-                                <p className="text-medium font-semibold text-zinc-700 py-3">
-                                    {posts?.voteQuestions?.question}
-                                </p>
-                                <span className="flex items-center">
-                                    {posts?.voteQuestions?.maxSel && (
-                                        <div className="text-zinc-600 text-sm">
-                                            Choose up to{' '}
-                                            {posts.voteQuestions.maxSel} options
-                                            <span className="text-red-500 ml-1">
-                                                *
-                                            </span>
-                                        </div>
-                                    )}
-                                    {errors[0] && (
-                                        <div className="text-red-500 text-sm items-center ml-2">
-                                            {errors[0]}
-                                        </div>
-                                    )}
-                                </span>
+                                <div className="flex flex-row">
+                                    <p className="flex text-medium font-semibold text-zinc-700 py-3 mr-3">
+                                        {posts?.voteQuestions?.question}
+                                    </p>
+                                    <span className="flex items-center">
+                                        {posts?.voteQuestions?.maxSel && (
+                                            <div className="text-zinc-600 text-sm">
+                                                Choose up to{' '}
+                                                {posts.voteQuestions.maxSel}{' '}
+                                                options
+                                                <span className="text-red-500 ml-1">
+                                                    *
+                                                </span>
+                                            </div>
+                                        )}
+                                        {errors[0] && (
+                                            <div className="text-red-500 text-sm items-center ml-2">
+                                                {errors[0]}
+                                            </div>
+                                        )}
+                                    </span>
+                                </div>
                                 <div className="flex flex-row flex-wrap justify-center gap-4">
                                     {posts?.voteQuestions?.options.map(
                                         (option, idx) => (
@@ -249,7 +237,9 @@ export default function VoteDetail() {
                                                     'hover:bg-violet-100 hover:text-violet-500 hover:shadow-md hover:scale-105',
                                                     'active:scale-95 active:shadow-sm',
                                                     'rounded-xl',
-                                                    selected[idx] === option
+                                                    Object.values(
+                                                        selected,
+                                                    )[0] === option
                                                         ? 'bg-purple-200 border-2 border-violet-500 ring-1 ring-violet-300'
                                                         : 'border-transparent',
                                                 )}
@@ -265,6 +255,7 @@ export default function VoteDetail() {
                                         ),
                                     )}
                                 </div>
+
                                 <p className="mt-4 ml-1 text-gray-600">
                                     Selected:{' '}
                                     {Object.values(selected)
@@ -292,7 +283,9 @@ export default function VoteDetail() {
                         Are you sure you want to submit your answers?
                     </ModalHeader>
                     <ModalBody className="flex flex-row">
-                        Your answers are {selectedAnswers.join(', ')}
+                        <ModalBody className="flex flex-row">
+                            Your answer is {selectedAnswers[0]}
+                        </ModalBody>
                     </ModalBody>
                     <ModalFooter>
                         <Button
