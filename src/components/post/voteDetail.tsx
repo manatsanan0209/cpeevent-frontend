@@ -96,7 +96,7 @@ export default function VoteDetail() {
     const [errors, setErrors] = useState<{ [key: number]: string }>({});
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
-    const [timeUp, setTimeUp] = useState(false); // Added timeUp
+    // const [timeUp, setTimeUp] = useState(false); // Added timeUp
     const [answers, setAnswers] = useState<voteAnswer>({
         postID: postid as string,
         studentID: user as string,
@@ -204,90 +204,86 @@ export default function VoteDetail() {
                     </small>
                 </CardHeader>
 
-                {timeUp ? (
-                    <div className="w-4/6 mx-auto py-3">
-                        <h2 className="text-center font-bold text-xl mb-4">
-                            Voting Results
-                        </h2>
-                        <BarChart
-                            data={data}
-                            height={300}
-                            margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-                            width={500}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            {/* <XAxis dataKey="name" />
+                {/* {timeUp ? ( */}
+                <div className="w-4/6 mx-auto py-3">
+                    <h2 className="text-center font-bold text-xl mb-4">
+                        Voting Results
+                    </h2>
+                    <BarChart
+                        data={data}
+                        height={300}
+                        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+                        width={500}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        {/* <XAxis dataKey="name" />
                             <YAxis />
                             <Tooltip />
                             <Legend />
                             <Bar dataKey="votes" fill="#8884d8" /> */}
-                        </BarChart>
-                    </div>
-                ) : (
-                    <CardBody className="overflow-visible py-2 m-5">
-                        <Card className="w-4/6 mx-auto my-3 py-3 ">
-                            <div className="flex flex-col gap-1 w-full prose px-10 py-3">
-                                <div className="flex flex-row">
-                                    <p className="flex text-medium font-semibold text-zinc-700 py-3 mr-3">
-                                        {posts?.voteQuestions?.question}
-                                    </p>
-                                    <span className="flex items-center">
-                                        {errors[0] && (
-                                            <div className="text-red-500 text-sm items-center ml-2">
-                                                {errors[0]}
-                                            </div>
-                                        )}
-                                    </span>
-                                </div>
-                                <div className="flex flex-row flex-wrap justify-center gap-4">
-                                    {posts?.voteQuestions?.options.map(
-                                        (option, idx) => (
-                                            <button
-                                                key={idx}
-                                                aria-pressed={
-                                                    selected[idx] === option
-                                                }
-                                                className={cn(
-                                                    'w-5/12 px-8 py-3 mr-5 mt-8 text-sm font-medium transition-all duration-200 ease-in-out',
-                                                    'bg-neutral-100 text-violet-700 shadow-sm font-bold',
-                                                    'hover:bg-violet-100 hover:text-violet-500 hover:shadow-md hover:scale-105',
-                                                    'active:scale-95 active:shadow-sm',
-                                                    'rounded-xl',
-                                                    Object.values(
-                                                        selected,
-                                                    )[0] === option
-                                                        ? 'bg-purple-200 border-2 border-violet-500 ring-1 ring-violet-300'
-                                                        : 'border-transparent',
-                                                )}
-                                                onClick={() =>
-                                                    handleValueChange(
-                                                        idx,
-                                                        option,
-                                                    )
-                                                }
-                                            >
-                                                {option}
-                                            </button>
-                                        ),
-                                    )}
-                                </div>
-
-                                <p className="mt-4 ml-1 text-gray-600">
-                                    Selected: {filteredSelected}
+                    </BarChart>
+                </div>
+                {/* ) : ( */}
+                <CardBody className="overflow-visible py-2 m-5">
+                    <Card className="w-4/6 mx-auto my-3 py-3 ">
+                        <div className="flex flex-col gap-1 w-full prose px-10 py-3">
+                            <div className="flex flex-row">
+                                <p className="flex text-medium font-semibold text-zinc-700 py-3 mr-3">
+                                    {posts?.voteQuestions?.question}
                                 </p>
+                                <span className="flex items-center">
+                                    {errors[0] && (
+                                        <div className="text-red-500 text-sm items-center ml-2">
+                                            {errors[0]}
+                                        </div>
+                                    )}
+                                </span>
                             </div>
-                        </Card>
-                        <p className="flex justify-center">
-                            <Button
-                                className="flex justify-center mx-12 my-5 w-2/12 bg-violet-700"
-                                type="submit"
-                                onClick={handleSubmit}
-                            >
-                                <strong className="text-white">Submit</strong>
-                            </Button>
-                        </p>
-                    </CardBody>
-                )}
+                            <div className="flex flex-row flex-wrap justify-center gap-4">
+                                {posts?.voteQuestions?.options.map(
+                                    (option, idx) => (
+                                        <button
+                                            key={idx}
+                                            aria-pressed={
+                                                selected[idx] === option
+                                            }
+                                            className={cn(
+                                                'w-5/12 px-8 py-3 mr-5 mt-8 text-sm font-medium transition-all duration-200 ease-in-out',
+                                                'bg-neutral-100 text-violet-700 shadow-sm font-bold',
+                                                'hover:bg-violet-100 hover:text-violet-500 hover:shadow-md hover:scale-105',
+                                                'active:scale-95 active:shadow-sm',
+                                                'rounded-xl',
+                                                Object.values(selected)[0] ===
+                                                    option
+                                                    ? 'bg-purple-200 border-2 border-violet-500 ring-1 ring-violet-300'
+                                                    : 'border-transparent',
+                                            )}
+                                            onClick={() =>
+                                                handleValueChange(idx, option)
+                                            }
+                                        >
+                                            {option}
+                                        </button>
+                                    ),
+                                )}
+                            </div>
+
+                            <p className="mt-4 ml-1 text-gray-600">
+                                Selected: {filteredSelected}
+                            </p>
+                        </div>
+                    </Card>
+                    <p className="flex justify-center">
+                        <Button
+                            className="flex justify-center mx-12 my-5 w-2/12 bg-violet-700"
+                            type="submit"
+                            onClick={handleSubmit}
+                        >
+                            <strong className="text-white">Submit</strong>
+                        </Button>
+                    </p>
+                </CardBody>
+                {/* )} */}
             </Card>
 
             <Modal isOpen={isModalVisible} onClose={handleModalClose}>
