@@ -100,6 +100,7 @@ export default function VoteDetail() {
     const [selected, setSelected] = useState<{ [key: number]: string[] }>({});
     const [errors, setErrors] = useState<{ [key: number]: string }>({});
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
     const [timeUp, setTimeUp] = useState(false); // Added timeUp state
 
     const fetchPosts = async () => {
@@ -151,7 +152,8 @@ export default function VoteDetail() {
         if (!isValid) {
             setErrors(newErrors);
         } else {
-            setErrors({});
+            setSelectedAnswers(Object.values(selected).flat());
+            setIsModalVisible(true);
             setIsModalVisible(true);
         }
     };
@@ -309,8 +311,7 @@ export default function VoteDetail() {
                         Are you sure you want to submit your answers?
                     </ModalHeader>
                     <ModalBody className="flex flex-row">
-                        You will not be able to change your answers after
-                        submission.
+                        Your answers are {selectedAnswers.join(', ')}
                     </ModalBody>
                     <ModalFooter>
                         <Button
