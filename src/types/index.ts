@@ -36,12 +36,16 @@ export interface PostEventProps {
     author: string;
     markdown?: string;
     public?: boolean;
-    questions?: {
+    formQuestions?: {
         question: string;
-        maxSel?: string;
-        inputType?: string;
-        options: string[];
+        inputType: string;
+        options?: string[];
     }[];
+    voteQuestions?: {
+        question: string;
+        maxSel: string;
+        options: string[];
+    };
 }
 
 export interface UserAccountType {
