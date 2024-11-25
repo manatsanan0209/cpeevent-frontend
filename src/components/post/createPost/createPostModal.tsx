@@ -32,11 +32,9 @@ export default function CreatePostModal() {
     const [markdown, setMarkdown] = useState<string>('');
     const [voteQuestions, setVoteQuestions] = useState<{
         question: string;
-        maxSel: string;
         options: string[];
     }>({
         question: '', // Default question value
-        maxSel: '', // Default max selection value
         options: [], // Default empty options array
     });
     const [formQuestions, setFormQuestions] = useState<
@@ -64,14 +62,12 @@ export default function CreatePostModal() {
         if (newPost.kind === 'form') {
             setVoteQuestions({
                 question: '',
-                maxSel: '',
                 options: [],
             });
             setMarkdown('');
         } else if (newPost.kind === 'post') {
             setVoteQuestions({
                 question: '',
-                maxSel: '',
                 options: [],
             });
             setFormQuestions([]);

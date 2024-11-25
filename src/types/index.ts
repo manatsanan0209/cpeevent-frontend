@@ -43,7 +43,6 @@ export interface PostEventProps {
     }[];
     voteQuestions?: {
         question: string;
-        maxSel: string;
         options: string[];
     };
 }
