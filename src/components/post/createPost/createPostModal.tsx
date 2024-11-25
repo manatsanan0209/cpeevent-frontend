@@ -43,8 +43,6 @@ export default function CreatePostModal() {
         { question: string; inputType: string; options: string[] }[]
     >([]);
 
-    console.log(event);
-
     const [newPost, setNewPost] = useState<PostEventProps>({
         kind: 'post',
         assignTo: ['everyone'],
@@ -342,7 +340,6 @@ export default function CreatePostModal() {
                             <Button
                                 className="bg-violet-700 text-white"
                                 type="submit"
-                                onPress={onClose}
                             >
                                 Create Post
                             </Button>
