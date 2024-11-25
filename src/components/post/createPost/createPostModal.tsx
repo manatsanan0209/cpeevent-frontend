@@ -16,13 +16,13 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getLocalTimeZone, now } from '@internationalized/date';
-import axios from 'axios';
 
 import PostKindPost from './postKindPost';
 import PostKindVote from './postKindVote';
 import PostKindForm from './postKindForm';
 
 import { AuthContext } from '@/context/AuthContext';
+import { axiosAPIInstance } from '@/api/axios-config.ts';
 
 export default function CreatePostModal() {
     const { user } = useContext(AuthContext);
@@ -42,8 +42,6 @@ export default function CreatePostModal() {
     const [formQuestions, setFormQuestions] = useState<
         { question: string; inputType: string; options: string[] }[]
     >([]);
-
-    console.log(event);
 
     const [newPost, setNewPost] = useState<PostEventProps>({
         kind: 'post',
@@ -92,17 +90,15 @@ export default function CreatePostModal() {
     }
 
     async function postToAPI(updatedPost: PostEventProps) {
-        const token = localStorage.getItem('token');
         const eventid = window.location.pathname.split('/')[2];
         const final = { eventID: eventid, updatedPost: { ...updatedPost } };
         // console.log("final : ",final);
 
         try {
-            const response = await axios.post('v1/posts/create', final, {
-                headers: {
-                    Authorization: `Bearer ${token}`, // Replace with your actual access token
-                },
-            });
+            const response = await axiosAPIInstance.post(
+                'v1/posts/create',
+                final,
+            );
 
             console.log('Post created successfully:', response.data);
         } catch (error) {
@@ -344,7 +340,6 @@ export default function CreatePostModal() {
                             <Button
                                 className="bg-violet-700 text-white"
                                 type="submit"
-                                onPress={onClose}
                             >
                                 Create Post
                             </Button>
