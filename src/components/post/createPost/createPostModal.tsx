@@ -30,12 +30,20 @@ export default function CreatePostModal() {
     const { event } = location.state as { event: Event };
     const [disableEndDate, setDisableEndDate] = useState<boolean>(false);
     const [markdown, setMarkdown] = useState<string>('');
-    const [voteQuestions, setVoteQuestions] = useState<
-        { question: string; maxSel: string; options: string[] }[]
-    >([]);
+    const [voteQuestions, setVoteQuestions] = useState<{
+        question: string;
+        maxSel: string;
+        options: string[];
+    }>({
+        question: '', // Default question value
+        maxSel: '', // Default max selection value
+        options: [], // Default empty options array
+    });
     const [formQuestions, setFormQuestions] = useState<
         { question: string; inputType: string; options: string[] }[]
     >([]);
+
+    console.log(event);
 
     const [newPost, setNewPost] = useState<PostEventProps>({
         kind: 'post',
@@ -56,10 +64,18 @@ export default function CreatePostModal() {
 
     useEffect(() => {
         if (newPost.kind === 'form') {
-            setVoteQuestions([]);
+            setVoteQuestions({
+                question: '',
+                maxSel: '',
+                options: [],
+            });
             setMarkdown('');
         } else if (newPost.kind === 'post') {
-            setVoteQuestions([]);
+            setVoteQuestions({
+                question: '',
+                maxSel: '',
+                options: [],
+            });
             setFormQuestions([]);
         } else if (newPost.kind === 'vote') {
             setFormQuestions([]);
@@ -79,6 +95,7 @@ export default function CreatePostModal() {
         const token = localStorage.getItem('token');
         const eventid = window.location.pathname.split('/')[2];
         const final = { eventID: eventid, updatedPost: { ...updatedPost } };
+        // console.log("final : ",final);
 
         try {
             const response = await axios.post('v1/posts/create', final, {
@@ -114,9 +131,9 @@ export default function CreatePostModal() {
         if (kind === 'post') {
             updatedPost.markdown = markdown;
         } else if (kind === 'vote') {
-            updatedPost.questions = voteQuestions;
+            updatedPost.voteQuestions = voteQuestions;
         } else if (kind === 'form') {
-            updatedPost.questions = formQuestions;
+            updatedPost.formQuestions = formQuestions;
         }
         console.log(updatedPost);
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Button,
     cn,
@@ -97,7 +97,7 @@ const CountdownTimer = ({
 export default function VoteDetail() {
     const { postid } = useParams();
     const navigate = useNavigate();
-    const [selected, setSelected] = useState<{ [key: number]: string[] }>({});
+    const [selected, setSelected] = useState<{ [key: number]: string }>({});
     const [errors, setErrors] = useState<{ [key: number]: string }>({});
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
@@ -114,24 +114,19 @@ export default function VoteDetail() {
         queryFn: fetchPosts,
     });
 
-    const handleValueChange = (
-        index: number,
-        value: string,
-        maxSel: number,
-    ) => {
+    const handleValueChange = (index: number, value: string) => {
         setSelected((prevSelected) => {
-            const currentSelections = prevSelected[index] || [];
+            const selectedOptions = Object.values(prevSelected).filter(
+                (v) => v !== '',
+            ).length;
 
-            if (currentSelections.includes(value)) {
-                return {
-                    ...prevSelected,
-                    [index]: currentSelections.filter((v) => v !== value),
-                };
-            } else if (currentSelections.length < maxSel) {
-                return {
-                    ...prevSelected,
-                    [index]: [...currentSelections, value],
-                };
+            if (prevSelected[index] === value) {
+                return { ...prevSelected, [index]: '' };
+            } else if (
+                posts?.voteQuestions &&
+                selectedOptions < parseInt(posts.voteQuestions.maxSel || '1')
+            ) {
+                return { ...prevSelected, [index]: value };
             } else {
                 return prevSelected;
             }
@@ -142,18 +137,15 @@ export default function VoteDetail() {
         let isValid = true;
         const newErrors: { [key: number]: string } = {};
 
-        posts?.questions?.forEach((_, index) => {
-            if (!selected[index]?.length) {
-                isValid = false;
-                newErrors[index] = '( You must select at least one option. )';
-            }
-        });
+        if (!Object.values(selected).some((v) => v !== '')) {
+            isValid = false;
+            newErrors[0] = '( You must select at least one option. )';
+        }
 
         if (!isValid) {
             setErrors(newErrors);
         } else {
             setSelectedAnswers(Object.values(selected).flat());
-            setIsModalVisible(true);
             setIsModalVisible(true);
         }
     };
@@ -221,75 +213,64 @@ export default function VoteDetail() {
                         </BarChart>
                     </div>
                 ) : (
-                    <CardBody className="overflow-visible">
-                        <Card className="w-4/6 mx-auto my-3">
+                    <CardBody className="overflow-visible py-2 m-5">
+                        <Card className="w-4/6 mx-auto my-3 py-3 ">
                             <div className="flex flex-col gap-1 w-full prose px-10 py-3">
-                                {posts?.questions?.map((question, index) => (
-                                    <React.Fragment key={index}>
-                                        <div className="flex flex-row">
-                                            <p className="flex text-medium font-semibold text-zinc-700 py-3 mr-4">
-                                                {question?.question ||
-                                                    'No question available'}
-                                            </p>
-                                            <span className="flex items-center">
-                                                {question?.maxSel && (
-                                                    <div className="text-zinc-600 text-sm">
-                                                        Choose up to{' '}
-                                                        {question.maxSel}{' '}
-                                                        options
-                                                        <span className="text-red-500 ml-1">
-                                                            *
-                                                        </span>
-                                                    </div>
-                                                )}
-                                                {errors[index] && (
-                                                    <p className="text-red-500 text-sm items-center ml-2">
-                                                        {errors[index]}
-                                                    </p>
-                                                )}
+                                <p className="text-medium font-semibold text-zinc-700 py-3">
+                                    {posts?.voteQuestions?.question}
+                                </p>
+                                <span className="flex items-center">
+                                    {posts?.voteQuestions?.maxSel && (
+                                        <div className="text-zinc-600 text-sm">
+                                            Choose up to{' '}
+                                            {posts.voteQuestions.maxSel} options
+                                            <span className="text-red-500 ml-1">
+                                                *
                                             </span>
                                         </div>
-                                        <div className="flex flex-row flex-wrap justify-center gap-4">
-                                            {question.options.map(
-                                                (option, idx) => (
-                                                    <button
-                                                        key={idx}
-                                                        aria-pressed={selected[
-                                                            index
-                                                        ]?.includes(option)}
-                                                        className={cn(
-                                                            'w-5/12 px-8 py-3 mr-5 mt-3 text-sm font-medium transition-all duration-200 ease-in-out',
-                                                            'bg-neutral-100 text-violet-700 shadow-sm font-bold',
-                                                            'hover:bg-violet-100 hover:text-violet-500 hover:shadow-md hover:scale-105',
-                                                            'active:scale-95 active:shadow-sm',
-                                                            'rounded-xl',
-                                                            selected[
-                                                                index
-                                                            ]?.includes(option)
-                                                                ? 'bg-purple-200 border-2 border-violet-500 ring-1 ring-violet-300'
-                                                                : 'border-transparent',
-                                                        )}
-                                                        onClick={() =>
-                                                            handleValueChange(
-                                                                index,
-                                                                option,
-                                                                Number(
-                                                                    question.maxSel,
-                                                                ) || 0,
-                                                            )
-                                                        }
-                                                    >
-                                                        {option}
-                                                    </button>
-                                                ),
-                                            )}
+                                    )}
+                                    {errors[0] && (
+                                        <div className="text-red-500 text-sm items-center ml-2">
+                                            {errors[0]}
                                         </div>
-                                        <p className="mt-4 ml-1 text-gray-600">
-                                            Selected:{' '}
-                                            {selected[index]?.join(', ')}
-                                        </p>
-                                    </React.Fragment>
-                                ))}
+                                    )}
+                                </span>
+                                <div className="flex flex-row flex-wrap justify-center gap-4">
+                                    {posts?.voteQuestions?.options.map(
+                                        (option, idx) => (
+                                            <button
+                                                key={idx}
+                                                aria-pressed={
+                                                    selected[idx] === option
+                                                }
+                                                className={cn(
+                                                    'w-5/12 px-8 py-3 mr-5 mt-8 text-sm font-medium transition-all duration-200 ease-in-out',
+                                                    'bg-neutral-100 text-violet-700 shadow-sm font-bold',
+                                                    'hover:bg-violet-100 hover:text-violet-500 hover:shadow-md hover:scale-105',
+                                                    'active:scale-95 active:shadow-sm',
+                                                    'rounded-xl',
+                                                    selected[idx] === option
+                                                        ? 'bg-purple-200 border-2 border-violet-500 ring-1 ring-violet-300'
+                                                        : 'border-transparent',
+                                                )}
+                                                onClick={() =>
+                                                    handleValueChange(
+                                                        idx,
+                                                        option,
+                                                    )
+                                                }
+                                            >
+                                                {option}
+                                            </button>
+                                        ),
+                                    )}
+                                </div>
+                                <p className="mt-4 ml-1 text-gray-600">
+                                    Selected:{' '}
+                                    {Object.values(selected)
+                                        .filter((v) => v !== '')
+                                        .join(', ')}
+                                </p>
                             </div>
                         </Card>
                         <p className="flex justify-center">

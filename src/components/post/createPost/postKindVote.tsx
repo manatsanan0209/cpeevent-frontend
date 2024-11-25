@@ -1,15 +1,15 @@
 import { Button, Input } from '@nextui-org/react';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
-type VoteQuestion = {
+type VoteQuestions = {
     question: string;
     maxSel: string;
     options: string[];
 };
 
 interface PostKindVoteProps {
-    voteQuestions: VoteQuestion[];
-    setVoteQuestions: React.Dispatch<React.SetStateAction<VoteQuestion[]>>;
+    voteQuestions: VoteQuestions;
+    setVoteQuestions: React.Dispatch<React.SetStateAction<VoteQuestions>>;
 }
 
 export default function PostKindVote({
@@ -17,165 +17,99 @@ export default function PostKindVote({
     setVoteQuestions,
 }: PostKindVoteProps) {
     useEffect(() => {
-        if (voteQuestions.length === 0) {
-            setVoteQuestions([{ question: '', maxSel: '1', options: [''] }]);
+        if (voteQuestions.options.length === 0) {
+            setVoteQuestions({
+                ...voteQuestions,
+                options: [''],
+                maxSel: '1',
+            });
         }
     }, [voteQuestions, setVoteQuestions]);
 
-    function addQuestion() {
-        setVoteQuestions([
-            ...voteQuestions,
-            { question: '', maxSel: '1', options: [''] },
-        ]);
+    function addOption() {
+        const updatedQuestion = { ...voteQuestions };
+
+        updatedQuestion.options.push('');
+        setVoteQuestions(updatedQuestion);
     }
 
-    function deleteQuestion(index: number) {
-        if (voteQuestions.length > 1) {
-            const updatedQuestions = voteQuestions.filter(
-                (_, i) => i !== index,
-            );
+    function deleteOption(optionIndex: number) {
+        const updatedQuestion = { ...voteQuestions };
 
-            setVoteQuestions(updatedQuestions);
-        }
+        updatedQuestion.options = updatedQuestion.options.filter(
+            (_, i) => i !== optionIndex,
+        );
+        setVoteQuestions(updatedQuestion);
     }
 
-    function updateQuestion(
-        index: number,
-        key: 'question' | 'maxSel',
-        value: string,
-    ) {
-        const updatedQuestions = [...voteQuestions];
+    function updateOption(optionIndex: number, value: string) {
+        const updatedQuestion = { ...voteQuestions };
 
-        updatedQuestions[index][key] = value;
-        setVoteQuestions(updatedQuestions);
+        updatedQuestion.options[optionIndex] = value;
+        setVoteQuestions(updatedQuestion);
     }
 
-    function addOption(questionIndex: number) {
-        const updatedQuestions = [...voteQuestions];
+    function updateQuestion(field: keyof VoteQuestions, value: string) {
+        const updatedQuestion = { ...voteQuestions, [field]: value };
 
-        updatedQuestions[questionIndex].options.push('');
-        setVoteQuestions(updatedQuestions);
-    }
-
-    function deleteOption(questionIndex: number, optionIndex: number) {
-        const updatedQuestions = [...voteQuestions];
-
-        updatedQuestions[questionIndex].options = updatedQuestions[
-            questionIndex
-        ].options.filter((_, i) => i !== optionIndex);
-        setVoteQuestions(updatedQuestions);
-    }
-
-    function updateOption(
-        questionIndex: number,
-        optionIndex: number,
-        value: string,
-    ) {
-        const updatedQuestions = [...voteQuestions];
-
-        updatedQuestions[questionIndex].options[optionIndex] = value;
-        setVoteQuestions(updatedQuestions);
+        setVoteQuestions(updatedQuestion);
     }
 
     return (
-        <>
-            {voteQuestions.map((question, questionIndex) => (
-                <div key={questionIndex} className="mb-3">
-                    <div className="pl-3 mb-2">
-                        Question {questionIndex + 1}
-                    </div>
+        <div className="mb-3">
+            <div className="pl-3 mb-2">Question</div>
+            <Input
+                isRequired
+                errorMessage="This field is required"
+                label="Question"
+                validationBehavior="native"
+                value={voteQuestions.question}
+                onChange={(e) => updateQuestion('question', e.target.value)}
+            />
+            <Input
+                isRequired
+                className="my-2 w-1/3"
+                errorMessage={
+                    voteQuestions.maxSel === ''
+                        ? 'This field is required'
+                        : 'Error max select value'
+                }
+                isInvalid={
+                    parseInt(voteQuestions.maxSel) >
+                        voteQuestions.options.length ||
+                    voteQuestions.maxSel === '' ||
+                    voteQuestions.maxSel === '0'
+                }
+                label="Max Select"
+                type="number"
+                validationBehavior="native"
+                value={voteQuestions.maxSel}
+                onChange={(e) => updateQuestion('maxSel', e.target.value)}
+            />
+            {voteQuestions.options.map((option, optionIndex) => (
+                <div key={optionIndex} className="flex items-center mb-2">
                     <Input
                         isRequired
+                        className="w-2/3"
                         errorMessage="This field is required"
-                        label="Question"
+                        label={`Option ${optionIndex + 1}`}
                         validationBehavior="native"
-                        value={question.question}
+                        value={option}
                         onChange={(e) =>
-                            updateQuestion(
-                                questionIndex,
-                                'question',
-                                e.target.value,
-                            )
+                            updateOption(optionIndex, e.target.value)
                         }
                     />
-                    <Input
-                        isRequired
-                        className="my-2 w-1/3"
-                        errorMessage={
-                            question.maxSel === ''
-                                ? 'This field is required'
-                                : 'Error max select value'
-                        }
-                        isInvalid={
-                            parseInt(question.maxSel) >
-                                question.options.length ||
-                            question.maxSel === '' ||
-                            question.maxSel === '0'
-                        }
-                        label="Max Select"
-                        type="number"
-                        validationBehavior="native"
-                        value={question.maxSel}
-                        onChange={(e) =>
-                            updateQuestion(
-                                questionIndex,
-                                'maxSel',
-                                e.target.value,
-                            )
-                        }
-                    />
-                    {question.options.map((option, optionIndex) => (
-                        <div
-                            key={optionIndex}
-                            className="flex items-center mb-2"
-                        >
-                            <Input
-                                isRequired
-                                className="w-2/3"
-                                errorMessage="This field is required"
-                                label={`Option ${optionIndex + 1}`}
-                                validationBehavior="native"
-                                value={option}
-                                onChange={(e) =>
-                                    updateOption(
-                                        questionIndex,
-                                        optionIndex,
-                                        e.target.value,
-                                    )
-                                }
-                            />
-                            <Button
-                                className="ml-2 bg-gray-200 text-red-500"
-                                onPress={() =>
-                                    deleteOption(questionIndex, optionIndex)
-                                }
-                            >
-                                Delete Option
-                            </Button>
-                        </div>
-                    ))}
                     <Button
-                        className="my-2 bg-blue-500 text-white"
-                        onPress={() => addOption(questionIndex)}
+                        className="ml-2 bg-gray-200 text-red-500"
+                        onPress={() => deleteOption(optionIndex)}
                     >
-                        Add Option
+                        Delete Option
                     </Button>
-                    <br />
-                    {voteQuestions.length > 1 && (
-                        <Button
-                            className="bg-red-500 text-white"
-                            onPress={() => deleteQuestion(questionIndex)}
-                        >
-                            Delete Question
-                        </Button>
-                    )}
                 </div>
             ))}
-            <div className="flex justify-center">
-                <Button className="w-1/3 bg-green-400" onPress={addQuestion}>
-                    Add Question
-                </Button>
-            </div>
-        </>
+            <Button className="my-2 bg-blue-500 text-white" onPress={addOption}>
+                Add Option
+            </Button>
+        </div>
     );
 }
