@@ -92,10 +92,22 @@ export default function VoteDetail() {
     });
 
     const handleValueChange = (index: number, value: string) => {
-        setSelected((prevSelected) => ({
-            ...prevSelected,
-            [index]: prevSelected[index] === value ? '' : value,
-        }));
+        setSelected((prevSelected) => {
+            const selectedOptions = Object.values(prevSelected).filter(
+                (v) => v !== '',
+            ).length;
+
+            if (prevSelected[index] === value) {
+                return { ...prevSelected, [index]: '' };
+            } else if (
+                posts?.voteQuestions &&
+                selectedOptions < parseInt(posts.voteQuestions.maxSel || '1')
+            ) {
+                return { ...prevSelected, [index]: value };
+            } else {
+                return prevSelected;
+            }
+        });
     };
 
     return (
@@ -126,48 +138,45 @@ export default function VoteDetail() {
                     </small>
                 </CardHeader>
 
-                {/* <Divider /> */}
                 <CardBody className="overflow-visible py-2 m-5">
                     <Card className="w-4/6 mx-auto my-3 py-3 ">
                         <div className="flex flex-col gap-1 w-full prose px-10 py-3">
-                            {posts?.questions?.map((question, index) => (
-                                <React.Fragment key={index}>
-                                    <p className="text-medium font-semibold text-zinc-700 py-3">
-                                        {question.question}
-                                    </p>
-                                    <div className="flex flex-row flex-wrap justify-center gap-4">
-                                        {question.options.map((option, idx) => (
-                                            <button
-                                                key={idx}
-                                                aria-pressed={
-                                                    selected[index] === option
-                                                }
-                                                className={cn(
-                                                    'w-5/12 px-8 py-3 mr-5 mt-8 text-sm font-medium transition-all duration-200 ease-in-out',
-                                                    'bg-neutral-100 text-violet-700 shadow-sm font-bold',
-                                                    'hover:bg-violet-100 hover:text-violet-500 hover:shadow-md hover:scale-105',
-                                                    'active:scale-95 active:shadow-sm',
-                                                    'rounded-xl',
-                                                    selected[index] === option
-                                                        ? 'bg-purple-200 border-2 border-violet-500 ring-1 ring-violet-300'
-                                                        : 'border-transparent',
-                                                )}
-                                                onClick={() =>
-                                                    handleValueChange(
-                                                        index,
-                                                        option,
-                                                    )
-                                                }
-                                            >
-                                                {option}
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <p className="mt-4 ml-1 text-gray-600">
-                                        Selected: {selected[index]}
-                                    </p>
-                                </React.Fragment>
-                            ))}
+                            <p className="text-medium font-semibold text-zinc-700 py-3">
+                                {posts?.voteQuestions?.question}
+                            </p>
+                            <div className="flex flex-row flex-wrap justify-center gap-4">
+                                {posts?.voteQuestions?.options.map(
+                                    (option, idx) => (
+                                        <button
+                                            key={idx}
+                                            aria-pressed={
+                                                selected[idx] === option
+                                            }
+                                            className={cn(
+                                                'w-5/12 px-8 py-3 mr-5 mt-8 text-sm font-medium transition-all duration-200 ease-in-out',
+                                                'bg-neutral-100 text-violet-700 shadow-sm font-bold',
+                                                'hover:bg-violet-100 hover:text-violet-500 hover:shadow-md hover:scale-105',
+                                                'active:scale-95 active:shadow-sm',
+                                                'rounded-xl',
+                                                selected[idx] === option
+                                                    ? 'bg-purple-200 border-2 border-violet-500 ring-1 ring-violet-300'
+                                                    : 'border-transparent',
+                                            )}
+                                            onClick={() =>
+                                                handleValueChange(idx, option)
+                                            }
+                                        >
+                                            {option}
+                                        </button>
+                                    ),
+                                )}
+                            </div>
+                            <p className="mt-4 ml-1 text-gray-600">
+                                Selected:{' '}
+                                {Object.values(selected)
+                                    .filter((v) => v !== '')
+                                    .join(', ')}
+                            </p>
                         </div>
                     </Card>
                 </CardBody>

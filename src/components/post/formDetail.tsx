@@ -34,6 +34,7 @@ export default function FormDetail() {
     });
 
     console.log(posts);
+    console.log(postid);
 
     function onSubmit() {
         console.log('submitted');
@@ -67,7 +68,7 @@ export default function FormDetail() {
                     {/* <Divider /> */}
                     <CardBody className="flex flex-col px-10 pt-2">
                         <Card className="w-2/3 mx-auto my-3 py-3">
-                            {posts?.questions?.map((qt, index) => (
+                            {posts?.formQuestions?.map((qt, index) => (
                                 <div key={index} className="w-full px-10">
                                     <div className="py-3 text-zinc-600">
                                         {qt.question}
@@ -78,14 +79,18 @@ export default function FormDetail() {
                                             className="pb-2 w-2/3"
                                             label={qt.question}
                                         >
-                                            {qt.options?.map((opt, index) => (
-                                                <SelectItem
-                                                    key={index}
-                                                    value={opt}
-                                                >
-                                                    {opt}
-                                                </SelectItem>
-                                            ))}
+                                            {qt.options !== undefined
+                                                ? qt.options.map(
+                                                      (opt, index) => (
+                                                          <SelectItem
+                                                              key={index}
+                                                              value={opt}
+                                                          >
+                                                              {opt}
+                                                          </SelectItem>
+                                                      ),
+                                                  )
+                                                : []}
                                         </Select>
                                     ) : qt.inputType === 'date' ? (
                                         <DatePicker
