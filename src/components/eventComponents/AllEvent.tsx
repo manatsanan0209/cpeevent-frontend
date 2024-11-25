@@ -298,8 +298,10 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                             staff.stdID ===
                                                             user._id,
                                                     ) ||
-                                                    eventStatus(event) !=
-                                                        'Upcoming' ||
+                                                    (eventStatus(event) !==
+                                                        'Upcoming' &&
+                                                        eventStatus(event) !==
+                                                            'Ongoing') ||
                                                     event.participants.includes(
                                                         user._id,
                                                     )
@@ -312,8 +314,10 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                             staff.stdID ===
                                                             user._id,
                                                     ) ||
-                                                    eventStatus(event) !=
-                                                        'Upcoming' ||
+                                                    (eventStatus(event) !==
+                                                        'Upcoming' &&
+                                                        eventStatus(event) !==
+                                                            'Ongoing') ||
                                                     event.participants.includes(
                                                         user._id,
                                                     )
@@ -335,6 +339,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                     <strong>Joined</strong>
                                                 )}
                                             </Button>
+
                                             <JoinEventModal
                                                 eventID={event._id}
                                                 isOpen={isOpen}
