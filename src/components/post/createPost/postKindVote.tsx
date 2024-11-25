@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 
 type VoteQuestions = {
     question: string;
-    maxSel: string;
     options: string[];
 };
 
@@ -21,7 +20,6 @@ export default function PostKindVote({
             setVoteQuestions({
                 ...voteQuestions,
                 options: [''],
-                maxSel: '1',
             });
         }
     }, [voteQuestions, setVoteQuestions]);
@@ -65,26 +63,6 @@ export default function PostKindVote({
                 validationBehavior="native"
                 value={voteQuestions.question}
                 onChange={(e) => updateQuestion('question', e.target.value)}
-            />
-            <Input
-                isRequired
-                className="my-2 w-1/3"
-                errorMessage={
-                    voteQuestions.maxSel === ''
-                        ? 'This field is required'
-                        : 'Error max select value'
-                }
-                isInvalid={
-                    parseInt(voteQuestions.maxSel) >
-                        voteQuestions.options.length ||
-                    voteQuestions.maxSel === '' ||
-                    voteQuestions.maxSel === '0'
-                }
-                label="Max Select"
-                type="number"
-                validationBehavior="native"
-                value={voteQuestions.maxSel}
-                onChange={(e) => updateQuestion('maxSel', e.target.value)}
             />
             {voteQuestions.options.map((option, optionIndex) => (
                 <div key={optionIndex} className="flex items-center mb-2">

@@ -206,16 +206,6 @@ export default function VoteDetail() {
                                         {posts?.voteQuestions?.question}
                                     </p>
                                     <span className="flex items-center">
-                                        {posts?.voteQuestions?.maxSel && (
-                                            <div className="text-zinc-600 text-sm">
-                                                Choose up to{' '}
-                                                {posts.voteQuestions.maxSel}{' '}
-                                                options
-                                                <span className="text-red-500 ml-1">
-                                                    *
-                                                </span>
-                                            </div>
-                                        )}
                                         {errors[0] && (
                                             <div className="text-red-500 text-sm items-center ml-2">
                                                 {errors[0]}
