@@ -11,7 +11,6 @@ import {
 } from '@nextui-org/react';
 import { IoFilter } from 'react-icons/io5';
 import { SearchIcon } from '../icons.tsx';
-import { read } from 'fs';
 
 interface StaffMember {
     stdID: string;
