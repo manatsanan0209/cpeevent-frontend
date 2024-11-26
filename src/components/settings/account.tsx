@@ -73,7 +73,6 @@ export default function Account() {
     const {
         control,
         handleSubmit,
-        setValue,
         reset,
         formState: { errors, isDirty },
     } = useForm<UserAccountType>({
