@@ -8,8 +8,12 @@ import Step3 from '@/components/createEvent/step3';
 import { EventProvider, useEventContext } from '@/context/EventContext'; // Adjust the import path as necessary
 
 const CreateEventPageContent: React.FC = () => {
-    const { currentStep, eventData } = useEventContext();
-    const steps = ['Step 1', 'Step 2', 'Step 3'];
+    const { currentStep } = useEventContext();
+    const steps = [
+        { step: 'Step 1', description: 'Event Details' },
+        { step: 'Step 2', description: 'Participants' },
+        { step: 'Step 3', description: 'Summary' },
+    ];
 
     const renderStepContent = () => {
         switch (currentStep) {
@@ -31,14 +35,16 @@ const CreateEventPageContent: React.FC = () => {
                     Create New Event
                 </h2>
                 <p className="text-foreground-400">
-                    Manage your account settings and set e-mail preferences.
+                    Fill out event details to create a new event
                 </p>
             </div>
             <Divider />
             <div className="flex flex-row gap-6 mt-4">
                 {/* Sidebar */}
                 <div className="w-1/5">
-                    <Timeline currentStep={currentStep} steps={steps} />
+                    <div className="p-3 flex justify-center">
+                        <Timeline currentStep={currentStep} steps={steps} />
+                    </div>
                 </div>
                 {/* Main Content */}
                 <div className="w-4/5">{renderStepContent()}</div>
