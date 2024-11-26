@@ -5,7 +5,8 @@ import * as z from 'zod';
 import { useNavigate } from 'react-router-dom';
 import { HiChevronDoubleRight, HiOutlineX } from 'react-icons/hi';
 import { GrUploadOption } from 'react-icons/gr';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { useEventContext } from '@/context/EventContext'; // Adjust the import path as necessary
 
@@ -193,7 +194,6 @@ const Step1 = () => {
                     Next Step
                 </Button>
             </div>
-            <ToastContainer position="top-right" />
         </form>
     );
 };

@@ -10,12 +10,13 @@ import {
     Divider,
 } from '@nextui-org/react';
 import { parseDate } from '@internationalized/date';
-
-import { useEventContext } from '@/context/EventContext';
-
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { axiosAPIInstance } from '@/api/axios-config.ts';
+import { HiChevronDoubleUp, HiChevronDoubleLeft } from 'react-icons/hi';
+import { TiTick, TiTimes } from 'react-icons/ti';
+
+import { useEventContext } from '@/context/EventContext';
+import { axiosAPIInstance } from '@/api/axios-config';
 
 const Step3 = () => {
     const { eventData, currentStep, setCurrentStep } = useEventContext();
@@ -41,32 +42,31 @@ const Step3 = () => {
         kind: eventData.eventCategory,
         startDate: new Date(eventData.eventStartDate),
         endDate: new Date(eventData.eventEndDate),
-        nParticipant: eventData.isParticipantsEnabled ? eventData.nParticipants : 0,
+        nParticipant: eventData.isParticipantsEnabled
+            ? eventData.nParticipants
+            : 0,
         nStaff: eventData.isStaffsEnabled ? eventData.nStaff : 0,
-        roles: eventData.roles.map((role) => (role.key)),
+        roles: eventData.roles.map((role) => role.key),
         president: eventData.coordinator,
     };
 
     const createEvent = async (payload: CreateEventRequest) => {
-        const response = await axiosAPIInstance.post('v1/event/create', payload);
+        const response = await axiosAPIInstance.post(
+            'v1/event/create',
+            payload,
+        );
 
         return response.data;
-    }
+    };
 
-    const { mutate, isError, isPending } = useMutation({
+    const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: createEvent,
     });
 
     const onCreateEvennt = () => {
-        mutate(
-            payload,
-            {
-                onSuccess: () => navigate('/events'),
-                onError: (error: any) => {
-                    console.error(error);
-                },
-            },
-        );
+        mutate(payload, {
+            onSuccess: () => navigate('/events'),
+        });
     };
 
     return (
@@ -221,10 +221,12 @@ const Step3 = () => {
                     </div>
                 </div>
             </div>
-            <div className="mt-6 flex flex-row">
+            <div className="mt-6 flex flex-row gap-2 justify-end">
                 <Button
-                    color="default"
+                    color="primary"
+                    startContent={<HiChevronDoubleLeft />}
                     type="button"
+                    variant="bordered"
                     onClick={() => {
                         setCurrentStep(currentStep - 1);
                     }}
@@ -232,14 +234,23 @@ const Step3 = () => {
                     Back
                 </Button>
                 <Button
-                    color="primary"
-                    type="submit"
+                    color={
+                        isError ? 'danger' : isSuccess ? 'success' : 'primary'
+                    }
+                    endContent={isPending ? <HiChevronDoubleUp /> : null}
                     isLoading={isPending}
+                    startContent={
+                        isError ? <TiTimes /> : isSuccess ? <TiTick /> : null
+                    }
+                    type="submit"
                     onClick={onCreateEvennt}
                 >
-                    Create
+                    {isError
+                        ? 'Error creating event, please try again later'
+                        : isSuccess
+                        ? 'Success'
+                        : 'Create Event'}
                 </Button>
-                {isError}
             </div>
         </>
     );

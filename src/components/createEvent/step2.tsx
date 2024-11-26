@@ -18,7 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import 'react-toastify/dist/ReactToastify.css';
 import { parseDate } from '@internationalized/date';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { FaPlus } from 'react-icons/fa6';
 import {
     HiChevronDoubleRight,
@@ -31,7 +31,10 @@ import { useEventContext } from '@/context/EventContext'; // Adjust the import p
 const schema = z.object({
     nParticipants: z.number(),
     nStaff: z.number(),
-    coordinator: z.string().min(1, 'Coordinator is required'),
+    coordinator: z
+        .string()
+        .min(1, 'Coordinator Student ID is required')
+        .length(11, 'Coordinator Student ID must be 11 digits'),
 });
 
 const defaultRoles = [
@@ -430,7 +433,6 @@ const Step2 = () => {
                     Next Step
                 </Button>
             </div>
-            <ToastContainer position="top-right" />
         </form>
     );
 };
