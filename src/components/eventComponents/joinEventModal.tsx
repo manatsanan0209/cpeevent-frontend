@@ -10,6 +10,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Select, SelectItem } from '@nextui-org/react';
 
 import { axiosAPIInstance } from '@/api/axios-config.ts';
 
@@ -17,22 +18,28 @@ interface JoinEventModalProps {
     isOpen: boolean;
     onOpenChange: () => void;
     eventID: string;
+    role: string[];
 }
 
 interface JoinEventRequest {
     eventID: string;
     role: string;
+    subRole?: string;
 }
 
 const JoinEventModal: React.FC<JoinEventModalProps> = ({
     isOpen,
     onOpenChange,
     eventID,
+    role,
 }) => {
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
-    const [selectedRole, setSelectedRole] = useState('staff');
+    const [selectedRole, setSelectedRole] = useState('participant');
+    const [selectedSubRole, setSelectedSubRole] = useState<string | null>(null);
+    const [subRoleLabel, setSubRoleLabel] = useState('Select a role');
     const isParticipantDisabled = false;
+
     const joinEvent = async (data: JoinEventRequest) => {
         const response = await axiosAPIInstance.patch(`v1/event/join`, data);
 
@@ -45,7 +52,11 @@ const JoinEventModal: React.FC<JoinEventModalProps> = ({
 
     const onJoin = () => {
         mutate(
-            { eventID, role: selectedRole },
+            {
+                eventID,
+                role: selectedRole,
+                subRole: selectedSubRole ?? undefined,
+            },
             {
                 onSuccess: () => navigate(`/workspace/${eventID}`),
                 onError: (error: any) => {
@@ -61,6 +72,15 @@ const JoinEventModal: React.FC<JoinEventModalProps> = ({
 
     const handleRoleChange = (role: string) => {
         setSelectedRole(role);
+        if (role !== 'staff') {
+            setSelectedSubRole(null);
+            setSubRoleLabel('Select a role');
+        }
+    };
+
+    const handleSubRoleChange = (value: string) => {
+        setSelectedSubRole(value);
+        setSubRoleLabel('');
     };
 
     return (
@@ -117,6 +137,23 @@ const JoinEventModal: React.FC<JoinEventModalProps> = ({
                                 <p className="text-foreground-400">
                                     Contributing as staff.
                                 </p>
+                                {selectedRole === 'staff' && (
+                                    <Select
+                                        isRequired
+                                        label={subRoleLabel}
+                                        variant="underlined"
+                                        className="max-w-xs"
+                                        onChange={(e) =>
+                                            handleSubRoleChange(e.target.value)
+                                        }
+                                    >
+                                        {role.map((role) => (
+                                            <SelectItem key={role}>
+                                                {role}
+                                            </SelectItem>
+                                        ))}
+                                    </Select>
+                                )}
                             </motion.div>
                         </ModalBody>
                         <ModalFooter>
@@ -129,7 +166,7 @@ const JoinEventModal: React.FC<JoinEventModalProps> = ({
                             </Button>
                             <Button
                                 color={isError ? 'danger' : 'primary'}
-                                isDisabled={isError}
+                                isDisabled={isError || (selectedRole === 'staff' && !selectedSubRole)}
                                 isLoading={isPending}
                                 onPress={onJoin}
                             >

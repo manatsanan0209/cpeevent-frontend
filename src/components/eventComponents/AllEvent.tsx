@@ -344,6 +344,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                 eventID={event._id}
                                                 isOpen={isOpen}
                                                 onOpenChange={onOpenChange}
+                                                role={event.role}
                                             />
                                             <Button
                                                 aria-label="Go to Workspace"
