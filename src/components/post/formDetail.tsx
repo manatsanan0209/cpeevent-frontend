@@ -1,4 +1,4 @@
-import type { PostEventProps } from '@/types/index';
+import type { PostEventProps, formAnswer } from '@/types/index';
 
 import {
     Button,
@@ -14,13 +14,20 @@ import {
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { useContext, useEffect, useState } from 'react';
 
 import { axiosAPIInstance } from '@/api/axios-config';
+import { AuthContext } from '@/context/AuthContext';
 
 export default function FormDetail() {
     const navigate = useNavigate();
-
     const { postid } = useParams();
+    const { user } = useContext(AuthContext);
+    const [answers, setAnswers] = useState<formAnswer>({
+        postID: postid as string,
+        studentID: user as string,
+        answerList: [],
+    });
 
     const fetchPosts = async () => {
         const response = await axiosAPIInstance.get(`v1/posts/${postid}`);
@@ -33,12 +40,31 @@ export default function FormDetail() {
         queryFn: fetchPosts,
     });
 
-    console.log(posts);
-    console.log(postid);
-
     function onSubmit() {
         console.log('submitted');
     }
+
+    useEffect(() => {
+        console.log(answers);
+    }, [answers]);
+
+    //initialize answers array
+    useEffect(() => {
+        if (posts?.formQuestions) {
+            const initialAnswers = posts.formQuestions.map(
+                (question, index) => ({
+                    questionIndex: index,
+                    answers: [],
+                    inputType: question.inputType,
+                }),
+            );
+
+            setAnswers((prevAnswers) => ({
+                ...prevAnswers,
+                answerList: initialAnswers,
+            }));
+        }
+    }, [posts]);
 
     return (
         <>
@@ -65,7 +91,6 @@ export default function FormDetail() {
                             Author : {posts?.author}
                         </small>
                     </CardHeader>
-                    {/* <Divider /> */}
                     <CardBody className="flex flex-col px-10 pt-2">
                         <Card className="w-2/3 mx-auto my-3 py-3">
                             {posts?.formQuestions?.map((qt, index) => (
@@ -77,19 +102,57 @@ export default function FormDetail() {
                                         <Select
                                             isRequired
                                             className="pb-2 w-2/3"
+                                            disabledKeys={
+                                                parseInt(qt.maxSel || '0') ===
+                                                (answers.answerList[index]
+                                                    ?.answers.length || 0)
+                                                    ? qt.options?.filter(
+                                                          (opt) =>
+                                                              !answers.answerList[
+                                                                  index
+                                                              ]?.answers.includes(
+                                                                  opt,
+                                                              ),
+                                                      ) || []
+                                                    : []
+                                            }
                                             label={qt.question}
+                                            selectionMode="multiple"
+                                            onChange={(e) => {
+                                                setAnswers((prevAnswers) => {
+                                                    const newAnswerList = [
+                                                        ...prevAnswers.answerList,
+                                                    ];
+
+                                                    newAnswerList[
+                                                        index
+                                                    ].answers = Array.isArray(
+                                                        e.target.value,
+                                                    )
+                                                        ? e.target.value
+                                                        : e.target.value
+                                                              .split(',')
+                                                              .map((value) =>
+                                                                  value.trim(),
+                                                              );
+
+                                                    return {
+                                                        ...prevAnswers,
+                                                        answerList:
+                                                            newAnswerList,
+                                                    };
+                                                });
+                                            }}
                                         >
                                             {qt.options !== undefined
-                                                ? qt.options.map(
-                                                      (opt, index) => (
-                                                          <SelectItem
-                                                              key={index}
-                                                              value={opt}
-                                                          >
-                                                              {opt}
-                                                          </SelectItem>
-                                                      ),
-                                                  )
+                                                ? qt.options.map((opt) => (
+                                                      <SelectItem
+                                                          key={opt}
+                                                          value={opt}
+                                                      >
+                                                          {opt}
+                                                      </SelectItem>
+                                                  ))
                                                 : []}
                                         </Select>
                                     ) : qt.inputType === 'date' ? (
@@ -113,7 +176,6 @@ export default function FormDetail() {
                             ))}
                         </Card>
                     </CardBody>
-                    {/* <Divider /> */}
                     <CardFooter className="flex justify-center mt-3">
                         <Button
                             className="bg-violet-700 text-white text-lg w-1/6"

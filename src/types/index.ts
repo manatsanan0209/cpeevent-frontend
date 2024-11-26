@@ -39,6 +39,7 @@ export interface PostEventProps {
     formQuestions?: {
         question: string;
         inputType: string;
+        maxSel?: string;
         options?: string[];
     }[];
     voteQuestions?: {
@@ -58,4 +59,15 @@ export interface UserAccountType {
     phoneNumber: string;
     username: string;
     created_at: Date;
+}
+
+export interface formAnswer {
+    _id?: string;
+    postID: string;
+    studentID: string;
+    answerList: {
+        questionIndex: number;
+        answers: string[];
+        inputType: string;
+    }[];
 }

@@ -1,5 +1,4 @@
-import type { PostEventProps } from '@/types';
-import type { Event } from '@/types';
+import type { PostEventProps, Event } from '@/types';
 
 import {
     ModalContent,
@@ -22,7 +21,7 @@ import PostKindVote from './postKindVote';
 import PostKindForm from './postKindForm';
 
 import { AuthContext } from '@/context/AuthContext';
-import { axiosAPIInstance } from '@/api/axios-config.ts';
+import { axiosAPIInstance } from '@/api/axios-config';
 
 export default function CreatePostModal() {
     const { user } = useContext(AuthContext);
@@ -38,7 +37,12 @@ export default function CreatePostModal() {
         options: [], // Default empty options array
     });
     const [formQuestions, setFormQuestions] = useState<
-        { question: string; inputType: string; options: string[] }[]
+        {
+            question: string;
+            inputType: string;
+            maxSel?: string;
+            options: string[];
+        }[]
     >([]);
 
     const [newPost, setNewPost] = useState<PostEventProps>({

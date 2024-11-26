@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 type FormQuestion = {
     question: string;
     inputType: string;
+    maxSel?: string;
     options: string[];
 };
 
@@ -143,6 +144,36 @@ export default function PostKindForm({
                     </Select>
                     {question.inputType === 'option' && (
                         <>
+                            <Input
+                                isRequired
+                                className="my-2 w-1/3"
+                                errorMessage={
+                                    parseInt(question.maxSel || '0') >
+                                    question.options.length
+                                        ? 'Error max select value'
+                                        : 'This field is required'
+                                }
+                                isInvalid={
+                                    parseInt(question.maxSel || '0') >
+                                        question.options.length ||
+                                    question.maxSel === '' ||
+                                    question.maxSel === '0'
+                                }
+                                label="Max Selection"
+                                type="number"
+                                validationBehavior="native"
+                                value={question.maxSel?.toString() || ''}
+                                onChange={(e) => {
+                                    const updatedQuestions = [...formQuestions];
+
+                                    updatedQuestions[questionIndex] = {
+                                        ...updatedQuestions[questionIndex],
+                                        maxSel: e.target.value,
+                                    };
+
+                                    setFormQuestions(updatedQuestions);
+                                }}
+                            />
                             {question.options.map((option, optionIndex) => (
                                 <div
                                     key={optionIndex}
