@@ -1,5 +1,4 @@
 import type { PostEventProps } from '@/types';
-import type { Event } from '@/types';
 
 import {
     ModalContent,
@@ -14,20 +13,20 @@ import {
     DatePicker,
 } from '@nextui-org/react';
 import { useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getLocalTimeZone, now } from '@internationalized/date';
+import { useQuery } from '@tanstack/react-query';
 
 import PostKindPost from './postKindPost';
 import PostKindVote from './postKindVote';
 import PostKindForm from './postKindForm';
 
 import { AuthContext } from '@/context/AuthContext';
-import { axiosAPIInstance } from '@/api/axios-config.ts';
+import { axiosAPIInstance } from '@/api/axios-config';
 
 export default function CreatePostModal() {
     const { user } = useContext(AuthContext);
-    const location = useLocation();
-    const { event } = location.state as { event: Event };
+    const { eventid } = useParams<{ eventid: string }>();
     const [disableEndDate, setDisableEndDate] = useState<boolean>(false);
     const [markdown, setMarkdown] = useState<string>('');
     const [voteQuestions, setVoteQuestions] = useState<{
@@ -38,8 +37,28 @@ export default function CreatePostModal() {
         options: [], // Default empty options array
     });
     const [formQuestions, setFormQuestions] = useState<
-        { question: string; inputType: string; options: string[] }[]
+        {
+            question: string;
+            inputType: string;
+            maxSel?: string;
+            options: string[];
+        }[]
     >([]);
+
+    const fetchPostsRole = async () => {
+        const response = await axiosAPIInstance.get(
+            `v1/event/allRole/${eventid}`,
+        );
+
+        response.data.data.push('everyone');
+
+        return response.data.data;
+    };
+
+    const { data: role = [] } = useQuery<string[]>({
+        queryKey: ['role', eventid],
+        queryFn: fetchPostsRole,
+    });
 
     const [newPost, setNewPost] = useState<PostEventProps>({
         kind: 'post',
@@ -51,12 +70,6 @@ export default function CreatePostModal() {
         endDate: null,
         author: user as string,
     });
-
-    useEffect(() => {
-        if (!event.role.includes('everyone')) {
-            event.role.push('everyone');
-        }
-    }, [event.role]);
 
     useEffect(() => {
         if (newPost.kind === 'form') {
@@ -88,19 +101,19 @@ export default function CreatePostModal() {
     async function postToAPI(updatedPost: PostEventProps) {
         const eventid = window.location.pathname.split('/')[2];
         const final = { eventID: eventid, updatedPost: { ...updatedPost } };
-        // console.log("final : ",final);
+        console.log("final : ",final);
 
-        try {
-            const response = await axiosAPIInstance.post(
-                'v1/posts/create',
-                final,
-            );
+        // try {
+        //     const response = await axiosAPIInstance.post(
+        //         'v1/posts/create',
+        //         final,
+        //     );
 
-            console.log('Post created successfully:', response.data);
-        } catch (error) {
-            console.error('Error creating post:', error);
-        }
-        window.location.reload();
+        //     console.log('Post created successfully:', response.data);
+        // } catch (error) {
+        //     console.error('Error creating post:', error);
+        // }
+        // window.location.reload();
     }
 
     function completePost(kind: string) {
@@ -207,7 +220,7 @@ export default function CreatePostModal() {
                                         isInvalid={newPost.assignTo[0] === ''}
                                         label="Assign To"
                                         selectedKeys={newPost.assignTo.filter(
-                                            (key) => event.role.includes(key),
+                                            (key) => role.includes(key),
                                         )}
                                         selectionMode="multiple"
                                         value={newPost.assignTo}
@@ -226,7 +239,7 @@ export default function CreatePostModal() {
                                             })
                                         }
                                     >
-                                        {event.role.map((role) => (
+                                        {role.map((role) => (
                                             <SelectItem key={role} value={role}>
                                                 {role}
                                             </SelectItem>
