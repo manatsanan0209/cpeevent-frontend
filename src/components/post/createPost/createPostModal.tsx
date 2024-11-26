@@ -101,19 +101,19 @@ export default function CreatePostModal() {
     async function postToAPI(updatedPost: PostEventProps) {
         const eventid = window.location.pathname.split('/')[2];
         const final = { eventID: eventid, updatedPost: { ...updatedPost } };
-        console.log("final : ",final);
+        // console.log("final : ",final);
 
-        // try {
-        //     const response = await axiosAPIInstance.post(
-        //         'v1/posts/create',
-        //         final,
-        //     );
+        try {
+            const response = await axiosAPIInstance.post(
+                'v1/posts/create',
+                final,
+            );
 
-        //     console.log('Post created successfully:', response.data);
-        // } catch (error) {
-        //     console.error('Error creating post:', error);
-        // }
-        // window.location.reload();
+            console.log('Post created successfully:', response.data);
+        } catch (error) {
+            console.error('Error creating post:', error);
+        }
+        window.location.reload();
     }
 
     function completePost(kind: string) {
