@@ -71,3 +71,10 @@ export interface formAnswer {
         inputType: string;
     }[];
 }
+
+export interface voteAnswer {
+    _id?: string;
+    postID: string;
+    studentID: string;
+    answer: string;
+}

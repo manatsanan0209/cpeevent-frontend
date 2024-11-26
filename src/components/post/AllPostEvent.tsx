@@ -400,39 +400,36 @@ export default function AllPostEvent() {
                                     }}
                                 >
                                     <CardHeader className="flex gap-3 flex-col bg-zinc-75  items-start">
-                                        <div className="flex flex-row w-full justify-between">
-                                            <div className="flex flex-col">
-                                                <p className="flex items-center px-2 py-1">
-                                                    {displayPostStatus(
-                                                        post.kind,
-                                                    )}
-                                                </p>
-                                                <div className="mx-2.5 ">
-                                                    {post.assignTo.map(
-                                                        (assignee, index) => (
-                                                            <Chip
-                                                                key={index}
-                                                                className="mr-1"
-                                                                color={
-                                                                    assignee ===
-                                                                    'everyone'
-                                                                        ? 'danger'
-                                                                        : 'secondary'
-                                                                }
-                                                                variant="flat"
-                                                            >
-                                                                {assignee}
-                                                            </Chip>
-                                                        ),
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <p className="flex text-zinc-600 mr-4 mt-1.5 font-semibold text-xs">
+                                        <div className="flex flex-row w-full justify-between mt-1">
+                                            <p className="flex items-center px-2">
+                                                {displayPostStatus(post.kind)}
+                                            </p>
+
+                                            <p className="flex text-zinc-600 mr-4 font-semibold text-xs">
                                                 {formatDate(
                                                     post.postDate,
                                                     'post',
                                                 )}
                                             </p>
+                                        </div>
+                                        <div className="mx-2.5 flex justify-start flex-wrap">
+                                            {post.assignTo.map(
+                                                (assignee, index) => (
+                                                    <Chip
+                                                        key={index}
+                                                        className="mr-1 mb-1"
+                                                        color={
+                                                            assignee ===
+                                                            'everyone'
+                                                                ? 'danger'
+                                                                : 'secondary'
+                                                        }
+                                                        variant="flat"
+                                                    >
+                                                        {assignee}
+                                                    </Chip>
+                                                ),
+                                            )}
                                         </div>
                                     </CardHeader>
                                     <Divider className="bg-violet-100" />
