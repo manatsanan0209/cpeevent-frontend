@@ -12,7 +12,7 @@ import { AuthContext } from '@/context/AuthContext';
 import JoinedEvent from '@/components/eventComponents/JoinedEvent';
 
 export default function Event() {
-    const { user } = useContext(AuthContext);
+    const { user, access } = useContext(AuthContext);
     const navigate = useNavigate();
     const user_id = {
         _id: user as string,
@@ -61,16 +61,18 @@ export default function Event() {
                             />
                         </Tab>
                     </Tabs>
-                    <div className="flex justify-center">
-                        <div className="flex w-full rounded-lg justify-center ">
-                            <Button
-                                color="primary"
-                                onPress={() => navigate('/events/create')}
-                            >
-                                Create Event
-                            </Button>
+                    {parseInt(access) > 1 && (
+                        <div className="flex justify-center">
+                            <div className="flex w-full rounded-lg justify-center ">
+                                <Button
+                                    color="primary"
+                                    onPress={() => navigate('/events/create')}
+                                >
+                                    Create Event
+                                </Button>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </Skeleton>
             )}
         </DefaultLayout>
