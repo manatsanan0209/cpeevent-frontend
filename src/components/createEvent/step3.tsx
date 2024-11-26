@@ -13,9 +13,61 @@ import { parseDate } from '@internationalized/date';
 
 import { useEventContext } from '@/context/EventContext';
 
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { axiosAPIInstance } from '@/api/axios-config.ts';
+
 const Step3 = () => {
     const { eventData, currentStep, setCurrentStep } = useEventContext();
     const roles = eventData.roles.map((role) => role.label).join(', ');
+
+    const navigate = useNavigate();
+
+    interface CreateEventRequest {
+        eventName: string;
+        eventDescription: string;
+        kind: string;
+        startDate: Date;
+        endDate: Date;
+        nParticipant?: number;
+        nStaff?: number;
+        roles: string[];
+        president: string;
+    }
+
+    const payload: CreateEventRequest = {
+        eventName: eventData.eventName,
+        eventDescription: eventData.eventDescription,
+        kind: eventData.eventCategory,
+        startDate: new Date(eventData.eventStartDate),
+        endDate: new Date(eventData.eventEndDate),
+        nParticipant: eventData.isParticipantsEnabled ? eventData.nParticipants : 0,
+        nStaff: eventData.isStaffsEnabled ? eventData.nStaff : 0,
+        roles: eventData.roles.map((role) => (role.key)),
+        president: eventData.coordinator,
+    };
+
+    const createEvent = async (payload: CreateEventRequest) => {
+        const response = await axiosAPIInstance.post('v1/event/create', payload);
+
+        return response.data;
+    }
+
+    const { mutate, isError, isPending } = useMutation({
+        mutationFn: createEvent,
+    });
+
+    const onCreateEvennt = () => {
+        mutate(
+            payload,
+            {
+                onSuccess: () => navigate('/events'),
+                onError: (error: any) => {
+                    console.error(error);
+                },
+            },
+        );
+    };
 
     return (
         <>
@@ -179,9 +231,15 @@ const Step3 = () => {
                 >
                     Back
                 </Button>
-                <Button color="primary" type="submit">
-                    Next Step
+                <Button
+                    color="primary"
+                    type="submit"
+                    isLoading={isPending}
+                    onClick={onCreateEvennt}
+                >
+                    Create
                 </Button>
+                {isError}
             </div>
         </>
     );
