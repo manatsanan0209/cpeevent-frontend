@@ -22,6 +22,7 @@ import AboutPage from '@/pages/about';
 import ProtectedLayout from '@/layouts/ProtectedLayout';
 import CalendarPage from '@/pages/calendar';
 import TodoPage from '@/pages/todo';
+import CreateEventPage from './pages/createEvent';
 
 function App() {
     const { user } = useContext(AuthContext);
@@ -69,7 +70,6 @@ function App() {
                                     }
                                     path="/workspace/:eventid"
                                 >
-                                    {/* <Route index element={<div>312312312</div>} /> */}
                                     <Route index element={<AllPostEvent />} />
                                     <Route
                                         element={<PostDetail />}
@@ -79,11 +79,15 @@ function App() {
                                         element={<MembersPage />}
                                         path="/workspace/:eventid/members"
                                     />
-                                    {/* <Route path="vote/:postid" element={<div>asd</div>} />
-                                    <Route path="pole/:postid" element={<div>asd</div>} /> */}
-                                    {/* <Route path="post/:postid" element={<Postcopy />} /> */}
                                 </Route>
-                                {/* Add more protected routes here */}
+                                <Route
+                                    element={
+                                        <ProtectedLayout requiredAccess="2">
+                                            <CreateEventPage />
+                                        </ProtectedLayout>
+                                    }
+                                    path="/events/create"
+                                />
                             </Routes>
                         </ProtectedLayout>
                     ) : (
