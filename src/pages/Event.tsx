@@ -1,8 +1,9 @@
 import type { Event } from '@/types/index';
 
-import { Tabs, Tab, Skeleton } from '@nextui-org/react';
+import { Tabs, Tab, Skeleton, Button } from '@nextui-org/react';
 import { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 import { axiosAPIInstance } from '@/api/axios-config.ts';
 import DefaultLayout from '@/layouts/default';
@@ -12,6 +13,7 @@ import JoinedEvent from '@/components/eventComponents/JoinedEvent';
 
 export default function Event() {
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
     const user_id = {
         _id: user as string,
     };
@@ -59,6 +61,16 @@ export default function Event() {
                             />
                         </Tab>
                     </Tabs>
+                    <div className="flex justify-center">
+                        <div className="flex w-full rounded-lg justify-center ">
+                            <Button
+                                color="primary"
+                                onPress={() => navigate('/events/create')}
+                            >
+                                Create Event
+                            </Button>
+                        </div>
+                    </div>
                 </Skeleton>
             )}
         </DefaultLayout>
