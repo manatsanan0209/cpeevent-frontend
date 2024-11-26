@@ -39,15 +39,18 @@ export default function FormDetail() {
         queryKey: ['posts', postid],
         queryFn: fetchPosts,
     });
-    console.log(posts);
 
-    function onSubmit() {
-        console.log('submitted');
-    }
-
-    useEffect(() => {
+    async function onSubmit() {
         console.log(answers);
-    }, [answers]);
+        // try {
+        //     await axiosAPIInstance.post('/v1/posts/submit', answers);
+        //     console.log('submitted');
+        //     // navigate(-1);
+        // } catch (error) {
+        //     console.error(error);
+        //     console.log('error');
+        // }
+    }
 
     //initialize answers array
     useEffect(() => {
@@ -164,6 +167,41 @@ export default function FormDetail() {
                                             className="pb-2 w-1/2"
                                             label={qt.question}
                                             validationBehavior="native"
+                                            onChange={(date) => {
+                                                setAnswers((prevAnswers) => {
+                                                    const newAnswerList = [
+                                                        ...prevAnswers.answerList,
+                                                    ];
+
+                                                    // Manually create a JavaScript Date from the DateValue object
+                                                    const nativeDate = new Date(
+                                                        date.year,
+                                                        date.month - 1,
+                                                        date.day,
+                                                    ); // `month` is 0-based in JavaScript
+
+                                                    // Set time to 17:00:00 UTC
+                                                    nativeDate.setUTCHours(
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                    );
+
+                                                    const formattedDate =
+                                                        nativeDate.toISOString();
+
+                                                    newAnswerList[
+                                                        index
+                                                    ].answers = [formattedDate];
+
+                                                    return {
+                                                        ...prevAnswers,
+                                                        answerList:
+                                                            newAnswerList,
+                                                    };
+                                                });
+                                            }}
                                         />
                                     ) : (
                                         <Input
@@ -172,6 +210,25 @@ export default function FormDetail() {
                                             label={qt.question}
                                             type={qt.inputType}
                                             validationBehavior="native"
+                                            onChange={(e) => {
+                                                setAnswers((prevAnswers) => {
+                                                    const newAnswerList = [
+                                                        ...prevAnswers.answerList,
+                                                    ];
+
+                                                    newAnswerList[
+                                                        index
+                                                    ].answers = [
+                                                        e.target.value,
+                                                    ];
+
+                                                    return {
+                                                        ...prevAnswers,
+                                                        answerList:
+                                                            newAnswerList,
+                                                    };
+                                                });
+                                            }}
                                         />
                                     )}
                                 </div>
