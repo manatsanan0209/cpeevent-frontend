@@ -11,6 +11,7 @@ import {
 } from '@nextui-org/react';
 import { IoFilter } from 'react-icons/io5';
 import { SearchIcon } from '../icons.tsx';
+import { read } from 'fs';
 
 interface StaffMember {
     stdID: string;
@@ -109,6 +110,7 @@ export default function MembersPage() {
     }
 
     const roles = Array.from(new Set(staffMembers.map(member => member.role)));
+    roles.push('all');
 
     return (
         <div className="w-full ">
@@ -187,24 +189,22 @@ export default function MembersPage() {
                         </div>
                         <div className="flex"></div>
                         <Select
-                            disallowEmptySelection
-                            isRequired
-                            aria-label="Filter"
-                            className="max-w-xs w-32 mr-20"
-                            defaultSelectedKeys={[filterRole]}
-                            selectedKeys={[filterRole]}
-                            style={{ backgroundColor: '#DED1FF' }}
-                            variant="bordered"
-                            onChange={(e) => setFilterRole(e.target.value)
-                            }
-                        >
-                            <SelectItem key="all" value="all">All</SelectItem>
+                                disallowEmptySelection
+                                isRequired
+                                aria-label="Filter"
+                                className="max-w-xs w-32 mr-20"
+                                defaultSelectedKeys={[filterRole]}
+                                selectedKeys={[filterRole]}
+                                style={{ backgroundColor: '#DED1FF' }}
+                                variant="bordered"
+                                onChange={(e) => setFilterRole(e.target.value)}
+                            >
                                 {roles.map((role) => (
                                     <SelectItem key={role} value={role}>
                                         {role}
                                     </SelectItem>
                                 ))}
-                        </Select>
+                            </Select>
                         </div>
                     </div>
                  </div>
