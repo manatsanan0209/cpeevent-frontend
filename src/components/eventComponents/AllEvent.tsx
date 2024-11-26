@@ -16,7 +16,12 @@ import { useNavigate } from 'react-router-dom';
 
 import { SearchIcon } from '../icons';
 
+import { IoAddCircleOutline } from 'react-icons/io5';
+
 import JoinEventModal from './joinEventModal';
+
+import { AuthContext } from '@/context/AuthContext';
+import { useContext } from 'react';
 
 interface User {
     _id: string;
@@ -34,6 +39,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { access } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -220,6 +226,21 @@ export default function AllEvent({ events, user }: AllEventProps) {
                     </Select>
                 </div>
             </div>
+            {parseInt(access) > 1 && (
+                <div className="mx-10 my-2">
+                    <Button
+                        variant="light"
+                        fullWidth
+                        onPress={() => navigate('/events/create')}
+                        className='h-24 border-2 border-dashed border-foreground-300 text-foreground-400'
+                    >
+                        <div className="flex-col grid justify-items-center">
+                            <IoAddCircleOutline size={40} />
+                            <p className='text-lg'>Create Event</p>
+                        </div>
+                    </Button>
+                </div>
+            )}
             {!isLoading && (
                 <div className="mx-8">
                     <Accordion variant="splitted">

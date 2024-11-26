@@ -13,7 +13,11 @@ import { GrStatusGoodSmall } from 'react-icons/gr';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { IoAddCircleOutline } from 'react-icons/io5';
 import { SearchIcon } from '../icons';
+
+import { AuthContext } from '@/context/AuthContext';
+import { useContext } from 'react';
 
 export default function JoinedEvent({ events }: { events: Event[] }) {
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<Event[]>(
@@ -24,6 +28,7 @@ export default function JoinedEvent({ events }: { events: Event[] }) {
     const [searchInput, setSearchInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
+    const { access } = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -203,6 +208,21 @@ export default function JoinedEvent({ events }: { events: Event[] }) {
                     </Select>
                 </div>
             </div>
+            {parseInt(access) > 1 && (
+                <div className="mx-10 my-2">
+                    <Button
+                        variant="light"
+                        fullWidth
+                        onPress={() => navigate('/events/create')}
+                        className='h-24 border-2 border-dashed border-foreground-300 text-foreground-400'
+                    >
+                        <div className="flex-col grid justify-items-center">
+                            <IoAddCircleOutline size={40} />
+                            <p className='text-lg'>Create Event</p>
+                        </div>
+                    </Button>
+                </div>
+            )}
             {!isLoading && (
                 <div className="mx-8">
                     <Accordion variant="splitted">
