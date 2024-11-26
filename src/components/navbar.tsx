@@ -22,7 +22,7 @@ import {
 } from '@nextui-org/react';
 import { useState, useContext, useEffect } from 'react';
 // eslint-disable-next-line import/order
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import clsx from 'clsx';
@@ -244,7 +244,6 @@ export const Navbar = () => {
                     </div>
                 )}
             </NavbarContent>
-            <ToastContainer position="top-center" />
         </NextUINavbar>
     );
 };
