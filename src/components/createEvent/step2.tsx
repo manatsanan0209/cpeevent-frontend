@@ -20,6 +20,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { parseDate } from '@internationalized/date';
 import { toast, ToastContainer } from 'react-toastify';
 import { FaPlus } from 'react-icons/fa6';
+import {
+    HiChevronDoubleRight,
+    HiChevronDoubleLeft,
+    HiChevronDoubleDown,
+} from 'react-icons/hi';
 
 import { useEventContext } from '@/context/EventContext'; // Adjust the import path as necessary
 
@@ -30,9 +35,12 @@ const schema = z.object({
 });
 
 const defaultRoles = [
-    { key: 'text', label: 'Text' },
-    { key: 'voice', label: 'Voice' },
-    { key: 'video', label: 'Video' },
+    { key: 'activity', label: 'Activity' },
+    { key: 'academic', label: 'Academic' },
+    { key: 'accounting', label: 'Accounting' },
+    { key: 'nursing', label: 'Nursing' },
+    { key: 'welfare', label: 'Welfare' },
+    { key: 'public-relation', label: 'Public Relation' },
 ];
 
 const Step2 = () => {
@@ -66,6 +74,8 @@ const Step2 = () => {
                 ...eventData,
                 roles: defaultRoles,
             });
+        } else {
+            setSelectedKeys(eventData.roles.map((role) => role.key));
         }
     }, []);
 
@@ -84,7 +94,7 @@ const Step2 = () => {
         }
     };
 
-    const [selectedKeys, setSelectedKeys] = useState<string[]>(['text']);
+    const [selectedKeys, setSelectedKeys] = useState<string[]>(['activity']);
 
     const selectedValue = useMemo(
         () =>
@@ -98,6 +108,7 @@ const Step2 = () => {
                 .join(', '),
         [selectedKeys, eventData.roles],
     );
+
     const handleStaffsSwitch = (value: boolean) => {
         if (!value && !eventData.isParticipantsEnabled) {
             toast.error(
@@ -153,6 +164,13 @@ const Step2 = () => {
             return;
         }
 
+        if (!eventData.isStaffsEnabled) {
+            setEventData({
+                ...eventData,
+                roles: [],
+            });
+        }
+
         const updatedData = {
             ...data,
             eventDateRange,
@@ -168,9 +186,14 @@ const Step2 = () => {
             eventEndDate: updatedData.eventDateRange.end.toString(),
             nParticipants: updatedData.nParticipants,
             nStaff: updatedData.nStaff,
-            roles: selectedKeys
-                .map((key) => eventData.roles.find((role) => role.key === key)!)
-                .filter(Boolean),
+            roles: eventData.isStaffsEnabled
+                ? selectedKeys
+                      .map(
+                          (key) =>
+                              eventData.roles.find((role) => role.key === key)!,
+                      )
+                      .filter(Boolean)
+                : [],
             coordinator: updatedData.coordinator,
         });
         setCurrentStep(currentStep + 1);
@@ -301,6 +324,10 @@ const Step2 = () => {
                                 )}
                             />
                         </div>
+                        <p className="ml-auto text-sm text-foreground-400">
+                            You can use input box if number of participants or
+                            staff exceed 100.
+                        </p>
                     </div>
                 </div>
                 <div>
@@ -310,7 +337,10 @@ const Step2 = () => {
                     <div className="flex flex-col gap-2 mt-4">
                         <Popover>
                             <PopoverTrigger>
-                                <Button>
+                                <Button
+                                    endContent={<HiChevronDoubleDown />}
+                                    isDisabled={!eventData.isStaffsEnabled}
+                                >
                                     {selectedValue || 'Select Role'}
                                 </Button>
                             </PopoverTrigger>
@@ -373,28 +403,34 @@ const Step2 = () => {
                                     isRequired
                                     errorMessage={errors.coordinator?.message}
                                     isInvalid={!!errors.coordinator}
-                                    placeholder="Enter your event name"
+                                    placeholder="Enter Coordinator Student ID"
                                 />
                             )}
                         />
                     </div>
                 </div>
             </div>
-            <div className="mt-6 flex flex-row">
+            <div className="mt-6 flex flex-row gap-2 justify-end">
                 <Button
-                    color="default"
+                    color="primary"
+                    startContent={<HiChevronDoubleLeft />}
                     type="button"
+                    variant="bordered"
                     onClick={() => {
                         setCurrentStep(currentStep - 1);
                     }}
                 >
                     Back
                 </Button>
-                <Button color="primary" type="submit">
+                <Button
+                    color="primary"
+                    endContent={<HiChevronDoubleRight />}
+                    type="submit"
+                >
                     Next Step
                 </Button>
             </div>
-            <ToastContainer />
+            <ToastContainer position="top-right" />
         </form>
     );
 };
