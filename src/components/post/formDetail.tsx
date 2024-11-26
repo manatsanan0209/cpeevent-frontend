@@ -39,6 +39,7 @@ export default function FormDetail() {
         queryKey: ['posts', postid],
         queryFn: fetchPosts,
     });
+    console.log(posts);
 
     function onSubmit() {
         console.log('submitted');
@@ -100,6 +101,7 @@ export default function FormDetail() {
                                     </div>
                                     {qt.inputType === 'option' ? (
                                         <Select
+                                            isMultiline
                                             isRequired
                                             className="pb-2 w-2/3"
                                             disabledKeys={
@@ -116,7 +118,7 @@ export default function FormDetail() {
                                                       ) || []
                                                     : []
                                             }
-                                            label={qt.question}
+                                            label={`Select up to ${qt.maxSel} choice`}
                                             selectionMode="multiple"
                                             onChange={(e) => {
                                                 setAnswers((prevAnswers) => {
