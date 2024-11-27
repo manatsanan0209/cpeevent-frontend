@@ -46,6 +46,7 @@ export interface PostEventProps {
         question: string;
         options: string[];
     };
+    timeUp?: boolean;
 }
 
 export interface UserAccountType {

@@ -41,18 +41,12 @@ export default function FormDetail() {
     });
 
     async function onSubmit() {
-        console.log(answers);
-        // try {
-        //     await axiosAPIInstance.post('/v1/posts/submit', answers);
-        //     console.log('submitted');
-        //     // navigate(-1);
-        // } catch (error) {
-        //     console.error(error);
-        //     console.log('error');
-        // }
+        try {
+            await axiosAPIInstance.post('/v1/posts/submit', answers);
+            navigate(-1);
+        } catch (_) {}
     }
 
-    //initialize answers array
     useEffect(() => {
         if (posts?.formQuestions) {
             const initialAnswers = posts.formQuestions.map(
@@ -69,6 +63,26 @@ export default function FormDetail() {
             }));
         }
     }, [posts]);
+
+    function editOption() {
+        setAnswers((prevAnswers) => {
+            const newAnswerList = prevAnswers.answerList.map((item) => {
+                if (item.inputType === 'option' && item.answers.includes('')) {
+                    return {
+                        ...item,
+                        answers: item.answers.filter((answer) => answer !== ''),
+                    };
+                }
+
+                return item;
+            });
+
+            return {
+                ...prevAnswers,
+                answerList: newAnswerList,
+            };
+        });
+    }
 
     return (
         <>
@@ -147,6 +161,7 @@ export default function FormDetail() {
                                                             newAnswerList,
                                                     };
                                                 });
+                                                editOption();
                                             }}
                                         >
                                             {qt.options !== undefined
@@ -228,6 +243,7 @@ export default function FormDetail() {
                                                             newAnswerList,
                                                     };
                                                 });
+                                                editOption();
                                             }}
                                         />
                                     )}

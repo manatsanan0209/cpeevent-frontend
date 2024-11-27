@@ -32,7 +32,7 @@ const Step3 = () => {
         endDate: Date;
         nParticipant?: number;
         nStaff?: number;
-        roles: string[];
+        role: string[];
         president: string;
     }
 
@@ -47,6 +47,7 @@ const Step3 = () => {
             : 0,
         nStaff: eventData.isStaffsEnabled ? eventData.nStaff : 0,
         roles: eventData.roles,
+
         president: eventData.coordinator,
     };
 

@@ -12,8 +12,12 @@ import {
 import { GrStatusGoodSmall } from 'react-icons/gr';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { IoAddCircleOutline } from 'react-icons/io5';
+import { useContext } from 'react';
 
 import { SearchIcon } from '../icons';
+
+import { AuthContext } from '@/context/AuthContext';
 
 export default function JoinedEvent({ events }: { events: Event[] }) {
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<Event[]>(
@@ -24,6 +28,7 @@ export default function JoinedEvent({ events }: { events: Event[] }) {
     const [searchInput, setSearchInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
+    const { access } = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -81,13 +86,13 @@ export default function JoinedEvent({ events }: { events: Event[] }) {
     function displayEventStatus(event: Event) {
         const status = eventStatus(event);
 
-        if (status == 'Upcoming') {
+        if (status == 'Ongoing') {
             return (
                 <span className="flex flex-row">
                     <span>
                         <GrStatusGoodSmall className="text-xs mt-0.5 mr-7 text-green-500" />
                     </span>
-                    <span className="text-blue-500">Upcoming</span>
+                    <span className="text-blue-500">Ongoing</span>
                 </span>
             );
         } else if (status == 'Ended') {
@@ -101,7 +106,7 @@ export default function JoinedEvent({ events }: { events: Event[] }) {
             return (
                 <span className="flex flex-row">
                     <GrStatusGoodSmall className="text-xs mt-0.5 mr-7 text-yellow-500" />
-                    <span className="text-blue-500">Ongoing</span>
+                    <span className="text-blue-500">Upcoming</span>
                 </span>
             );
         }
@@ -162,24 +167,23 @@ export default function JoinedEvent({ events }: { events: Event[] }) {
 
     return (
         <>
-            <div className="grid grid-cols-4 gap-4 my-8 items-center px-10 ">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 my-8 items-center px-4 sm:px-10">
                 {/* Search */}
-                <div className=" flex justify-center items-center content-center">
+                <div className="flex justify-center items-center content-center">
                     {searchInputComponent}
                 </div>
-                <div className="flex justify-center">
-                    {/* Empty div to center the content */}
-                </div>
+                {/* Placeholder for spacing */}
+                <div className="hidden sm:flex" />
                 {/* Sort by */}
-                <div className=" flex content-center col-end-5">
-                    <div className="w-1/4 mr-4 mt-2 items-center text-sm text-zinc-600 font-bold">
+                <div className="flex content-center col-span-1 sm:col-end-5 mt-4 sm:mt-0">
+                    <div className="w-full sm:w-1/4 mr-4 mt-2 text-sm text-zinc-600 font-bold">
                         Sort by
                     </div>
                     <Select
                         disallowEmptySelection
                         isRequired
                         aria-label="Sort by"
-                        className="max-w-xs"
+                        className="w-full sm:max-w-xs mx-auto"
                         defaultSelectedKeys={[sortOption]}
                         selectedKeys={[sortOption]}
                         style={{
@@ -203,97 +207,103 @@ export default function JoinedEvent({ events }: { events: Event[] }) {
                     </Select>
                 </div>
             </div>
-            {!isLoading && (
-                <div className="mx-8">
-                    <Accordion variant="splitted">
-                        {sortedAndSearchEvents.map((event) => {
-                            return (
-                                <AccordionItem
-                                    key={event._id}
-                                    aria-label={event.eventName}
-                                    title={
-                                        <div className="flex flex-row">
-                                            <span
-                                                className="w-5/12 text-zinc-600 capitalize"
-                                                style={{ fontWeight: 'bold' }}
-                                            >
-                                                {event.eventName}
-                                            </span>
-                                            <span className="text-sm w-3/12 pt-1">
-                                                {displayEventStatus(event)}
-                                            </span>
-                                            <span className="flex justify-end text-sm w-4/12 pt-1 pr-8">
-                                                <span
-                                                    className="text-zinc-600"
-                                                    style={{
-                                                        fontWeight: 'bold',
-                                                    }}
-                                                >
-                                                    Start Date :{''}
-                                                </span>
-                                                <span className="text-blue-500 ml-2">
-                                                    {formatDate(
-                                                        event.startDate
-                                                            .substring(0, 10)
-                                                            .replace(/-/g, '/'),
-                                                    )}
-                                                </span>
-                                            </span>
-                                        </div>
-                                    }
-                                >
-                                    <div className="flex flex-row">
-                                        <div className="flex flex-col text-wrap w-1/2 mx-12 my">
-                                            <div
-                                                className="text-zinc-600"
-                                                style={{ fontWeight: 'bold' }}
-                                            >
-                                                Description
-                                            </div>
-                                            <p className="text-zinc-500">
-                                                {event.eventDescription}
-                                            </p>
-                                        </div>
-                                        <div className="flex flex-col text-wrap w-1/4">
-                                            <div
-                                                className="text-zinc-600"
-                                                style={{ fontWeight: 'bold' }}
-                                            >
-                                                Poster
-                                            </div>
-                                            <div className="text-zinc-500">
-                                                {event.poster ? (
-                                                    <img
-                                                        alt="Poster"
-                                                        src={event.poster}
-                                                    />
-                                                ) : (
-                                                    'No poster available'
-                                                )}
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col text-wrap w-1/4">
-                                            <Button
-                                                aria-label="Go to Workspace"
-                                                className="mx-12 my-5 bg-blue-500 text-white"
-                                                onClick={() => {
-                                                    const eventID = event._id;
 
-                                                    navigate(
-                                                        `/workspace/${eventID}`,
-                                                        {
-                                                            state: { event },
-                                                        },
-                                                    );
+            {parseInt(access) > 1 && (
+                <div className="px-4 sm:px-10 my-2">
+                    <Button
+                        fullWidth
+                        className="h-24 border-2 border-dashed border-foreground-300 text-foreground-400"
+                        variant="light"
+                        onPress={() => navigate('/events/create')}
+                    >
+                        <div className="flex-col grid justify-items-center">
+                            <IoAddCircleOutline size={40} />
+                            <p className="text-lg">Create Event</p>
+                        </div>
+                    </Button>
+                </div>
+            )}
+
+            {!isLoading && (
+                <div className="px-4 sm:px-8">
+                    <Accordion variant="splitted">
+                        {sortedAndSearchEvents.map((event) => (
+                            <AccordionItem
+                                key={event._id}
+                                aria-label={event.eventName}
+                                title={
+                                    <div className="flex flex-wrap sm:flex-nowrap justify-between">
+                                        <span className="w-full sm:w-5/12 text-zinc-600 capitalize font-bold">
+                                            {event.eventName}
+                                        </span>
+                                        <span className="text-sm w-full sm:w-3/12 pt-1">
+                                            {displayEventStatus(event)}
+                                        </span>
+                                        <span className="flex justify-end text-sm w-full sm:w-4/12 pt-1 sm:pr-8">
+                                            <span
+                                                className="text-zinc-600"
+                                                style={{
+                                                    fontWeight: 'bold',
                                                 }}
                                             >
-                                                <strong>Workspace</strong>
-                                            </Button>
+                                                Start Date :{''}
+                                            </span>
+                                            <span className="text-blue-500 ml-2">
+                                                {formatDate(
+                                                    event.startDate
+                                                        .substring(0, 10)
+                                                        .replace(/-/g, '/'),
+                                                )}
+                                            </span>
+                                        </span>
+                                    </div>
+                                }
+                            >
+                                <div className="flex flex-wrap sm:flex-nowrap">
+                                    <div className="w-full sm:w-1/2 px-4 sm:px-12 mb-4 sm:mb-0">
+                                        <div className="font-bold text-zinc-600">
+                                            Description
+                                        </div>
+                                        <p className="text-zinc-500">
+                                            {event.eventDescription}
+                                        </p>
+                                    </div>
+                                    <div className="w-full sm:w-1/4 px-4 mb-4 sm:mb-0">
+                                        <div className="font-bold text-zinc-600">
+                                            Poster
+                                        </div>
+                                        <div className="text-zinc-500">
+                                            {event.poster ? (
+                                                <img
+                                                    alt="Poster"
+                                                    src={event.poster}
+                                                />
+                                            ) : (
+                                                'No poster available'
+                                            )}
                                         </div>
                                     </div>
-                                </AccordionItem>
-                            );
-                        })}
+                                    <div className="w-full sm:w-1/4 px-4">
+                                        <Button
+                                            aria-label="Go to Workspace"
+                                            className="w-full bg-blue-500 text-white"
+                                            onClick={() => {
+                                                const eventID = event._id;
+
+                                                navigate(
+                                                    `/workspace/${eventID}`,
+                                                    {
+                                                        state: { event },
+                                                    },
+                                                );
+                                            }}
+                                        >
+                                            <strong>Workspace</strong>
+                                        </Button>
+                                    </div>
+                                </div>
+                            </AccordionItem>
+                        ))}
                     </Accordion>
                 </div>
             )}

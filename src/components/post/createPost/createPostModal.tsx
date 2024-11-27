@@ -27,7 +27,7 @@ import { axiosAPIInstance } from '@/api/axios-config';
 export default function CreatePostModal() {
     const { user } = useContext(AuthContext);
     const { eventid } = useParams<{ eventid: string }>();
-    const [disableEndDate, setDisableEndDate] = useState<boolean>(false);
+    const [disableEndDate, setDisableEndDate] = useState<boolean>(true);
     const [markdown, setMarkdown] = useState<string>('');
     const [voteQuestions, setVoteQuestions] = useState<{
         question: string;
@@ -78,6 +78,11 @@ export default function CreatePostModal() {
                 options: [],
             });
             setMarkdown('');
+            setDisableEndDate(false);
+            setNewPost({
+                ...newPost,
+                endDate: new Date().toISOString(),
+            });
         } else if (newPost.kind === 'post') {
             setVoteQuestions({
                 question: '',
@@ -87,6 +92,11 @@ export default function CreatePostModal() {
         } else if (newPost.kind === 'vote') {
             setFormQuestions([]);
             setMarkdown('');
+            setDisableEndDate(false);
+            setNewPost({
+                ...newPost,
+                endDate: new Date().toISOString(),
+            });
         }
     }, [newPost.kind]);
 
@@ -101,19 +111,20 @@ export default function CreatePostModal() {
     async function postToAPI(updatedPost: PostEventProps) {
         const eventid = window.location.pathname.split('/')[2];
         const final = { eventID: eventid, updatedPost: { ...updatedPost } };
-        // console.log("final : ",final);
 
-        try {
-            const response = await axiosAPIInstance.post(
-                'v1/posts/create',
-                final,
-            );
+        console.log('final : ', final);
 
-            console.log('Post created successfully:', response.data);
-        } catch (error) {
-            console.error('Error creating post:', error);
-        }
-        window.location.reload();
+        // try {
+        //     const response = await axiosAPIInstance.post(
+        //         'v1/posts/create',
+        //         final,
+        //     );
+
+        //     console.log('Post created successfully:', response.data);
+        // } catch (error) {
+        //     console.error('Error creating post:', error);
+        // }
+        // window.location.reload();
     }
 
     function completePost(kind: string) {
@@ -288,7 +299,7 @@ export default function CreatePostModal() {
                                 defaultValue={now(getLocalTimeZone())}
                                 errorMessage={'Date is invalid'}
                                 hourCycle={24}
-                                isDisabled={!disableEndDate}
+                                isDisabled={disableEndDate}
                                 isInvalid={
                                     newPost.endDate &&
                                     checkDateValidation(
@@ -315,28 +326,49 @@ export default function CreatePostModal() {
                                     });
                                 }}
                             />
-                            <Checkbox
-                                defaultSelected
-                                className="pl-4 h-4"
-                                color="default"
-                                size="sm"
-                                onChange={() => {
-                                    setDisableEndDate(!disableEndDate);
-                                    if (!disableEndDate) {
-                                        setNewPost({
-                                            ...newPost,
-                                            endDate: new Date().toISOString(),
-                                        });
-                                    } else {
-                                        setNewPost({
-                                            ...newPost,
-                                            endDate: null,
-                                        });
+                            <div className="flex flex-row items-center">
+                                <Checkbox
+                                    defaultSelected
+                                    className="pl-4 h-4"
+                                    color="default"
+                                    isDisabled={
+                                        newPost.kind === 'form' ||
+                                        newPost.kind === 'vote'
                                     }
-                                }}
-                            >
-                                Disable End Date
-                            </Checkbox>
+                                    isSelected={disableEndDate}
+                                    size="sm"
+                                    onChange={() => {
+                                        setDisableEndDate(!disableEndDate);
+                                        if (!disableEndDate) {
+                                            setNewPost({
+                                                ...newPost,
+                                                endDate:
+                                                    new Date().toISOString(),
+                                            });
+                                        } else {
+                                            setNewPost({
+                                                ...newPost,
+                                                endDate: null,
+                                            });
+                                        }
+                                    }}
+                                >
+                                    <div>Disable End Date</div>
+                                </Checkbox>
+                                {newPost.kind !== 'post' ? (
+                                    newPost.kind !== 'form' ? (
+                                        <div className="ml-1 text-red-500 text-xs">
+                                            ( Vote must have end date )
+                                        </div>
+                                    ) : (
+                                        <div className="ml-1 text-red-500 text-xs">
+                                            ( Form must have end date )
+                                        </div>
+                                    )
+                                ) : (
+                                    <></>
+                                )}
+                            </div>
                         </ModalBody>
                         <ModalFooter>
                             <Button
