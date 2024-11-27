@@ -178,7 +178,7 @@ const JoinEventModal: React.FC<JoinEventModalProps> = ({
                                 <p className="text-foreground-400">
                                     Contributing as staff.
                                 </p>
-                                {selectedRole === 'staff' && (
+                                {selectedRole === 'staff' && eventData.role && eventData.role.length > 0 && (
                                     <Select
                                         isRequired
                                         label={subRoleLabel}
