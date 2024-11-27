@@ -353,25 +353,29 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             <Button
                                                 aria-label="Go to Workspace"
                                                 className={`mx-12 my-5 ${
-                                                    !event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
-                                                                user._id ||
-                                                            event.participants.includes(
+                                                    !(
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
                                                                 user._id,
-                                                            ),
+                                                        ) ||
+                                                        event.participants.includes(
+                                                            user._id,
+                                                        )
                                                     )
                                                         ? 'bg-gray-300 text-blue-600'
                                                         : 'bg-blue-500 text-white'
                                                 }`}
                                                 isDisabled={
-                                                    !event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
-                                                                user._id ||
-                                                            event.participants.includes(
+                                                    !(
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
                                                                 user._id,
-                                                            ),
+                                                        ) ||
+                                                        event.participants.includes(
+                                                            user._id,
+                                                        )
                                                     )
                                                 }
                                                 onClick={() => {
