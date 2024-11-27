@@ -363,7 +363,6 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             <JoinEventModal
                                                 eventID={event._id}
                                                 isOpen={isOpen}
-                                                role={event.role}
                                                 onOpenChange={onOpenChange}
                                             />
                                             <Button

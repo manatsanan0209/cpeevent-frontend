@@ -66,7 +66,6 @@ const Step3 = () => {
     });
 
     const onUpdateEvent = () => {
-        console.log(payload);
         mutate(payload, {
             onSuccess: () => navigate('/events'),
         });

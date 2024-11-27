@@ -10,9 +10,7 @@ import Step3 from '@/components/updateEvent/step3';
 import { EventProvider, useEventContext } from '@/context/EventContext'; // Adjust the import path as necessary
 import { axiosAPIInstance } from '@/api/axios-config';
 
-const UpdateEventPageContent: React.FC<{ eventContent: any }> = ({
-    eventContent,
-}) => {
+const UpdateEventPageContent: React.FC<{ eventContent: any }> = () => {
     const { currentStep } = useEventContext();
 
     const steps = [

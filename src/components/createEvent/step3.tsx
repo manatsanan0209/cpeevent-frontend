@@ -46,7 +46,7 @@ const Step3 = () => {
             ? eventData.nParticipants
             : 0,
         nStaff: eventData.isStaffsEnabled ? eventData.nStaff : 0,
-        roles: eventData.roles,
+        role: eventData.roles,
 
         president: eventData.coordinator,
     };
