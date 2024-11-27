@@ -13,6 +13,8 @@ import AllPostEvent from './components/post/AllPostEvent';
 import PostDetail from './components/post/postDetail';
 import VoteDetail from './components/post/voteDetail';
 import FormDetail from './components/post/formDetail';
+import CreateEventPage from './pages/createEvent';
+import UpdateEventPage from './pages/updateEvent';
 
 import IndexPage from '@/pages/index';
 import DocsPage from '@/pages/docs';
@@ -22,7 +24,6 @@ import AboutPage from '@/pages/about';
 import ProtectedLayout from '@/layouts/ProtectedLayout';
 import CalendarPage from '@/pages/calendar';
 import TodoPage from '@/pages/todo';
-import CreateEventPage from './pages/createEvent';
 
 function App() {
     const { user } = useContext(AuthContext);
@@ -87,6 +88,15 @@ function App() {
                                         </ProtectedLayout>
                                     }
                                     path="/events/create"
+                                />
+                                <Route
+                                    element={
+                                        <ProtectedLayout requiredAccess="2">
+                                            <UpdateEventPage />
+                                            {/* <CreateEventPage /> */}
+                                        </ProtectedLayout>
+                                    }
+                                    path="/events/update/:eventid"
                                 />
                             </Routes>
                         </ProtectedLayout>

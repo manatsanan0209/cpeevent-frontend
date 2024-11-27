@@ -24,7 +24,8 @@ const Step3 = () => {
 
     const navigate = useNavigate();
 
-    interface CreateEventRequest {
+    interface UpdateEventRequest {
+        _id?: string;
         eventName: string;
         eventDescription: string;
         kind: string;
@@ -32,11 +33,12 @@ const Step3 = () => {
         endDate: Date;
         nParticipant?: number;
         nStaff?: number;
-        roles: string[];
+        role: string[];
         president: string;
     }
 
-    const payload: CreateEventRequest = {
+    const payload: UpdateEventRequest = {
+        _id: eventData._id,
         eventName: eventData.eventName,
         eventDescription: eventData.eventDescription,
         kind: eventData.eventCategory,
@@ -46,13 +48,13 @@ const Step3 = () => {
             ? eventData.nParticipants
             : 0,
         nStaff: eventData.isStaffsEnabled ? eventData.nStaff : 0,
-        roles: eventData.roles,
+        role: eventData.roles,
         president: eventData.coordinator,
     };
 
-    const createEvent = async (payload: CreateEventRequest) => {
-        const response = await axiosAPIInstance.post(
-            'v1/event/create',
+    const updateEvent = async (payload: UpdateEventRequest) => {
+        const response = await axiosAPIInstance.put(
+            'v1/event/updateEvent',
             payload,
         );
 
@@ -60,10 +62,11 @@ const Step3 = () => {
     };
 
     const { mutate, isError, isPending, isSuccess } = useMutation({
-        mutationFn: createEvent,
+        mutationFn: updateEvent,
     });
 
-    const onCreateEvent = () => {
+    const onUpdateEvent = () => {
+        console.log(payload);
         mutate(payload, {
             onSuccess: () => navigate('/events'),
         });
@@ -243,13 +246,13 @@ const Step3 = () => {
                         isError ? <TiTimes /> : isSuccess ? <TiTick /> : null
                     }
                     type="button"
-                    onClick={onCreateEvent}
+                    onClick={onUpdateEvent}
                 >
                     {isError
-                        ? 'Error creating event, please try again later'
+                        ? 'Error updating event, please try again later'
                         : isSuccess
                         ? 'Success'
-                        : 'Create Event'}
+                        : 'Edit Event'}
                 </Button>
             </div>
         </>

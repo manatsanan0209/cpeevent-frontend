@@ -1,6 +1,6 @@
 import type { Event } from '@/types/index';
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
     Accordion,
     AccordionItem,
@@ -13,10 +13,13 @@ import {
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
+import { MdEdit } from 'react-icons/md';
 
 import { SearchIcon } from '../icons';
 
 import JoinEventModal from './joinEventModal';
+
+import { AuthContext } from '@/context/AuthContext';
 
 interface User {
     _id: string;
@@ -28,6 +31,7 @@ interface AllEventProps {
 }
 
 export default function AllEvent({ events, user }: AllEventProps) {
+    const { access } = useContext(AuthContext);
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<Event[]>(
         [],
     );
@@ -343,8 +347,8 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             <JoinEventModal
                                                 eventID={event._id}
                                                 isOpen={isOpen}
-                                                onOpenChange={onOpenChange}
                                                 role={event.role}
+                                                onOpenChange={onOpenChange}
                                             />
                                             <Button
                                                 aria-label="Go to Workspace"
@@ -383,6 +387,23 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             >
                                                 <strong>Workspace</strong>
                                             </Button>
+
+                                            {parseInt(access) > 1 && (
+                                                <Button
+                                                    className="mx-12 my-5 bg-yellow-500"
+                                                    // color="warning"
+                                                    startContent={
+                                                        <MdEdit className="" />
+                                                    }
+                                                    onPress={() =>
+                                                        navigate(
+                                                            `/events/update/${event._id}`,
+                                                        )
+                                                    }
+                                                >
+                                                    Edit Event
+                                                </Button>
+                                            )}
                                         </div>
                                     </div>
                                 </AccordionItem>
