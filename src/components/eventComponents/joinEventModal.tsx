@@ -1,4 +1,3 @@
-import type { Event } from '@/types/index';
 import {
     Modal,
     ModalContent,

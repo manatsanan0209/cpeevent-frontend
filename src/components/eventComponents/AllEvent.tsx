@@ -232,7 +232,6 @@ export default function AllEvent({ events, user }: AllEventProps) {
                         className="h-24 border-2 border-dashed border-foreground-300 text-foreground-400"
                         variant="light"
                         onPress={() => navigate('/events/create')}
-                        className="h-24 border-2 border-dashed border-foreground-300 text-foreground-400"
                     >
                         <div className="flex-col grid justify-items-center">
                             <IoAddCircleOutline size={40} />
