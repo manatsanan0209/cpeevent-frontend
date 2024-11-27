@@ -41,13 +41,13 @@ const CreateEventPageContent: React.FC = () => {
             <Divider />
             <div className="flex flex-row gap-6 mt-4">
                 {/* Sidebar */}
-                <div className="w-1/5">
+                <div className="w-1/5 hidden sm:flex">
                     <div className="p-3 flex justify-center">
                         <Timeline currentStep={currentStep} steps={steps} />
                     </div>
                 </div>
                 {/* Main Content */}
-                <div className="w-4/5">{renderStepContent()}</div>
+                <div className="w-full sm:w-4/5">{renderStepContent()}</div>
             </div>
         </DefaultLayout>
     );
