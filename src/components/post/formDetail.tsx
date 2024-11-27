@@ -8,14 +8,17 @@ import {
     CardHeader,
     DatePicker,
     Input,
+    Modal,
     Select,
     SelectItem,
+    useDisclosure,
 } from '@nextui-org/react';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useContext, useEffect, useState } from 'react';
 
+import ConfirmSubmitModal from '@/components/post/confirmSubmitModal';
 import { axiosAPIInstance } from '@/api/axios-config';
 import { AuthContext } from '@/context/AuthContext';
 
@@ -23,6 +26,7 @@ export default function FormDetail() {
     const navigate = useNavigate();
     const { postid } = useParams();
     const { user } = useContext(AuthContext);
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [answers, setAnswers] = useState<formAnswer>({
         postID: postid as string,
         studentID: user as string,
@@ -94,7 +98,6 @@ export default function FormDetail() {
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
-                    onSubmit();
                 }}
             >
                 <Card className="flex py-4">
@@ -254,13 +257,17 @@ export default function FormDetail() {
                     <CardFooter className="flex justify-center mt-3">
                         <Button
                             className="bg-violet-700 text-white text-lg w-1/6"
-                            type="submit"
+                            // type="submit"
+                            onPress={onOpen}
                         >
                             Submit
                         </Button>
                     </CardFooter>
                 </Card>
             </form>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                <ConfirmSubmitModal onSubmit={onSubmit} />
+            </Modal>
         </>
     );
 }
