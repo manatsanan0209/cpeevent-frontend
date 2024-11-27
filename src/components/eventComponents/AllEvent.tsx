@@ -363,31 +363,34 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             <JoinEventModal
                                                 eventID={event._id}
                                                 isOpen={isOpen}
-                                                role={event.role}
                                                 onOpenChange={onOpenChange}
                                             />
                                             <Button
                                                 aria-label="Go to Workspace"
-                                                className={`mx-4 sm:mx-12 my-5 ${
-                                                    !event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
-                                                                user._id ||
-                                                            event.participants.includes(
+                                                className={`mx-12 my-5 ${
+                                                    !(
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
                                                                 user._id,
-                                                            ),
+                                                        ) ||
+                                                        event.participants.includes(
+                                                            user._id,
+                                                        )
                                                     )
                                                         ? 'bg-gray-300 text-blue-600'
                                                         : 'bg-blue-500 text-white'
                                                 }`}
                                                 isDisabled={
-                                                    !event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
-                                                                user._id ||
-                                                            event.participants.includes(
+                                                    !(
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
                                                                 user._id,
-                                                            ),
+                                                        ) ||
+                                                        event.participants.includes(
+                                                            user._id,
+                                                        )
                                                     )
                                                 }
                                                 onClick={() => {
