@@ -51,10 +51,16 @@ export default function Event() {
 
                         <Tab key="Joined" title="Joined">
                             <JoinedEvent
-                                events={allEventData.filter((event) =>
-                                    event.staff?.some(
-                                        (staff) => staff.stdID === user_id._id,
-                                    ),
+                                events={allEventData.filter(
+                                    (event) =>
+                                        event.staff?.some(
+                                            (staff) =>
+                                                staff.stdID === user_id._id,
+                                        ) ||
+                                        event.participants?.some(
+                                            (participant) =>
+                                                participant === user_id._id,
+                                        ),
                                 )}
                             />
                         </Tab>
