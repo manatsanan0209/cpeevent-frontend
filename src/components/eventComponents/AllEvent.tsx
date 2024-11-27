@@ -232,11 +232,11 @@ export default function AllEvent({ events, user }: AllEventProps) {
                         variant="light"
                         fullWidth
                         onPress={() => navigate('/events/create')}
-                        className='h-24 border-2 border-dashed border-foreground-300 text-foreground-400'
+                        className="h-24 border-2 border-dashed border-foreground-300 text-foreground-400"
                     >
                         <div className="flex-col grid justify-items-center">
                             <IoAddCircleOutline size={40} />
-                            <p className='text-lg'>Create Event</p>
+                            <p className="text-lg">Create Event</p>
                         </div>
                     </Button>
                 </div>
@@ -365,30 +365,33 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                 eventID={event._id}
                                                 isOpen={isOpen}
                                                 onOpenChange={onOpenChange}
-                                                role={event.role}
                                             />
                                             <Button
                                                 aria-label="Go to Workspace"
                                                 className={`mx-12 my-5 ${
-                                                    !event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
-                                                                user._id ||
-                                                            event.participants.includes(
+                                                    !(
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
                                                                 user._id,
-                                                            ),
+                                                        ) ||
+                                                        event.participants.includes(
+                                                            user._id,
+                                                        )
                                                     )
                                                         ? 'bg-gray-300 text-blue-600'
                                                         : 'bg-blue-500 text-white'
                                                 }`}
                                                 isDisabled={
-                                                    !event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
-                                                                user._id ||
-                                                            event.participants.includes(
+                                                    !(
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
                                                                 user._id,
-                                                            ),
+                                                        ) ||
+                                                        event.participants.includes(
+                                                            user._id,
+                                                        )
                                                     )
                                                 }
                                                 onClick={() => {
