@@ -81,8 +81,8 @@ export default function SettingsPage() {
                 </p>
             </div>
             <Divider />
-            <div className="flex flex-row gap-6 mt-4">
-                <div className="w-1/4">
+            <div className="flex flex-col md:flex-row gap-6 mt-4">
+                <div className="w-full md:w-1/4">
                     <div className="flex flex-col gap-2">
                         {sections.map((section) => (
                             <SectionNavLink
@@ -94,7 +94,7 @@ export default function SettingsPage() {
                         ))}
                     </div>
                 </div>
-                <div className="w-3/4">
+                <div className="w-full md:w-3/4">
                     <SectionContent selectedSection={selectedSection} />
                 </div>
             </div>
