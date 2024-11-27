@@ -188,7 +188,7 @@ const JoinEventModal: React.FC<JoinEventModalProps> = ({
                                             handleSubRoleChange(e.target.value)
                                         }
                                     >
-                                        {eventData.role.map((role) => (
+                                        {eventData.role && eventData.role.map((role) => (
                                             <SelectItem key={role}>
                                                 {role}
                                             </SelectItem>
