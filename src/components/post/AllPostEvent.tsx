@@ -30,12 +30,10 @@ import CreatePostModal from './createPost/createPostModal.tsx';
 import voteImage from '@/images/Vote.png';
 import formImage from '@/images/Form.png';
 import postImage from '@/images/Post.png';
-import pollImage from '@/images/Poll.png';
 import { axiosAPIInstance } from '@/api/axios-config';
 
 const selectItems = [
     { key: 'all', value: 'all', label: 'All' },
-    { key: 'poll', value: 'poll', label: 'Poll' },
     { key: 'vote', value: 'vote', label: 'Vote' },
     { key: 'post', value: 'post', label: 'Post' },
     { key: 'form', value: 'form', label: 'Form' },
@@ -129,15 +127,6 @@ export default function AllPostEvent() {
 
     const displayPostStatus = (kind: string) => {
         switch (kind) {
-            case 'poll':
-                return (
-                    <span className="flex flex-row">
-                        <GrStatusGoodSmall className="text-xs mt-0.5 mr-3 text-green-500" />
-                        <span className="text-green-500 text-sm font-semibold">
-                            Poll
-                        </span>
-                    </span>
-                );
             case 'post':
                 return (
                     <span className="flex flex-row ">
@@ -185,8 +174,6 @@ export default function AllPostEvent() {
                 return formImage;
             case 'post':
                 return postImage;
-            case 'poll':
-                return pollImage;
             default:
                 return '';
         }
