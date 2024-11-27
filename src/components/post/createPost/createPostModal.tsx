@@ -112,8 +112,6 @@ export default function CreatePostModal() {
         const eventid = window.location.pathname.split('/')[2];
         const final = { eventID: eventid, updatedPost: { ...updatedPost } };
 
-        console.log('final : ', final);
-
         try {
             const response = await axiosAPIInstance.post(
                 'v1/posts/create',
@@ -151,7 +149,10 @@ export default function CreatePostModal() {
         } else if (kind === 'form') {
             updatedPost.formQuestions = formQuestions;
         }
-        console.log(updatedPost);
+
+        if (updatedPost.assignTo.includes('everyone')) {
+            updatedPost.assignTo = ['everyone'];
+        }
 
         postToAPI(updatedPost);
     }
