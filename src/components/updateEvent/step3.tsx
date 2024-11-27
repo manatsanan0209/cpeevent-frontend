@@ -53,7 +53,7 @@ const Step3 = () => {
     };
 
     const updateEvent = async (payload: UpdateEventRequest) => {
-        const response = await axiosAPIInstance.put(
+        const response = await axiosAPIInstance.patch(
             'v1/event/updateEvent',
             payload,
         );
