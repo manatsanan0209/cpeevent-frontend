@@ -1,6 +1,6 @@
 import type { Event } from '@/types/index';
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
     Accordion,
     AccordionItem,
@@ -13,8 +13,8 @@ import {
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
+import { MdEdit } from 'react-icons/md';
 import { IoAddCircleOutline } from 'react-icons/io5';
-import { useContext } from 'react';
 
 import { SearchIcon } from '../icons';
 
@@ -32,13 +32,13 @@ interface AllEventProps {
 }
 
 export default function AllEvent({ events, user }: AllEventProps) {
+    const { access } = useContext(AuthContext);
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<Event[]>(
         [],
     );
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { access } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -406,6 +406,23 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             >
                                                 <strong>Workspace</strong>
                                             </Button>
+
+                                            {parseInt(access) > 1 && (
+                                                <Button
+                                                    className="mx-12 my-5 bg-yellow-500"
+                                                    // color="warning"
+                                                    startContent={
+                                                        <MdEdit className="" />
+                                                    }
+                                                    onPress={() =>
+                                                        navigate(
+                                                            `/events/update/${event._id}`,
+                                                        )
+                                                    }
+                                                >
+                                                    Edit Event
+                                                </Button>
+                                            )}
                                         </div>
                                     </div>
                                 </AccordionItem>

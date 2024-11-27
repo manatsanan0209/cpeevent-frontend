@@ -186,7 +186,9 @@ const Step2 = () => {
             nParticipants: updatedData.nParticipants,
             nStaff: updatedData.nStaff,
             roles: eventData.isStaffsEnabled
-                ? selectedKeys.map((role) => role).filter(Boolean)
+                ? selectedKeys
+                      .map((role) => role)
+                      .filter(Boolean)
                 : [],
             coordinator: updatedData.coordinator,
         });
@@ -280,12 +282,8 @@ const Step2 = () => {
                                         <Input
                                             {...field}
                                             className="w-20"
-                                            errorMessage={
-                                                errors.nStaff?.message
-                                            }
-                                            isDisabled={
-                                                !eventData.isStaffsEnabled
-                                            }
+                                            errorMessage={errors.nStaff?.message}
+                                            isDisabled={!eventData.isStaffsEnabled}
                                             isInvalid={!!errors.nStaff}
                                             type="number"
                                             value={field.value?.toString()}
@@ -305,9 +303,7 @@ const Step2 = () => {
                                             formatOptions={{
                                                 style: 'decimal',
                                             }}
-                                            isDisabled={
-                                                !eventData.isStaffsEnabled
-                                            }
+                                            isDisabled={!eventData.isStaffsEnabled}
                                             label="Number of Staffs"
                                             value={field.value}
                                             onChange={(value) =>
