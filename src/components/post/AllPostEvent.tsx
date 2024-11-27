@@ -52,8 +52,6 @@ export default function AllPostEvent() {
         return response.data.data;
     };
 
-    console.log(eventid);
-
     const {
         data: posts = [],
         isLoading,
@@ -62,6 +60,7 @@ export default function AllPostEvent() {
         queryKey: ['posts', eventid],
         queryFn: fetchPosts,
     });
+
     const [searchInput, setSearchInput] = useState<string>('');
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<
@@ -399,8 +398,8 @@ export default function AllPostEvent() {
                                                 );
                                     }}
                                 >
-                                    <CardHeader className="flex gap-3 flex-col bg-zinc-75  items-start">
-                                        <div className="flex flex-row w-full justify-between mt-1">
+                                    <CardHeader className="flex flex-col bg-zinc-75  items-start">
+                                        <div className="flex flex-row w-full justify-between mt-1 mb-1">
                                             <p className="flex items-center px-2">
                                                 {displayPostStatus(post.kind)}
                                             </p>
@@ -467,14 +466,12 @@ export default function AllPostEvent() {
                                                     }
                                                 >
                                                     {post.endDate
-                                                        ? new Date(
-                                                              post.endDate,
-                                                          ) >= new Date() // Check if end date is in the future
-                                                            ? formatDate(
+                                                        ? post.timeUp
+                                                            ? 'Ended'
+                                                            : formatDate(
                                                                   post.endDate,
                                                                   'end',
                                                               )
-                                                            : 'Ended'
                                                         : 'No end date'}
                                                     !
                                                 </span>

@@ -73,7 +73,6 @@ export default function Account() {
     const {
         control,
         handleSubmit,
-        setValue,
         reset,
         formState: { errors, isDirty },
     } = useForm<UserAccountType>({
@@ -99,7 +98,7 @@ export default function Account() {
     };
 
     const { data: userData } = useQuery<UserAccountType>({
-        queryKey: ['studentid'],
+        queryKey: ['studentID'],
         queryFn: fetchAccount,
     });
 
@@ -107,7 +106,7 @@ export default function Account() {
         if (userData) {
             reset(userData);
         }
-    }, [userData, setValue]);
+    }, [userData, reset]);
 
     const updateAccount = async (data: UserAccountUpdate) => {
         const response = await axiosAPIInstance.patch('v1/account', data);
