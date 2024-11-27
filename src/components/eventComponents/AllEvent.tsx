@@ -13,10 +13,8 @@ import {
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
-
 import { MdEdit } from 'react-icons/md';
 import { IoAddCircleOutline } from 'react-icons/io5';
-import { useContext } from 'react';
 
 import { SearchIcon } from '../icons';
 
@@ -41,7 +39,6 @@ export default function AllEvent({ events, user }: AllEventProps) {
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [searchInput, setSearchInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { access } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -367,7 +364,6 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                 eventID={event._id}
                                                 isOpen={isOpen}
                                                 role={event.role}
-
                                                 onOpenChange={onOpenChange}
                                             />
                                             <Button
