@@ -11,20 +11,13 @@ import {
     ModalContent,
     ModalFooter,
 } from '@nextui-org/react';
-import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Legend,
-    Tooltip,
-    XAxis,
-    YAxis,
-    Label,
-} from 'recharts';
+import { toast } from 'react-toastify';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
+
+import VoteResult from './voteResult';
 
 import { axiosAPIInstance } from '@/api/axios-config';
 import { PostEventProps, voteAnswer } from '@/types';
@@ -83,6 +76,8 @@ export default function VoteDetail() {
         answer: '',
     });
     const [timeLeft, setTimeLeft] = useState('');
+    const [hasVoted, setHasVoted] = useState(false);
+    const [voteCompleted, setVoteCompleted] = useState(false);
 
     const fetchPosts = async () => {
         const response = await axiosAPIInstance.get(`v1/posts/${postid}`);
@@ -96,11 +91,8 @@ export default function VoteDetail() {
     });
 
     const fetchPostSummary = async () => {
-        const postid = {
-            postID: posts?._id,
-        };
         const response = await axiosAPIInstance.get(
-            `v1/posts/summary/${postid.postID}`,
+            `v1/posts/summary/${postid}`,
         );
 
         return response.data.data;
@@ -108,6 +100,18 @@ export default function VoteDetail() {
     const { data: summaryData } = useQuery({
         queryKey: ['postSummary', postid],
         queryFn: fetchPostSummary,
+    });
+
+    const fetchTransaction = async () => {
+        const response = await axiosAPIInstance.get(
+            `v1/posts/answer/${postid}/${user}`,
+        );
+
+        return response.data.data;
+    };
+    const { data: transactionData } = useQuery({
+        queryKey: ['transaction', postid, user],
+        queryFn: fetchTransaction,
     });
 
     useEffect(() => {
@@ -129,7 +133,7 @@ export default function VoteDetail() {
         if (posts?.timeUp === false && timeLeft === 'Time up!') {
             const timer = setTimeout(() => {
                 window.location.reload();
-            }, 1000); // ตั้งเวลา 1 วินาที
+            }, 100);
 
             return () => clearTimeout(timer);
         }
@@ -145,7 +149,7 @@ export default function VoteDetail() {
                 'v1/posts/submit',
                 answers,
             );
-
+            setVoteCompleted(true);
             console.log(response);
         } catch (error) {
             console.error('Error:', error);
@@ -173,8 +177,11 @@ export default function VoteDetail() {
     const handleConfirm = async () => {
         try {
             await submitVote();
+            toast.success('Vote submitted successfully!');
             setIsModalVisible(false);
+            setVoteCompleted(true);
         } catch (error) {
+            toast.error('Error submitting vote');
             console.error('Error:', error);
         }
     };
@@ -198,6 +205,12 @@ export default function VoteDetail() {
                       votes: item.count,
                   }),
               ) || [];
+
+    useEffect(() => {
+        if (transactionData?.answer) {
+            setHasVoted(true);
+        }
+    }, [transactionData]);
 
     return (
         <>
@@ -226,124 +239,120 @@ export default function VoteDetail() {
                         )}
                     </div>
                     <p className="text-default-500 p-2">{posts?.description}</p>
-                    <small className="text-default-500 mt-3">
-                        Author : {posts?.author}
-                    </small>
+                    <div className="flex flex-row w-full">
+                        <small className="text-default-500 mt-3">
+                            Author : {posts?.author}
+                        </small>
+                    </div>
                 </CardHeader>
 
-                {posts?.timeUp && transformedData.length > 0 ? (
-                    <div className=" mx-auto py-3 w-9/12 ">
-                        <h1 className="text-center font-bold text-2xl mb-4 text-zinc-600">
-                            Voting Results
-                        </h1>
-                        <p className="flex justify-end mr-7 mb-3 text-blue-500 font-bold text-base">
-                            Total votes : {summaryData?.totalVotes}
-                        </p>
-                        <p className="flex justify-center w-full">
-                            <BarChart
-                                barSize={50}
-                                className="flex justify-center w-full"
-                                data={transformedData}
-                                height={340}
-                                width={800}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-
-                                <YAxis />
-                                <Label
-                                    angle={-90}
-                                    position="insideLeft"
-                                    value="Number"
-                                />
-                                <Tooltip />
-                                <Legend />
-                                <Bar
-                                    dataKey="votes"
-                                    fill="#7045DE"
-                                    style={{
-                                        filter: 'drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3))',
-                                    }}
-                                />
-                            </BarChart>
-                        </p>
-                    </div>
-                ) : posts?.timeUp && transformedData.length === 0 ? (
-                    <div className="flex justify-center flex-col mx-auto">
-                        <h1 className="flex justify-center font-bold text-zinc-600">
-                            No results available!
-                        </h1>
-                        <img
-                            alt="No Votes"
-                            src={noVoteImage}
-                            style={{ maxWidth: '350px', height: 'auto' }}
-                        />
-                    </div>
-                ) : (
-                    <CardBody className="overflow-visible py-2 m-5">
-                        <Card className="w-4/6 mx-auto my-3 py-3 ">
-                            <div className="flex flex-col gap-1 w-full prose px-10 py-3">
-                                <div className="flex flex-row">
-                                    <p className="flex text-medium font-semibold text-zinc-700 py-3 mr-3">
-                                        {posts?.voteQuestions?.question}
-                                    </p>
-                                    <span className="flex items-center">
-                                        {errors[0] && (
-                                            <div className="text-red-500 text-sm items-center ml-2">
-                                                {errors[0]}
-                                            </div>
+                <CardBody className="overflow-visible py-2 m-5">
+                    {hasVoted ? (
+                        <VoteResult />
+                    ) : posts?.timeUp && transformedData.length > 0 ? (
+                        <VoteResult />
+                    ) : posts?.timeUp && transformedData.length === 0 ? (
+                        <div className="flex justify-center flex-col mx-auto">
+                            <h1 className="flex justify-center font-bold text-zinc-600">
+                                No results available!
+                            </h1>
+                            <img
+                                alt="No Votes"
+                                src={noVoteImage}
+                                style={{
+                                    maxWidth: '350px',
+                                    height: 'auto',
+                                }}
+                            />
+                        </div>
+                    ) : (
+                        <>
+                            <Card className="w-4/6 mx-auto my-3 py-3 ">
+                                <div className="flex flex-col gap-1 w-full prose px-10 py-3">
+                                    <div className="flex flex-row">
+                                        <p className="flex text-medium font-semibold text-zinc-700 py-3 mr-3">
+                                            {posts?.voteQuestions?.question}
+                                        </p>
+                                        <span className="flex items-center">
+                                            {errors[0] && (
+                                                <div className="text-red-500 text-sm items-center ml-2">
+                                                    {errors[0]}
+                                                </div>
+                                            )}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-row flex-wrap justify-center gap-4">
+                                        {posts?.voteQuestions?.options.map(
+                                            (option, idx) => (
+                                                <button
+                                                    key={idx}
+                                                    aria-pressed={
+                                                        selected[idx] === option
+                                                    }
+                                                    className={cn(
+                                                        'w-5/12 px-8 py-3 mr-5 mt-8 text-sm font-medium transition-all duration-200 ease-in-out',
+                                                        'bg-neutral-100 text-violet-700 shadow-sm font-bold',
+                                                        'hover:bg-violet-100 hover:text-violet-500 hover:shadow-md hover:scale-105',
+                                                        'active:scale-95 active:shadow-sm',
+                                                        'rounded-xl',
+                                                        voteCompleted ||
+                                                            hasVoted
+                                                            ? 'bg-gray-200 text-gray-700 cursor-not-allowed'
+                                                            : '',
+                                                        Object.values(
+                                                            selected,
+                                                        )[0] === option
+                                                            ? 'bg-purple-200 border-2 border-violet-500 ring-1 ring-violet-300'
+                                                            : 'border-transparent',
+                                                    )}
+                                                    disabled={voteCompleted}
+                                                    onClick={() =>
+                                                        voteCompleted ||
+                                                        hasVoted
+                                                            ? null
+                                                            : handleValueChange(
+                                                                  idx,
+                                                                  option,
+                                                              )
+                                                    }
+                                                >
+                                                    {option}
+                                                </button>
+                                            ),
                                         )}
-                                    </span>
-                                </div>
-                                <div className="flex flex-row flex-wrap justify-center gap-4">
-                                    {posts?.voteQuestions?.options.map(
-                                        (option, idx) => (
-                                            <button
-                                                key={idx}
-                                                aria-pressed={
-                                                    selected[idx] === option
-                                                }
-                                                className={cn(
-                                                    'w-5/12 px-8 py-3 mr-5 mt-8 text-sm font-medium transition-all duration-200 ease-in-out',
-                                                    'bg-neutral-100 text-violet-700 shadow-sm font-bold',
-                                                    'hover:bg-violet-100 hover:text-violet-500 hover:shadow-md hover:scale-105',
-                                                    'active:scale-95 active:shadow-sm',
-                                                    'rounded-xl',
-                                                    Object.values(
-                                                        selected,
-                                                    )[0] === option
-                                                        ? 'bg-purple-200 border-2 border-violet-500 ring-1 ring-violet-300'
-                                                        : 'border-transparent',
-                                                )}
-                                                onClick={() =>
-                                                    handleValueChange(
-                                                        idx,
-                                                        option,
-                                                    )
-                                                }
-                                            >
-                                                {option}
-                                            </button>
-                                        ),
-                                    )}
-                                </div>
+                                    </div>
 
-                                <p className="mt-4 ml-1 text-gray-600">
-                                    Selected: {filteredSelected}
-                                </p>
-                            </div>
-                        </Card>
-                        <p className="flex justify-center">
-                            <Button
-                                className="flex justify-center mx-12 my-5 w-2/12 bg-violet-700"
-                                type="submit"
-                                onClick={handleSubmit}
-                            >
-                                <strong className="text-white">Submit</strong>
-                            </Button>
-                        </p>
-                    </CardBody>
-                )}
+                                    <p className="mt-4 ml-1 text-gray-600">
+                                        Selected: {filteredSelected}
+                                    </p>
+                                </div>
+                            </Card>
+                            <p className="flex justify-center">
+                                <Button
+                                    className={cn(
+                                        'flex justify-center mx-12 my-5 w-2/12 bg-violet-700',
+                                        hasVoted ||
+                                            posts?.timeUp ||
+                                            voteCompleted
+                                            ? 'bg-gray-200 cursor-not-allowed text-violet-700'
+                                            : 'bg-violet-700 text-white',
+                                    )}
+                                    isDisabled={
+                                        hasVoted ||
+                                        posts?.timeUp ||
+                                        voteCompleted
+                                    }
+                                    type="submit"
+                                    onClick={handleSubmit}
+                                >
+                                    <strong>
+                                        {voteCompleted ? 'Submitted' : 'Submit'}
+                                    </strong>
+                                </Button>
+                            </p>
+                        </>
+                    )}
+                </CardBody>
             </Card>
 
             <Modal isOpen={isModalVisible} onClose={handleModalClose}>
