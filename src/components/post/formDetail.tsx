@@ -137,7 +137,7 @@ export default function FormDetail() {
     async function onSubmit() {
         try {
             await axiosAPIInstance.post('/v1/posts/submit', answers);
-            navigate(-1);
+            window.location.reload();
         } catch (_) {}
     }
 
