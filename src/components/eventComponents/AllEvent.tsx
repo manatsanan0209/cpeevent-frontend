@@ -249,211 +249,229 @@ export default function AllEvent({ events, user }: AllEventProps) {
             {!isLoading && (
                 <div className="mx-4 sm:mx-8">
                     <Accordion variant="splitted">
-                        {sortedAndSearchEvents.map((event) => {
-                            return (
-                                <AccordionItem
-                                    key={event._id}
-                                    aria-label={event.eventName}
-                                    title={
-                                        <div className="flex flex-col sm:flex-row">
-                                            <span
-                                                className="w-full sm:w-5/12 text-zinc-600"
-                                                style={{ fontWeight: 'bold' }}
-                                            >
-                                                {event.eventName}
-                                            </span>
-                                            <span className="text-sm w-full sm:w-3/12 pt-1">
-                                                {displayEventStatus(event)}
-                                            </span>
-                                            <span className="flex justify-end text-sm w-full sm:w-4/12 pt-1 pr-0 sm:pr-8">
+                        {events &&
+                            sortedAndSearchEvents.map((event) => {
+                                return (
+                                    <AccordionItem
+                                        key={event._id}
+                                        aria-label={event.eventName}
+                                        title={
+                                            <div className="flex flex-col sm:flex-row">
                                                 <span
+                                                    className="w-full sm:w-5/12 text-zinc-600"
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                    }}
+                                                >
+                                                    {event.eventName}
+                                                </span>
+                                                <span className="text-sm w-full sm:w-3/12 pt-1">
+                                                    {displayEventStatus(event)}
+                                                </span>
+                                                <span className="flex justify-end text-sm w-full sm:w-4/12 pt-1 pr-0 sm:pr-8">
+                                                    <span
+                                                        className="text-zinc-600"
+                                                        style={{
+                                                            fontWeight: 'bold',
+                                                        }}
+                                                    >
+                                                        Start Date :{''}
+                                                    </span>
+                                                    <span className="text-blue-500 ml-2">
+                                                        {formatDate(
+                                                            event.startDate
+                                                                .substring(
+                                                                    0,
+                                                                    10,
+                                                                )
+                                                                .replace(
+                                                                    /-/g,
+                                                                    '/',
+                                                                ),
+                                                        )}
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        }
+                                    >
+                                        <div className="flex flex-col sm:flex-row">
+                                            <div className="flex flex-col text-wrap w-full sm:w-1/2 mx-4 sm:mx-12 my-2">
+                                                <div
                                                     className="text-zinc-600"
                                                     style={{
                                                         fontWeight: 'bold',
                                                     }}
                                                 >
-                                                    Start Date :{''}
-                                                </span>
-                                                <span className="text-blue-500 ml-2">
-                                                    {formatDate(
-                                                        event.startDate
-                                                            .substring(0, 10)
-                                                            .replace(/-/g, '/'),
-                                                    )}
-                                                </span>
-                                            </span>
-                                        </div>
-                                    }
-                                >
-                                    <div className="flex flex-col sm:flex-row">
-                                        <div className="flex flex-col text-wrap w-full sm:w-1/2 mx-4 sm:mx-12 my-2">
-                                            <div
-                                                className="text-zinc-600"
-                                                style={{ fontWeight: 'bold' }}
-                                            >
-                                                Description
-                                            </div>
-                                            <p className="text-zinc-500">
-                                                {event.eventDescription}
-                                            </p>
-                                        </div>
-                                        <div className="flex flex-col text-wrap w-full sm:w-1/4">
-                                            <div
-                                                className="text-zinc-600"
-                                                style={{ fontWeight: 'bold' }}
-                                            >
-                                                Poster
-                                            </div>
-                                            <p className="text-zinc-500">
-                                                {event.poster ? (
-                                                    <img
-                                                        alt="Poster"
-                                                        src={event.poster}
-                                                    />
-                                                ) : (
-                                                    'No poster available'
-                                                )}
-                                            </p>
-                                        </div>
-                                        <div className="flex flex-col text-wrap w-full sm:w-1/4">
-                                            <Button
-                                                aria-label="Join Event"
-                                                className={`mx-4 sm:mx-12 my-5 ${
-                                                    event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
-                                                            user._id,
-                                                    ) ||
-                                                    (eventStatus(event) !==
-                                                        'Upcoming' &&
-                                                        eventStatus(event) !==
-                                                            'Ongoing') ||
-                                                    event.participants.includes(
-                                                        user._id,
-                                                    )
-                                                        ? 'bg-zinc-300 text-violet-700'
-                                                        : 'bg-violet-700 text-white'
-                                                }`}
-                                                isDisabled={
-                                                    event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
-                                                            user._id,
-                                                    ) ||
-                                                    (eventStatus(event) !==
-                                                        'Upcoming' &&
-                                                        eventStatus(event) !==
-                                                            'Ongoing') ||
-                                                    event.participants.includes(
-                                                        user._id,
-                                                    )
-                                                }
-                                                onPress={onOpen}
-                                            >
-                                                {!(
-                                                    event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
-                                                            user._id,
-                                                    ) ||
-                                                    event.participants.includes(
-                                                        user._id,
-                                                    )
-                                                ) ? (
-                                                    <strong>Join</strong>
-                                                ) : (
-                                                    <strong>Joined</strong>
-                                                )}
-                                            </Button>
-
-                                            <JoinEventModal
-                                                eventID={event._id}
-                                                isOpen={isOpen}
-                                                onOpenChange={onOpenChange}
-                                            />
-                                            <Button
-                                                aria-label="Go to Workspace"
-                                                className={`mx-12 my-5 ${
-                                                    !(
-                                                        event.staff?.some(
-                                                            (staff) =>
-                                                                staff.stdID ===
-                                                                user._id,
-                                                        ) ||
-                                                        event.participants.includes(
-                                                            user._id,
-                                                        )
-                                                    )
-                                                        ? 'bg-gray-300 text-blue-600'
-                                                        : 'bg-blue-500 text-white'
-                                                }`}
-                                                isDisabled={
-                                                    !(
-                                                        event.staff?.some(
-                                                            (staff) =>
-                                                                staff.stdID ===
-                                                                user._id,
-                                                        ) ||
-                                                        event.participants.includes(
-                                                            user._id,
-                                                        )
-                                                    )
-                                                }
-                                                onClick={() => {
-                                                    const eventID = event._id;
-
-                                                    navigate(
-                                                        `/workspace/${eventID}`,
-                                                        {
-                                                            state: { event },
-                                                        },
-                                                    );
-                                                }}
-                                            >
-                                                <strong>Workspace</strong>
-                                            </Button>
-
-                                            {parseInt(access) > 1 && (
-                                                <div className="flex flex-row justify-center my-4">
-                                                    <Button
-                                                        className=" bg-yellow-500 w-5/12 mr-2"
-                                                        // color="warning"
-                                                        startContent={
-                                                            <MdEdit />
-                                                        }
-                                                        onPress={() =>
-                                                            navigate(
-                                                                `/events/update/${event._id}`,
-                                                            )
-                                                        }
-                                                    >
-                                                        Edit
-                                                    </Button>
-                                                    <Button
-                                                        isIconOnly
-                                                        className="bg-transparent border border-red-500"
-                                                        onPress={
-                                                            onOpenDeleteModal
-                                                        }
-                                                    >
-                                                        <IoTrashBin className="text-red-500" />
-                                                    </Button>
-                                                    <DeleteEventModal
-                                                        eventID={event._id}
-                                                        isOpen={
-                                                            isDeleteModalOpen
-                                                        }
-                                                        onOpenChange={
-                                                            onOpenDeleteModalChange
-                                                        }
-                                                    />
+                                                    Description
                                                 </div>
-                                            )}
+                                                <p className="text-zinc-500">
+                                                    {event.eventDescription}
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-col text-wrap w-full sm:w-1/4">
+                                                <div
+                                                    className="text-zinc-600"
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                    }}
+                                                >
+                                                    Poster
+                                                </div>
+                                                <p className="text-zinc-500">
+                                                    {event.poster ? (
+                                                        <img
+                                                            alt="Poster"
+                                                            src={event.poster}
+                                                        />
+                                                    ) : (
+                                                        'No poster available'
+                                                    )}
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-col text-wrap w-full sm:w-1/4">
+                                                <Button
+                                                    aria-label="Join Event"
+                                                    className={`mx-4 sm:mx-12 my-5 ${
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
+                                                                user._id,
+                                                        ) ||
+                                                        (eventStatus(event) !==
+                                                            'Upcoming' &&
+                                                            eventStatus(
+                                                                event,
+                                                            ) !== 'Ongoing') ||
+                                                        event.participants.includes(
+                                                            user._id,
+                                                        )
+                                                            ? 'bg-zinc-300 text-violet-700'
+                                                            : 'bg-violet-700 text-white'
+                                                    }`}
+                                                    isDisabled={
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
+                                                                user._id,
+                                                        ) ||
+                                                        (eventStatus(event) !==
+                                                            'Upcoming' &&
+                                                            eventStatus(
+                                                                event,
+                                                            ) !== 'Ongoing') ||
+                                                        event.participants.includes(
+                                                            user._id,
+                                                        )
+                                                    }
+                                                    onPress={onOpen}
+                                                >
+                                                    {!(
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
+                                                                user._id,
+                                                        ) ||
+                                                        event.participants.includes(
+                                                            user._id,
+                                                        )
+                                                    ) ? (
+                                                        <strong>Join</strong>
+                                                    ) : (
+                                                        <strong>Joined</strong>
+                                                    )}
+                                                </Button>
+
+                                                <JoinEventModal
+                                                    eventID={event._id}
+                                                    isOpen={isOpen}
+                                                    onOpenChange={onOpenChange}
+                                                />
+                                                <Button
+                                                    aria-label="Go to Workspace"
+                                                    className={`mx-12 my-5 ${
+                                                        !(
+                                                            event.staff?.some(
+                                                                (staff) =>
+                                                                    staff.stdID ===
+                                                                    user._id,
+                                                            ) ||
+                                                            event.participants.includes(
+                                                                user._id,
+                                                            )
+                                                        )
+                                                            ? 'bg-gray-300 text-blue-600'
+                                                            : 'bg-blue-500 text-white'
+                                                    }`}
+                                                    isDisabled={
+                                                        !(
+                                                            event.staff?.some(
+                                                                (staff) =>
+                                                                    staff.stdID ===
+                                                                    user._id,
+                                                            ) ||
+                                                            event.participants.includes(
+                                                                user._id,
+                                                            )
+                                                        )
+                                                    }
+                                                    onClick={() => {
+                                                        const eventID =
+                                                            event._id;
+
+                                                        navigate(
+                                                            `/workspace/${eventID}`,
+                                                            {
+                                                                state: {
+                                                                    event,
+                                                                },
+                                                            },
+                                                        );
+                                                    }}
+                                                >
+                                                    <strong>Workspace</strong>
+                                                </Button>
+
+                                                {parseInt(access) > 1 && (
+                                                    <div className="flex flex-row justify-center my-4">
+                                                        <Button
+                                                            className=" bg-yellow-500 w-5/12 mr-2"
+                                                            // color="warning"
+                                                            startContent={
+                                                                <MdEdit />
+                                                            }
+                                                            onPress={() =>
+                                                                navigate(
+                                                                    `/events/update/${event._id}`,
+                                                                )
+                                                            }
+                                                        >
+                                                            Edit
+                                                        </Button>
+                                                        <Button
+                                                            isIconOnly
+                                                            className="bg-transparent border border-red-500"
+                                                            onPress={
+                                                                onOpenDeleteModal
+                                                            }
+                                                        >
+                                                            <IoTrashBin className="text-red-500" />
+                                                        </Button>
+                                                        <DeleteEventModal
+                                                            eventID={event._id}
+                                                            isOpen={
+                                                                isDeleteModalOpen
+                                                            }
+                                                            onOpenChange={
+                                                                onOpenDeleteModalChange
+                                                            }
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                </AccordionItem>
-                            );
-                        })}
+                                    </AccordionItem>
+                                );
+                            })}
                     </Accordion>
                 </div>
             )}

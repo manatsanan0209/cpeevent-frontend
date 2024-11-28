@@ -227,83 +227,84 @@ export default function JoinedEvent({ events }: { events: Event[] }) {
             {!isLoading && (
                 <div className="px-4 sm:px-8">
                     <Accordion variant="splitted">
-                        {sortedAndSearchEvents.map((event) => (
-                            <AccordionItem
-                                key={event._id}
-                                aria-label={event.eventName}
-                                title={
-                                    <div className="flex flex-wrap sm:flex-nowrap justify-between">
-                                        <span className="w-full sm:w-5/12 text-zinc-600 capitalize font-bold">
-                                            {event.eventName}
-                                        </span>
-                                        <span className="text-sm w-full sm:w-3/12 pt-1">
-                                            {displayEventStatus(event)}
-                                        </span>
-                                        <span className="flex justify-end text-sm w-full sm:w-4/12 pt-1 sm:pr-8">
-                                            <span
-                                                className="text-zinc-600"
-                                                style={{
-                                                    fontWeight: 'bold',
+                        {events &&
+                            sortedAndSearchEvents.map((event) => (
+                                <AccordionItem
+                                    key={event._id}
+                                    aria-label={event.eventName}
+                                    title={
+                                        <div className="flex flex-wrap sm:flex-nowrap justify-between">
+                                            <span className="w-full sm:w-5/12 text-zinc-600 capitalize font-bold">
+                                                {event.eventName}
+                                            </span>
+                                            <span className="text-sm w-full sm:w-3/12 pt-1">
+                                                {displayEventStatus(event)}
+                                            </span>
+                                            <span className="flex justify-end text-sm w-full sm:w-4/12 pt-1 sm:pr-8">
+                                                <span
+                                                    className="text-zinc-600"
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                    }}
+                                                >
+                                                    Start Date :{''}
+                                                </span>
+                                                <span className="text-blue-500 ml-2">
+                                                    {formatDate(
+                                                        event.startDate
+                                                            .substring(0, 10)
+                                                            .replace(/-/g, '/'),
+                                                    )}
+                                                </span>
+                                            </span>
+                                        </div>
+                                    }
+                                >
+                                    <div className="flex flex-wrap sm:flex-nowrap">
+                                        <div className="w-full sm:w-1/2 px-4 sm:px-12 mb-4 sm:mb-0">
+                                            <div className="font-bold text-zinc-600">
+                                                Description
+                                            </div>
+                                            <p className="text-zinc-500">
+                                                {event.eventDescription}
+                                            </p>
+                                        </div>
+                                        <div className="w-full sm:w-1/4 px-4 mb-4 sm:mb-0">
+                                            <div className="font-bold text-zinc-600">
+                                                Poster
+                                            </div>
+                                            <div className="text-zinc-500">
+                                                {event.poster ? (
+                                                    <img
+                                                        alt="Poster"
+                                                        src={event.poster}
+                                                    />
+                                                ) : (
+                                                    'No poster available'
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="w-full sm:w-1/4 px-4">
+                                            <Button
+                                                aria-label="Go to Workspace"
+                                                className="w-full bg-blue-500 text-white"
+                                                onClick={() => {
+                                                    const eventID = event._id;
+
+                                                    navigate(
+                                                        `/workspace/${eventID}`,
+                                                        {
+                                                            state: { event },
+                                                        },
+                                                    );
                                                 }}
                                             >
-                                                Start Date :{''}
-                                            </span>
-                                            <span className="text-blue-500 ml-2">
-                                                {formatDate(
-                                                    event.startDate
-                                                        .substring(0, 10)
-                                                        .replace(/-/g, '/'),
-                                                )}
-                                            </span>
-                                        </span>
-                                    </div>
-                                }
-                            >
-                                <div className="flex flex-wrap sm:flex-nowrap">
-                                    <div className="w-full sm:w-1/2 px-4 sm:px-12 mb-4 sm:mb-0">
-                                        <div className="font-bold text-zinc-600">
-                                            Description
-                                        </div>
-                                        <p className="text-zinc-500">
-                                            {event.eventDescription}
-                                        </p>
-                                    </div>
-                                    <div className="w-full sm:w-1/4 px-4 mb-4 sm:mb-0">
-                                        <div className="font-bold text-zinc-600">
-                                            Poster
-                                        </div>
-                                        <div className="text-zinc-500">
-                                            {event.poster ? (
-                                                <img
-                                                    alt="Poster"
-                                                    src={event.poster}
-                                                />
-                                            ) : (
-                                                'No poster available'
-                                            )}
+                                                <strong>Workspace</strong>
+                                            </Button>
                                         </div>
                                     </div>
-                                    <div className="w-full sm:w-1/4 px-4">
-                                        <Button
-                                            aria-label="Go to Workspace"
-                                            className="w-full bg-blue-500 text-white"
-                                            onClick={() => {
-                                                const eventID = event._id;
-
-                                                navigate(
-                                                    `/workspace/${eventID}`,
-                                                    {
-                                                        state: { event },
-                                                    },
-                                                );
-                                            }}
-                                        >
-                                            <strong>Workspace</strong>
-                                        </Button>
-                                    </div>
-                                </div>
-                            </AccordionItem>
-                        ))}
+                                </AccordionItem>
+                            ))}
                     </Accordion>
                 </div>
             )}
