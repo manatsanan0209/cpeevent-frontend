@@ -225,7 +225,7 @@ export default function PostModal(post: PostEventProps) {
 
     return (
         <>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="outside">
                 <ModalContent>
                     {(onClose) => (
                         <form
