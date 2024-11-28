@@ -415,7 +415,9 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                 <strong>Workspace</strong>
                                             </Button>
 
-                                            {parseInt(access) > 1 && (
+                                            {((user._id === event.president &&
+                                                parseInt(access) === 2) ||
+                                                parseInt(access) >= 3) && (
                                                 <div className="flex flex-row justify-center my-4">
                                                     <Button
                                                         className=" bg-yellow-500 w-5/12 mr-2"
