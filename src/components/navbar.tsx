@@ -5,7 +5,7 @@ import {
     NavbarContent,
     NavbarItem,
 } from '@nextui-org/navbar';
-import { VscBell, VscAccount, VscChevronDown } from 'react-icons/vsc';
+import { VscBell, VscAccount, VscChevronDown, VscMenu } from 'react-icons/vsc';
 import {
     Dropdown,
     DropdownTrigger,
@@ -22,7 +22,7 @@ import {
 } from '@nextui-org/react';
 import { useState, useContext, useEffect } from 'react';
 // eslint-disable-next-line import/order
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import clsx from 'clsx';
@@ -31,7 +31,11 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '@/context/AuthContext';
 import { SearchIcon } from '@/components/icons';
 
-export const Navbar = () => {
+export const Navbar = ({
+    onHamburgerClick,
+}: {
+    onHamburgerClick: () => void;
+}) => {
     const { user } = useContext(AuthContext);
     const [searchContent, setSearchContent] = useState('');
     const [items] = useState(['Home', 'About', 'Services', 'Contact']);
@@ -124,7 +128,13 @@ export const Navbar = () => {
             position="sticky"
         >
             <NavbarBrand>
-                <p className="font-bold text-inherit" />
+                <button
+                    aria-label="Open sidebar"
+                    className="md:hidden"
+                    onClick={onHamburgerClick}
+                >
+                    <VscMenu className="text-2xl" />
+                </button>
             </NavbarBrand>
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 {searchInput}
@@ -244,7 +254,56 @@ export const Navbar = () => {
                     </div>
                 )}
             </NavbarContent>
-            <ToastContainer position="top-center" />
+            {/* Mobile Section */}
+            <NavbarContent className="flex sm:hidden justify-end" justify="end">
+                {user ? (
+                    <Dropdown>
+                        <DropdownTrigger>
+                            <button>
+                                <VscAccount className="text-2xl" />
+                            </button>
+                        </DropdownTrigger>
+                        <DropdownMenu aria-label="Static Actions">
+                            <DropdownItem
+                                key="ViewProfile"
+                                onClick={() => navigate('/settings/profile')}
+                            >
+                                View Profile
+                            </DropdownItem>
+                            <DropdownItem
+                                key="Setting"
+                                onClick={() => navigate('/settings/account')}
+                            >
+                                Setting
+                            </DropdownItem>
+                            <DropdownItem
+                                key="SignOut"
+                                className="text-danger"
+                                color="danger"
+                                onClick={handleLogout}
+                            >
+                                Sign out
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                ) : (
+                    <div className="flex gap-2">
+                        <Link
+                            className="px-2 cursor-pointer text-sm"
+                            color="foreground"
+                            onClick={() => navigate('/signup')}
+                        >
+                            Sign Up
+                        </Link>
+                        <Button
+                            className="bg-violet-700 text-white text-sm"
+                            onClick={() => navigate('/login')}
+                        >
+                            Login
+                        </Button>
+                    </div>
+                )}
+            </NavbarContent>
         </NextUINavbar>
     );
 };

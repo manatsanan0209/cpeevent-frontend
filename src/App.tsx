@@ -13,6 +13,8 @@ import AllPostEvent from './components/post/AllPostEvent';
 import PostDetail from './components/post/postDetail';
 import VoteDetail from './components/post/voteDetail';
 import FormDetail from './components/post/formDetail';
+import CreateEventPage from './pages/createEvent';
+import UpdateEventPage from './pages/updateEvent';
 
 import IndexPage from '@/pages/index';
 import DocsPage from '@/pages/docs';
@@ -69,7 +71,6 @@ function App() {
                                     }
                                     path="/workspace/:eventid"
                                 >
-                                    {/* <Route index element={<div>312312312</div>} /> */}
                                     <Route index element={<AllPostEvent />} />
                                     <Route
                                         element={<PostDetail />}
@@ -79,11 +80,24 @@ function App() {
                                         element={<MembersPage />}
                                         path="/workspace/:eventid/members"
                                     />
-                                    {/* <Route path="vote/:postid" element={<div>asd</div>} />
-                                    <Route path="pole/:postid" element={<div>asd</div>} /> */}
-                                    {/* <Route path="post/:postid" element={<Postcopy />} /> */}
                                 </Route>
-                                {/* Add more protected routes here */}
+                                <Route
+                                    element={
+                                        <ProtectedLayout requiredAccess="2">
+                                            <CreateEventPage />
+                                        </ProtectedLayout>
+                                    }
+                                    path="/events/create"
+                                />
+                                <Route
+                                    element={
+                                        <ProtectedLayout requiredAccess="2">
+                                            <UpdateEventPage />
+                                            {/* <CreateEventPage /> */}
+                                        </ProtectedLayout>
+                                    }
+                                    path="/events/update/:eventid"
+                                />
                             </Routes>
                         </ProtectedLayout>
                     ) : (

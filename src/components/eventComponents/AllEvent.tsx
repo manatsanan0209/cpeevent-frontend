@@ -1,6 +1,6 @@
 import type { Event } from '@/types/index';
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
     Accordion,
     AccordionItem,
@@ -13,10 +13,14 @@ import {
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
+import { MdEdit } from 'react-icons/md';
+import { IoAddCircleOutline } from 'react-icons/io5';
 
 import { SearchIcon } from '../icons';
 
 import JoinEventModal from './joinEventModal';
+
+import { AuthContext } from '@/context/AuthContext';
 
 interface User {
     _id: string;
@@ -28,6 +32,7 @@ interface AllEventProps {
 }
 
 export default function AllEvent({ events, user }: AllEventProps) {
+    const { access } = useContext(AuthContext);
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<Event[]>(
         [],
     );
@@ -61,13 +66,13 @@ export default function AllEvent({ events, user }: AllEventProps) {
     const displayEventStatus = (event: Event) => {
         const status = eventStatus(event);
 
-        if (status == 'Upcoming') {
+        if (status == 'Ongoing') {
             return (
                 <span className="flex flex-row">
                     <span>
                         <GrStatusGoodSmall className="text-xs mt-0.5 mr-7 text-green-500" />
                     </span>
-                    <span className="text-blue-500">Upcoming</span>
+                    <span className="text-blue-500">Ongoing</span>
                 </span>
             );
         } else if (status == 'Ended') {
@@ -81,7 +86,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
             return (
                 <span className="flex flex-row">
                     <GrStatusGoodSmall className="text-xs mt-0.5 mr-7 text-yellow-500" />
-                    <span className="text-blue-500">Ongoing</span>
+                    <span className="text-blue-500">Upcoming</span>
                 </span>
             );
         }
@@ -131,21 +136,23 @@ export default function AllEvent({ events, user }: AllEventProps) {
         );
     }
     const eventStatus = (event: Event) => {
-        const current_time = getCurrentTime();
+        const current_time = new Date(
+            getCurrentTime().getTime() + 7 * 60 * 60 * 1000,
+        );
 
-        if (current_time < event.startDate) {
+        console.log(current_time);
+
+        if (current_time < new Date(event.startDate)) {
             return 'Upcoming';
-        } else if (current_time > event.endDate) {
+        } else if (current_time > new Date(event.endDate)) {
             return 'Ended';
         } else {
             return 'Ongoing';
         }
     };
 
-    const getCurrentTime = (): string => {
-        const now = new Date();
-
-        return now.toISOString();
+    const getCurrentTime = (): Date => {
+        return new Date();
     };
 
     const formatDate = (dateString: string) => {
@@ -160,7 +167,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
 
     return (
         <>
-            <div className="grid grid-cols-4 gap-4 my-8 items-center px-10">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 my-8 items-center px-4 sm:px-10">
                 <div className="flex justify-center items-center content-center">
                     <Input
                         aria-label="Search"
@@ -186,15 +193,15 @@ export default function AllEvent({ events, user }: AllEventProps) {
                         onChange={handleSearchChange}
                     />
                 </div>
-                <div className="flex content-center col-end-5">
-                    <div className="w-1/4 mr-4 mt-2 items-center text-sm text-zinc-600 font-bold">
+                <div className="flex content-center col-span-1 sm:col-end-5 mt-4 sm:mt-0">
+                    <div className="w-full sm:w-1/4 mr-4 mt-2 text-sm text-zinc-600 font-bold">
                         Sort by
                     </div>
                     <Select
                         disallowEmptySelection
                         isRequired
                         aria-label="Sort by"
-                        className="max-w-xs mx-auto content-center"
+                        className="w-full sm:max-w-xs mx-auto"
                         defaultSelectedKeys={[sortOption]}
                         selectedKeys={[sortOption]}
                         style={{
@@ -218,8 +225,23 @@ export default function AllEvent({ events, user }: AllEventProps) {
                     </Select>
                 </div>
             </div>
+            {parseInt(access) > 1 && (
+                <div className="mx-4 sm:mx-10 my-2">
+                    <Button
+                        fullWidth
+                        className="h-24 border-2 border-dashed border-foreground-300 text-foreground-400"
+                        variant="light"
+                        onPress={() => navigate('/events/create')}
+                    >
+                        <div className="flex-col grid justify-items-center">
+                            <IoAddCircleOutline size={40} />
+                            <p className="text-lg">Create Event</p>
+                        </div>
+                    </Button>
+                </div>
+            )}
             {!isLoading && (
-                <div className="mx-8">
+                <div className="mx-4 sm:mx-8">
                     <Accordion variant="splitted">
                         {sortedAndSearchEvents.map((event) => {
                             return (
@@ -227,17 +249,17 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                     key={event._id}
                                     aria-label={event.eventName}
                                     title={
-                                        <div className="flex flex-row">
+                                        <div className="flex flex-col sm:flex-row">
                                             <span
-                                                className="w-5/12 text-zinc-600"
+                                                className="w-full sm:w-5/12 text-zinc-600"
                                                 style={{ fontWeight: 'bold' }}
                                             >
                                                 {event.eventName}
                                             </span>
-                                            <span className="text-sm w-3/12 pt-1">
+                                            <span className="text-sm w-full sm:w-3/12 pt-1">
                                                 {displayEventStatus(event)}
                                             </span>
-                                            <span className="flex justify-end text-sm w-4/12 pt-1 pr-8">
+                                            <span className="flex justify-end text-sm w-full sm:w-4/12 pt-1 pr-0 sm:pr-8">
                                                 <span
                                                     className="text-zinc-600"
                                                     style={{
@@ -257,8 +279,8 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                         </div>
                                     }
                                 >
-                                    <div className="flex flex-row">
-                                        <div className="flex flex-col text-wrap w-1/2 mx-12 my">
+                                    <div className="flex flex-col sm:flex-row">
+                                        <div className="flex flex-col text-wrap w-full sm:w-1/2 mx-4 sm:mx-12 my-2">
                                             <div
                                                 className="text-zinc-600"
                                                 style={{ fontWeight: 'bold' }}
@@ -269,7 +291,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                 {event.eventDescription}
                                             </p>
                                         </div>
-                                        <div className="flex flex-col text-wrap w-1/4">
+                                        <div className="flex flex-col text-wrap w-full sm:w-1/4">
                                             <div
                                                 className="text-zinc-600"
                                                 style={{ fontWeight: 'bold' }}
@@ -287,17 +309,19 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                 )}
                                             </p>
                                         </div>
-                                        <div className="flex flex-col text-wrap w-1/4">
+                                        <div className="flex flex-col text-wrap w-full sm:w-1/4">
                                             <Button
                                                 aria-label="Join Event"
-                                                className={`mx-12 my-5 ${
+                                                className={`mx-4 sm:mx-12 my-5 ${
                                                     event.staff?.some(
                                                         (staff) =>
                                                             staff.stdID ===
                                                             user._id,
                                                     ) ||
-                                                    eventStatus(event) !=
-                                                        'Upcoming' ||
+                                                    (eventStatus(event) !==
+                                                        'Upcoming' &&
+                                                        eventStatus(event) !==
+                                                            'Ongoing') ||
                                                     event.participants.includes(
                                                         user._id,
                                                     )
@@ -310,8 +334,10 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                             staff.stdID ===
                                                             user._id,
                                                     ) ||
-                                                    eventStatus(event) !=
-                                                        'Upcoming' ||
+                                                    (eventStatus(event) !==
+                                                        'Upcoming' &&
+                                                        eventStatus(event) !==
+                                                            'Ongoing') ||
                                                     event.participants.includes(
                                                         user._id,
                                                     )
@@ -333,6 +359,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                     <strong>Joined</strong>
                                                 )}
                                             </Button>
+
                                             <JoinEventModal
                                                 eventID={event._id}
                                                 isOpen={isOpen}
@@ -341,25 +368,29 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             <Button
                                                 aria-label="Go to Workspace"
                                                 className={`mx-12 my-5 ${
-                                                    !event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
-                                                                user._id ||
-                                                            event.participants.includes(
+                                                    !(
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
                                                                 user._id,
-                                                            ),
+                                                        ) ||
+                                                        event.participants.includes(
+                                                            user._id,
+                                                        )
                                                     )
                                                         ? 'bg-gray-300 text-blue-600'
                                                         : 'bg-blue-500 text-white'
                                                 }`}
                                                 isDisabled={
-                                                    !event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
-                                                                user._id ||
-                                                            event.participants.includes(
+                                                    !(
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
                                                                 user._id,
-                                                            ),
+                                                        ) ||
+                                                        event.participants.includes(
+                                                            user._id,
+                                                        )
                                                     )
                                                 }
                                                 onClick={() => {
@@ -375,6 +406,23 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             >
                                                 <strong>Workspace</strong>
                                             </Button>
+
+                                            {parseInt(access) > 1 && (
+                                                <Button
+                                                    className="mx-12 my-5 bg-yellow-500"
+                                                    // color="warning"
+                                                    startContent={
+                                                        <MdEdit className="" />
+                                                    }
+                                                    onPress={() =>
+                                                        navigate(
+                                                            `/events/update/${event._id}`,
+                                                        )
+                                                    }
+                                                >
+                                                    Edit Event
+                                                </Button>
+                                            )}
                                         </div>
                                     </div>
                                 </AccordionItem>

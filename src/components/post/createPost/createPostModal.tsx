@@ -1,5 +1,4 @@
 import type { PostEventProps } from '@/types';
-import type { Event } from '@/types';
 
 import {
     ModalContent,
@@ -14,21 +13,21 @@ import {
     DatePicker,
 } from '@nextui-org/react';
 import { useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getLocalTimeZone, now } from '@internationalized/date';
+import { useQuery } from '@tanstack/react-query';
 
 import PostKindPost from './postKindPost';
 import PostKindVote from './postKindVote';
 import PostKindForm from './postKindForm';
 
 import { AuthContext } from '@/context/AuthContext';
-import { axiosAPIInstance } from '@/api/axios-config.ts';
+import { axiosAPIInstance } from '@/api/axios-config';
 
 export default function CreatePostModal() {
     const { user } = useContext(AuthContext);
-    const location = useLocation();
-    const { event } = location.state as { event: Event };
-    const [disableEndDate, setDisableEndDate] = useState<boolean>(false);
+    const { eventid } = useParams<{ eventid: string }>();
+    const [disableEndDate, setDisableEndDate] = useState<boolean>(true);
     const [markdown, setMarkdown] = useState<string>('');
     const [voteQuestions, setVoteQuestions] = useState<{
         question: string;
@@ -38,8 +37,28 @@ export default function CreatePostModal() {
         options: [], // Default empty options array
     });
     const [formQuestions, setFormQuestions] = useState<
-        { question: string; inputType: string; options: string[] }[]
+        {
+            question: string;
+            inputType: string;
+            maxSel?: string;
+            options: string[];
+        }[]
     >([]);
+
+    const fetchPostsRole = async () => {
+        const response = await axiosAPIInstance.get(
+            `v1/event/allRole/${eventid}`,
+        );
+
+        response.data.data.push('everyone');
+
+        return response.data.data;
+    };
+
+    const { data: role = [] } = useQuery<string[]>({
+        queryKey: ['role', eventid],
+        queryFn: fetchPostsRole,
+    });
 
     const [newPost, setNewPost] = useState<PostEventProps>({
         kind: 'post',
@@ -53,18 +72,17 @@ export default function CreatePostModal() {
     });
 
     useEffect(() => {
-        if (!event.role.includes('everyone')) {
-            event.role.push('everyone');
-        }
-    }, [event.role]);
-
-    useEffect(() => {
         if (newPost.kind === 'form') {
             setVoteQuestions({
                 question: '',
                 options: [],
             });
             setMarkdown('');
+            setDisableEndDate(false);
+            setNewPost({
+                ...newPost,
+                endDate: new Date().toISOString(),
+            });
         } else if (newPost.kind === 'post') {
             setVoteQuestions({
                 question: '',
@@ -74,6 +92,11 @@ export default function CreatePostModal() {
         } else if (newPost.kind === 'vote') {
             setFormQuestions([]);
             setMarkdown('');
+            setDisableEndDate(false);
+            setNewPost({
+                ...newPost,
+                endDate: new Date().toISOString(),
+            });
         }
     }, [newPost.kind]);
 
@@ -88,7 +111,6 @@ export default function CreatePostModal() {
     async function postToAPI(updatedPost: PostEventProps) {
         const eventid = window.location.pathname.split('/')[2];
         const final = { eventID: eventid, updatedPost: { ...updatedPost } };
-        // console.log("final : ",final);
 
         try {
             const response = await axiosAPIInstance.post(
@@ -127,7 +149,10 @@ export default function CreatePostModal() {
         } else if (kind === 'form') {
             updatedPost.formQuestions = formQuestions;
         }
-        console.log(updatedPost);
+
+        if (updatedPost.assignTo.includes('everyone')) {
+            updatedPost.assignTo = ['everyone'];
+        }
 
         postToAPI(updatedPost);
     }
@@ -207,7 +232,7 @@ export default function CreatePostModal() {
                                         isInvalid={newPost.assignTo[0] === ''}
                                         label="Assign To"
                                         selectedKeys={newPost.assignTo.filter(
-                                            (key) => event.role.includes(key),
+                                            (key) => role.includes(key),
                                         )}
                                         selectionMode="multiple"
                                         value={newPost.assignTo}
@@ -226,7 +251,7 @@ export default function CreatePostModal() {
                                             })
                                         }
                                     >
-                                        {event.role.map((role) => (
+                                        {role.map((role) => (
                                             <SelectItem key={role} value={role}>
                                                 {role}
                                             </SelectItem>
@@ -275,7 +300,7 @@ export default function CreatePostModal() {
                                 defaultValue={now(getLocalTimeZone())}
                                 errorMessage={'Date is invalid'}
                                 hourCycle={24}
-                                isDisabled={!disableEndDate}
+                                isDisabled={disableEndDate}
                                 isInvalid={
                                     newPost.endDate &&
                                     checkDateValidation(
@@ -302,28 +327,49 @@ export default function CreatePostModal() {
                                     });
                                 }}
                             />
-                            <Checkbox
-                                defaultSelected
-                                className="pl-4 h-4"
-                                color="default"
-                                size="sm"
-                                onChange={() => {
-                                    setDisableEndDate(!disableEndDate);
-                                    if (!disableEndDate) {
-                                        setNewPost({
-                                            ...newPost,
-                                            endDate: new Date().toISOString(),
-                                        });
-                                    } else {
-                                        setNewPost({
-                                            ...newPost,
-                                            endDate: null,
-                                        });
+                            <div className="flex flex-row items-center">
+                                <Checkbox
+                                    defaultSelected
+                                    className="pl-4 h-4"
+                                    color="default"
+                                    isDisabled={
+                                        newPost.kind === 'form' ||
+                                        newPost.kind === 'vote'
                                     }
-                                }}
-                            >
-                                Disable End Date
-                            </Checkbox>
+                                    isSelected={disableEndDate}
+                                    size="sm"
+                                    onChange={() => {
+                                        setDisableEndDate(!disableEndDate);
+                                        if (!disableEndDate) {
+                                            setNewPost({
+                                                ...newPost,
+                                                endDate:
+                                                    new Date().toISOString(),
+                                            });
+                                        } else {
+                                            setNewPost({
+                                                ...newPost,
+                                                endDate: null,
+                                            });
+                                        }
+                                    }}
+                                >
+                                    <div>Disable End Date</div>
+                                </Checkbox>
+                                {newPost.kind !== 'post' ? (
+                                    newPost.kind !== 'form' ? (
+                                        <div className="ml-1 text-red-500 text-xs">
+                                            ( Vote must have end date )
+                                        </div>
+                                    ) : (
+                                        <div className="ml-1 text-red-500 text-xs">
+                                            ( Form must have end date )
+                                        </div>
+                                    )
+                                ) : (
+                                    <></>
+                                )}
+                            </div>
                         </ModalBody>
                         <ModalFooter>
                             <Button

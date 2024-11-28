@@ -30,13 +30,11 @@ import CreatePostModal from './createPost/createPostModal.tsx';
 import voteImage from '@/images/Vote.png';
 import formImage from '@/images/Form.png';
 import postImage from '@/images/Post.png';
-import pollImage from '@/images/Poll.png';
 import { axiosAPIInstance } from '@/api/axios-config';
 import EditPost from './editPost.tsx';
 
 const selectItems = [
     { key: 'all', value: 'all', label: 'All' },
-    { key: 'poll', value: 'poll', label: 'Poll' },
     { key: 'vote', value: 'vote', label: 'Vote' },
     { key: 'post', value: 'post', label: 'Post' },
     { key: 'form', value: 'form', label: 'Form' },
@@ -52,7 +50,9 @@ export default function AllPostEvent() {
 
         return response.data.data;
     };
+
     console.log(eventid);
+
 
     const {
         data: posts = [],
@@ -62,6 +62,7 @@ export default function AllPostEvent() {
         queryKey: ['posts', eventid],
         queryFn: fetchPosts,
     });
+
     const [searchInput, setSearchInput] = useState<string>('');
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<
@@ -130,15 +131,6 @@ export default function AllPostEvent() {
 
     const displayPostStatus = (kind: string) => {
         switch (kind) {
-            case 'poll':
-                return (
-                    <span className="flex flex-row">
-                        <GrStatusGoodSmall className="text-xs mt-0.5 mr-3 text-green-500" />
-                        <span className="text-green-500 text-sm font-semibold">
-                            Poll
-                        </span>
-                    </span>
-                );
             case 'post':
                 return (
                     <span className="flex flex-row ">
@@ -186,8 +178,6 @@ export default function AllPostEvent() {
                 return formImage;
             case 'post':
                 return postImage;
-            case 'poll':
-                return pollImage;
             default:
                 return '';
         }
@@ -399,41 +389,38 @@ export default function AllPostEvent() {
                                                 );
                                     }}
                                 >
-                                    <CardHeader className="flex gap-3 flex-col bg-zinc-75  items-start">
-                                        <div className="flex flex-row w-full justify-between">
-                                            <div className="flex flex-col">
-                                                <p className="flex items-center px-2 py-1">
-                                                    {displayPostStatus(
-                                                        post.kind,
-                                                    )}
-                                                </p>
-                                                <div className="mx-2.5 ">
-                                                    {post.assignTo.map(
-                                                        (assignee, index) => (
-                                                            <Chip
-                                                                key={index}
-                                                                className="mr-1"
-                                                                color={
-                                                                    assignee ===
-                                                                    'everyone'
-                                                                        ? 'danger'
-                                                                        : 'secondary'
-                                                                }
-                                                                variant="flat"
-                                                            >
-                                                                {assignee}
-                                                            </Chip>
-                                                        ),
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <p className="flex text-zinc-600 mr-4 mt-1.5 font-semibold text-xs">
+                                    <CardHeader className="flex flex-col bg-zinc-75  items-start">
+                                        <div className="flex flex-row w-full justify-between mt-1 mb-1">
+                                            <p className="flex items-center px-2">
+                                                {displayPostStatus(post.kind)}
+                                            </p>
+
+                                            <p className="flex text-zinc-600 mr-4 font-semibold text-xs">
                                                 {formatDate(
                                                     post.postDate,
                                                     'post',
                                                 )}
                                             </p>
                                             <EditPost {...post} />
+                                        </div>
+                                        <div className="mx-2.5 flex justify-start flex-wrap">
+                                            {post.assignTo.map(
+                                                (assignee, index) => (
+                                                    <Chip
+                                                        key={index}
+                                                        className="mr-1 mb-1"
+                                                        color={
+                                                            assignee ===
+                                                            'everyone'
+                                                                ? 'danger'
+                                                                : 'secondary'
+                                                        }
+                                                        variant="flat"
+                                                    >
+                                                        {assignee}
+                                                    </Chip>
+                                                ),
+                                            )}
                                         </div>
                                     </CardHeader>
                                     <Divider className="bg-violet-100" />
@@ -471,14 +458,12 @@ export default function AllPostEvent() {
                                                     }
                                                 >
                                                     {post.endDate
-                                                        ? new Date(
-                                                              post.endDate,
-                                                          ) >= new Date() // Check if end date is in the future
-                                                            ? formatDate(
+                                                        ? post.timeUp
+                                                            ? 'Ended'
+                                                            : formatDate(
                                                                   post.endDate,
                                                                   'end',
                                                               )
-                                                            : 'Ended'
                                                         : 'No end date'}
                                                     !
                                                 </span>
