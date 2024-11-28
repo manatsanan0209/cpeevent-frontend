@@ -31,6 +31,7 @@ import voteImage from '@/images/Vote.png';
 import formImage from '@/images/Form.png';
 import postImage from '@/images/Post.png';
 import { axiosAPIInstance } from '@/api/axios-config';
+import EditPost from './editPost.tsx';
 
 const selectItems = [
     { key: 'all', value: 'all', label: 'All' },
@@ -49,6 +50,9 @@ export default function AllPostEvent() {
 
         return response.data.data;
     };
+
+    console.log(eventid);
+
 
     const {
         data: posts = [],
@@ -397,6 +401,7 @@ export default function AllPostEvent() {
                                                     'post',
                                                 )}
                                             </p>
+                                            <EditPost {...post} />
                                         </div>
                                         <div className="mx-2.5 flex justify-start flex-wrap">
                                             {post.assignTo.map(
@@ -489,6 +494,7 @@ export default function AllPostEvent() {
                                 </Card>
                             );
                         })}
+
                 </div>
             </Skeleton>
             {isError && (
