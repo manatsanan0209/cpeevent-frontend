@@ -138,7 +138,7 @@ export const Sidebar = ({
                     ) : (
                         <Skeleton isLoaded={!isLoading}>
                             <ul className="flex flex-col gap-2 ml-2 list-disc">
-                                {allEventData.map(
+                                {allEventData && allEventData.map(
                                     (event) =>
                                         (event.staff?.some(
                                             (staff) =>
