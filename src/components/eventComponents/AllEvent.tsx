@@ -431,12 +431,12 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                     </Button>
                                                     <Button
                                                         isIconOnly
-                                                        className="bg-transparent border border-red-600"
+                                                        className="bg-transparent border border-red-500"
                                                         onPress={
                                                             onOpenDeleteModal
                                                         }
                                                     >
-                                                        <IoTrashBin className="text-red-600" />
+                                                        <IoTrashBin className="text-red-500" />
                                                     </Button>
                                                     <DeleteEventModal
                                                         eventID={event._id}
