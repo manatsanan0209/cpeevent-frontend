@@ -38,11 +38,27 @@ export default function FormResult({setResultPage}:FormResultProps) {
             return response.data.data;
         };
 
-        const {data : summaryData} = useQuery<SummaryData>({
+        const {data : summaryData, isLoading, error} = useQuery<SummaryData>({
             queryKey: ['summary', postID],
             queryFn: fetchSummaryData,
+            enabled: !!postID,
         });
         console.log(summaryData);
+
+        if (isLoading) {
+            return <div>Loading...</div>;
+        }
+    
+        if (error) {
+            return <div>Error fetching data</div>;
+        }
+    
+        if (!summaryData) {
+            return <div>No data available</div>;
+        }
+
+        const hasAnswers = summaryData.results && summaryData.results.some(result => result.answers.length > 0);
+
     return (
         <>
             <Button isIconOnly onClick={() => setResultPage(false)}>
@@ -62,40 +78,48 @@ export default function FormResult({setResultPage}:FormResultProps) {
                     </tr>
                 </thead>
                     <tbody>
-                        {summaryData?.formQuestion.map((question, questionIndex) => {
-                            const result = summaryData.results.find(
-                                (res) => res.questionIndex === questionIndex
-                            );
+                    {hasAnswers ? (
+                            summaryData.formQuestion.map((question, questionIndex) => {
+                                const result = summaryData.results.find(
+                                    (res) => res.questionIndex === questionIndex
+                                );
 
-                            return (
-                                <tr
-                                    key={questionIndex}
-                                    className="border-t border-gray-300 hover:bg-gray-100 transition-colors"
-                                >
-                                    <td className="px-4 py-2 text-gray-700 font-medium flex justify-center">
-                                        {question.question}
-                                    </td>
-                                    <td className="px-4 py-2 text-gray-700 text-center">
-                                        {result && result.answers.length > 0 ? (
-                                            result.answers.map((answer) => (
-                                                <div key={answer.studentID}>{answer.studentID}</div>
-                                            ))
-                                        ) : (
-                                            <div>No data</div>
-                                        )}
-                                    </td>
-                                    <td className="px-4 py-2 text-gray-700 text-center">
-                                        {result && result.answers.length > 0 ? (
-                                            result.answers.map((answer) => (
-                                                <div key={answer.studentID}>{answer.answer.join(', ')}</div>
-                                            ))
-                                        ) : (
-                                            <div>No data</div>
-                                        )}
-                                    </td>
-                                </tr>
-                            );
-                        })}
+                                return (
+                                    <tr
+                                        key={questionIndex}
+                                        className="border-t border-gray-300 hover:bg-gray-100 transition-colors"
+                                    >
+                                        <td className="px-4 py-2 text-gray-700 flex justify-center">
+                                            {question.question}
+                                        </td>
+                                        <td className="px-4 py-2 text-gray-700 text-center">
+                                            {result && result.answers.length > 0 ? (
+                                                result.answers.map((answer) => (
+                                                    <div key={answer.studentID}>{answer.studentID}</div>
+                                                ))
+                                            ) : (
+                                                <div>No data</div>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-2 text-gray-700 text-center">
+                                            {result && result.answers.length > 0 ? (
+                                                result.answers.map((answer) => (
+                                                    <div key={answer.studentID}>{answer.answer.join(', ')}</div>
+                                                ))
+                                            ) : (
+                                                <div>No data</div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        ) : (
+                            <tr>
+                                <td colSpan={3} className="px-4 py-2 text-gray-700 text-center">
+                                    No data
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
