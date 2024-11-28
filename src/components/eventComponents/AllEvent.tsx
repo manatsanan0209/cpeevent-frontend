@@ -15,10 +15,12 @@ import { GrStatusGoodSmall } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
 import { MdEdit } from 'react-icons/md';
 import { IoAddCircleOutline } from 'react-icons/io5';
+import { IoTrashBin } from 'react-icons/io5';
 
 import { SearchIcon } from '../icons';
 
 import JoinEventModal from './joinEventModal';
+import DeleteEventModal from './deleteEventModal';
 
 import { AuthContext } from '@/context/AuthContext';
 
@@ -40,8 +42,12 @@ export default function AllEvent({ events, user }: AllEventProps) {
     const [searchInput, setSearchInput] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
-
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const {
+        isOpen: isDeleteModalOpen,
+        onOpen: onOpenDeleteModal,
+        onOpenChange: onOpenDeleteModalChange,
+    } = useDisclosure();
 
     useEffect(() => {
         if (events.length > 0) {
@@ -408,20 +414,40 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             </Button>
 
                                             {parseInt(access) > 1 && (
-                                                <Button
-                                                    className="mx-12 my-5 bg-yellow-500"
-                                                    // color="warning"
-                                                    startContent={
-                                                        <MdEdit className="" />
-                                                    }
-                                                    onPress={() =>
-                                                        navigate(
-                                                            `/events/update/${event._id}`,
-                                                        )
-                                                    }
-                                                >
-                                                    Edit Event
-                                                </Button>
+                                                <div className="flex flex-row justify-center my-4">
+                                                    <Button
+                                                        className=" bg-yellow-500 w-5/12 mr-2"
+                                                        // color="warning"
+                                                        startContent={
+                                                            <MdEdit />
+                                                        }
+                                                        onPress={() =>
+                                                            navigate(
+                                                                `/events/update/${event._id}`,
+                                                            )
+                                                        }
+                                                    >
+                                                        Edit
+                                                    </Button>
+                                                    <Button
+                                                        isIconOnly
+                                                        className="bg-transparent border border-red-500"
+                                                        onPress={
+                                                            onOpenDeleteModal
+                                                        }
+                                                    >
+                                                        <IoTrashBin className="text-red-500" />
+                                                    </Button>
+                                                    <DeleteEventModal
+                                                        eventID={event._id}
+                                                        isOpen={
+                                                            isDeleteModalOpen
+                                                        }
+                                                        onOpenChange={
+                                                            onOpenDeleteModalChange
+                                                        }
+                                                    />
+                                                </div>
                                             )}
                                         </div>
                                     </div>
