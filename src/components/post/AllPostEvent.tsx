@@ -32,6 +32,7 @@ import formImage from '@/images/Form.png';
 import postImage from '@/images/Post.png';
 import pollImage from '@/images/Poll.png';
 import { axiosAPIInstance } from '@/api/axios-config';
+import EditPost from './editPost.tsx';
 
 const selectItems = [
     { key: 'all', value: 'all', label: 'All' },
@@ -51,7 +52,6 @@ export default function AllPostEvent() {
 
         return response.data.data;
     };
-
     console.log(eventid);
 
     const {
@@ -433,6 +433,7 @@ export default function AllPostEvent() {
                                                     'post',
                                                 )}
                                             </p>
+                                            <EditPost {...post} />
                                         </div>
                                     </CardHeader>
                                     <Divider className="bg-violet-100" />
@@ -508,6 +509,7 @@ export default function AllPostEvent() {
                                 </Card>
                             );
                         })}
+
                 </div>
             </Skeleton>
             {isError && (
