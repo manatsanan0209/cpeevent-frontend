@@ -21,8 +21,9 @@ import {
 import { LuMoreHorizontal } from 'react-icons/lu';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useDisclosure } from '@nextui-org/react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getLocalTimeZone, now } from '@internationalized/date';
+import { useQuery } from '@tanstack/react-query';
 
 import UpdatePost from './updatePost/updatePost.tsx';
 import UpdateForm from './updatePost/updateForm.tsx';
@@ -52,47 +53,59 @@ export default function PostModal(post: PostEventProps) {
     };
 
     const { user } = useContext(AuthContext);
-    const location = useLocation();
 
     const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
-    const { event, existingPost } = location.state as {
-        event: Event;
-        existingPost?: PostEventProps;
+    const { eventid } = useParams();
+
+    const fetchEventByEventID = async () => {
+        const response = await axiosAPIInstance.get(
+            `v1/event/getEvent/${eventid}`,
+        );
+
+        return response.data.data;
     };
 
+    const { data: event = {} as Event } = useQuery<Event>({
+        queryKey: ['event', eventid],
+        queryFn: fetchEventByEventID,
+    });
+
     const [disableEndDate, setDisableEndDate] = useState<boolean>(
-        !existingPost?.endDate,
+        !post.endDate ? false : true,
     );
-    const [markdown, setMarkdown] = useState<string>(
-        existingPost?.markdown || post.markdown || '',
-    );
+    const [markdown, setMarkdown] = useState<string>(post.markdown || '');
 
     const [voteQuestions, setVoteQuestions] = useState(
-        existingPost?.voteQuestions ||
-            post.voteQuestions || { question: 'post.question', options: [] },
+        post.voteQuestions || { question: 'post.question', options: [] },
     );
 
     const [formQuestions, setFormQuestions] = useState(
-        existingPost?.formQuestions || post.formQuestions || [],
+        post.formQuestions || [],
     );
 
     const [postDetails, setPostDetails] = useState<PostEventProps>({
-        kind: existingPost?.kind || post.kind,
-        assignTo:
-            existingPost?.assignTo ||
-            (Array.isArray(post.assignTo) ? post.assignTo : [post.assignTo]),
-        title: existingPost?.title || post.title,
-        description: existingPost?.description || post.description,
-        public: existingPost?.public || false,
-        postDate: existingPost?.postDate || new Date().toISOString(),
-        endDate: existingPost?.endDate || null,
-        author: existingPost?.author || (user as string),
-        markdown: existingPost?.markdown || post.markdown,
-        formQuestions: existingPost?.formQuestions || post.formQuestions || [],
-        voteQuestions: existingPost?.voteQuestions ||
-            post.voteQuestions || { question: 'post.question', options: [] },
-        _id: existingPost?._id || post._id, // Fixed here
+        kind: post.kind,
+        assignTo: Array.isArray(post.assignTo)
+            ? post.assignTo
+            : [post.assignTo],
+        title: post.title,
+        description: post.description,
+        public: post.public,
+        postDate: new Date().toISOString(),
+        endDate: post.endDate
+            ? new Date(
+                  new Date(post.endDate).getTime() - 7 * 60 * 60 * 1000,
+              ).toISOString()
+            : null,
+        author: user as string,
+        markdown: post.markdown,
+        formQuestions: post.formQuestions || [],
+        voteQuestions: post.voteQuestions || {
+            question: 'post.question',
+            options: [],
+        },
+        _id: post._id, // Fixed here
     });
 
     useMemo(() => {
@@ -130,17 +143,11 @@ export default function PostModal(post: PostEventProps) {
                 finalPayload.data,
             );
 
-            console.log(
-                `${existingPost ? 'Post updated' : 'Post created'} successfully:`,
-                response.data,
-            );
-            alert(`${existingPost ? 'Updated' : 'Created'} successfully!`);
+            console.log('Post create successfully:', response.data);
+            alert('Created successfully!');
         } catch (error) {
-            console.error(
-                `Error ${existingPost ? 'updating' : 'creating'} post:`,
-                error,
-            );
-            alert(`Failed to ${existingPost ? 'update' : 'create'} post.`);
+            console.error(`Error creating post:`, error);
+            alert('Failed to create post.');
         } finally {
             window.location.reload();
         }
@@ -148,7 +155,7 @@ export default function PostModal(post: PostEventProps) {
 
     async function deletePost() {
         const eventID = window.location.pathname.split('/')[2];
-        const postID = existingPost?._id || post._id; // Fixed here
+        const postID = post._id; // Fixed here
 
         if (!postID) {
             console.error('Cannot delete: No post ID provided.');
@@ -230,7 +237,7 @@ export default function PostModal(post: PostEventProps) {
                             }}
                         >
                             <ModalHeader className="flex flex-col gap-1">
-                                {existingPost ? 'Edit Post' : 'Edit Post'}
+                                Edit Post
                             </ModalHeader>
                             <ModalBody>
                                 <Input
@@ -458,9 +465,7 @@ export default function PostModal(post: PostEventProps) {
                                     className="bg-violet-700 text-white"
                                     type="submit"
                                 >
-                                    {existingPost
-                                        ? 'Update Post'
-                                        : 'Update Post'}
+                                    Update Post
                                 </Button>
                             </ModalFooter>
                         </form>
