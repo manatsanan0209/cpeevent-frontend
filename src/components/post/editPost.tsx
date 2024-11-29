@@ -172,6 +172,7 @@ export default function PostModal(post: PostEventProps) {
             });
 
             alert('Post deleted successfully!');
+            console.log('Post deleted successfully:', response.data);
         } catch (error) {
             alert('Failed to delete post.');
         } finally {
