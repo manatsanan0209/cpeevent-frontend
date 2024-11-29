@@ -74,8 +74,6 @@ export default function AllPostEvent() {
         queryFn: fetchEventByEventID,
     });
 
-    console.log(currentEvent);
-
     const [isStaff, setIsStaff] = useState<boolean>(false);
 
     useEffect(() => {
@@ -372,7 +370,8 @@ export default function AllPostEvent() {
                 <div className="max-w-full gap-6 grid grid-cols-12 px-8 my-8">
                     {isStaff ||
                     (parseInt(access) === 2 &&
-                        user === currentEvent.president) || parseInt(access) > 2 ? (
+                        user === currentEvent.president) ||
+                    parseInt(access) > 2 ? (
                         <Card
                             className="col-span-12 sm:col-span-4 w-full min-h-[369px]"
                             style={{ backgroundColor: '#efefef' }}
