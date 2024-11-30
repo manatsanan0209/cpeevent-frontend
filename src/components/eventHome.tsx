@@ -3,6 +3,7 @@ import { Button, Card, CardBody, CardHeader } from '@nextui-org/react';
 import { useQuery } from '@tanstack/react-query';
 import { MdOutlineNavigateNext } from 'react-icons/md';
 import { GrFormPrevious } from 'react-icons/gr';
+import { useNavigate } from 'react-router-dom';
 
 import { axiosAPIInstance } from '@/api/axios-config';
 import New3 from '@/images/New3.png';
@@ -16,6 +17,8 @@ export default function EventHome() {
 
         return response.data.data;
     };
+
+    const navigate = useNavigate();
 
     const {
         data: events,
@@ -40,22 +43,26 @@ export default function EventHome() {
                 <Button
                     className="w-1/5 text-base font-semibold"
                     color="primary"
+                    onClick={() => navigate('/events')}
                 >
                     See all events
                 </Button>
             </div>
 
             <div className="flex justify-center items-center">
-                {page > 0 && (
-                    <button
-                        className="flex items-center justify-center w-12 h-12 bg-indigo-500 text-white rounded-full shadow-lg hover:bg-indigo-600 transition duration-300 mx-2"
-                        onClick={() => setPage(page - 1)}
-                    >
-                        <GrFormPrevious className="text-xl" />
-                    </button>
-                )}
+                <button
+                    className={
+                        page === 0
+                            ? 'flex items-center justify-center w-7 h-7 bg-zinc-300 text-white rounded-full mr-2'
+                            : 'flex items-center justify-center w-7 h-7 bg-indigo-500 text-white rounded-full shadow-lg hover:bg-indigo-600 transition duration-300 mr-2'
+                    }
+                    disabled={page === 0}
+                    onClick={() => setPage(page - 1)}
+                >
+                    <GrFormPrevious className="text-xl" />
+                </button>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 justify-items-center max-w-screen-xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-8 justify-items-center w-full max-w-screen-xl mx-auto">
                     {currentEvents.map(
                         (event: {
                             _id: string;
@@ -65,10 +72,10 @@ export default function EventHome() {
                         }) => (
                             <Card
                                 key={event._id}
-                                className="shadow-md shadow-slate-300 w-full mx-auto"
+                                className="shadow-md shadow-slate-300 w-full max-w-md"
                             >
                                 <CardHeader>
-                                    <div className="text-zinc-600 font-semibold text-xl">
+                                    <div className="text-zinc-600 font-semibold text-xl h-7 w-full overflow-hidden text-ellipsis whitespace-nowrap">
                                         {event.eventName}
                                     </div>
                                 </CardHeader>
@@ -79,7 +86,7 @@ export default function EventHome() {
                                             className="w-1/2 rounded-lg shadow-lg h-28"
                                             src={New3}
                                         />
-                                        <div className="text-sm text-zinc-600 ml-3">
+                                        <div className="text-sm text-zinc-600 ml-3 w-11/12 h-20 overflow-hidden text-ellipsis line-clamp-4">
                                             {event.eventDescription}
                                         </div>
                                     </div>
@@ -110,15 +117,17 @@ export default function EventHome() {
                         ),
                     )}
                 </div>
-
-                {events && endIndex < events.length && (
-                    <button
-                        className="flex items-center justify-center w-12 h-12 bg-indigo-500 text-white rounded-full shadow-lg hover:bg-indigo-600 transition duration-300 ml-4"
-                        onClick={() => setPage(page + 1)}
-                    >
-                        <MdOutlineNavigateNext className="text-xl" />
-                    </button>
-                )}
+                <button
+                    className={
+                        events && endIndex < events.length
+                            ? 'flex items-center justify-center w-7 h-7 bg-indigo-500 text-white rounded-full shadow-lg hover:bg-indigo-600 transition duration-300 ml-2'
+                            : 'flex items-center justify-center w-7 h-7 bg-zinc-300 text-white rounded-full ml-2'
+                    }
+                    disabled={!(events && endIndex < events.length)}
+                    onClick={() => setPage(page + 1)}
+                >
+                    <MdOutlineNavigateNext className="text-xl" />
+                </button>
             </div>
         </div>
     );
