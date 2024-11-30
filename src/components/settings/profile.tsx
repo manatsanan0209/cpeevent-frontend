@@ -2,14 +2,15 @@ import type { UserAccountType } from '@/types/index';
 
 import { Divider, Input, Button, Avatar, ButtonGroup } from '@nextui-org/react';
 import { TbSignature } from 'react-icons/tb';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, UseFormSetValue } from 'react-hook-form';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TiTick, TiTimes } from 'react-icons/ti';
 
 import { axiosAPIInstance } from '@/api/axios-config.ts';
+
 interface InputFieldProps {
     placeholder: string;
     name: string;
@@ -52,11 +53,72 @@ const InputField = ({
     </div>
 );
 
+const ImgUpload = ({
+    setImageSrc,
+    setValue,
+    fileInputRef, // Receive ref as a prop
+}: {
+    setImageSrc: (src: string | null) => void;
+    setValue: UseFormSetValue<UserAccountType>;
+    fileInputRef: React.RefObject<HTMLInputElement>; // Declare the prop type
+}) => {
+    const handleUploadClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            // File validation
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload a valid image file');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size should be less than 5MB');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const result = reader.result as string;
+                setImageSrc(result);
+                setValue('imgProfile', result, { shouldDirty: true });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleRemove = () => {
+        setImageSrc(null);
+        setValue('imgProfile', '', { shouldDirty: true });
+        if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+
+    return (
+        <>
+            <Button onClick={handleUploadClick}>Upload</Button>
+            <Input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileChange}
+            />
+            <Button className="bg-red-400" onClick={handleRemove}>
+                Remove
+            </Button>
+        </>
+    );
+};
+
 const schema = z.object({
     username: z.string().min(1, 'Username is required'),
+    imgProfile: z.string().url('Invalid URL').optional(),
 });
 
 export default function Profile() {
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const {
         control,
         handleSubmit,
@@ -97,9 +159,22 @@ export default function Profile() {
     }, [userData, setValue]);
 
     const updateProfile = async (data: UserProfileUpdate) => {
-        const response = await axiosAPIInstance.post(
+        const formData = new FormData();
+        if (data.username) {
+            formData.append('username', data.username);
+        }
+        if (fileInputRef.current?.files?.[0]) {
+            formData.append('file', fileInputRef.current.files[0]);
+        }
+
+        const response = await axiosAPIInstance.patch(
             'v1/account/profile',
-            data,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            },
         );
 
         return response.data;
@@ -112,6 +187,8 @@ export default function Profile() {
     const onSubmit = (data: UserAccountType) => {
         mutate(data, { onSuccess: () => reset(data) });
     };
+
+    const [imageSrc, setImageSrc] = useState<string | null>(null);
 
     return (
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
@@ -126,11 +203,14 @@ export default function Profile() {
                     <div className="flex flex-row items-center gap-4">
                         <Avatar
                             className="w-24 h-24"
-                            src="https://i.pravatar.cc/300"
+                            src={imageSrc || userData?.imgProfile}
                         />
                         <ButtonGroup>
-                            <Button>Upload</Button>
-                            <Button className="bg-red-400">Remove</Button>
+                            <ImgUpload
+                                setImageSrc={setImageSrc}
+                                setValue={setValue}
+                                fileInputRef={fileInputRef}
+                            />
                         </ButtonGroup>
                     </div>
                 </div>
