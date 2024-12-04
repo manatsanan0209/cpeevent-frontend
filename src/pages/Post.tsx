@@ -14,7 +14,7 @@ import { LuMoreHorizontal } from 'react-icons/lu';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
-import CalendarPage from './calendar';
+import { FullCalendar } from '@/components/calendarComponents/fullCalendar';
 
 import { fetchEvents } from '@/hooks/api';
 import MembersPage from '@/components/post/members';
@@ -88,7 +88,9 @@ export default function Post(props: Props) {
                         {props.children}
                     </Tab>
                     <Tab key="Calendar" title="Calendar">
-                        <CalendarPage />
+                        <FullCalendar
+                            
+                        />
                     </Tab>
                     <Tab key="Member" title="Member">
                         <MembersPage />

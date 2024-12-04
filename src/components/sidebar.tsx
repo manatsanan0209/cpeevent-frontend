@@ -76,7 +76,7 @@ export const Sidebar = ({
             <aside
                 ref={sidebarRef}
                 aria-label="Sidebar"
-                className={`fixed h-full p-6 w-64 z-50 border-r transition-transform bg-white ${
+                className={`fixed h-full p-6 w-64 z-50 border-r transition-transform ${
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 } md:translate-x-0`}
                 id="sidebar"
