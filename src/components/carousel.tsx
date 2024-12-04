@@ -5,7 +5,7 @@ import { RiArrowLeftWideLine, RiArrowRightWideLine } from 'react-icons/ri';
 
 import comcampImage from '@/images/comcamp.png';
 import comcamp34Image from '@/images/comcamp34.jpg';
-import ophImage from '@/images/oph.jpg';
+import ophImage from '@/images/OPH.jpg';
 
 const CustomLeftArrow = ({ onClick }: { onClick?: () => void }) => (
     <button
