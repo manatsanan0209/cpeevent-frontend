@@ -13,7 +13,7 @@ import {
 import { LuMoreHorizontal } from 'react-icons/lu';
 import { useParams } from 'react-router-dom';
 
-import CalendarPage from './calendar';
+import { FullCalendar } from '@/components/calendarComponents/fullCalendar';
 
 import MembersPage from '@/components/post/members';
 import LeaveEventModal from '@/components/post/leaveEventModal';
@@ -99,7 +99,9 @@ export default function Post(props: Props) {
                         {props.children}
                     </Tab>
                     <Tab key="Calendar" title="Calendar">
-                        <CalendarPage />
+                        <FullCalendar
+                            
+                        />
                     </Tab>
                     <Tab key="Member" title="Member">
                         <MembersPage />

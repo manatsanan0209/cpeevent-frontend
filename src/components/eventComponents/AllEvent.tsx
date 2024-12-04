@@ -12,7 +12,7 @@ import {
     useDisclosure,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MdEdit } from 'react-icons/md';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import { IoTrashBin } from 'react-icons/io5';
@@ -173,6 +173,16 @@ export default function AllEvent({ events, user }: AllEventProps) {
         });
     };
 
+    const { state } = useLocation();
+    const { targetID } = state || {};
+
+    useEffect(() => {
+        const e = document.getElementById(targetID);
+        if (e) {
+            e.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [isLoading, targetID]);
+
     return (
         <>
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 my-8 items-center px-4 sm:px-10">
@@ -250,10 +260,14 @@ export default function AllEvent({ events, user }: AllEventProps) {
             )}
             {!isLoading && (
                 <div className="mx-4 sm:mx-8">
-                    <Accordion variant="splitted">
+                    <Accordion
+                        variant="splitted"
+                        defaultExpandedKeys={[targetID]} 
+                    >
                         {sortedAndSearchEvents.map((event) => {
                             return (
                                 <AccordionItem
+                                    id={event._id}
                                     key={event._id}
                                     aria-label={event.eventName}
                                     title={
