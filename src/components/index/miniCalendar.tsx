@@ -1,11 +1,9 @@
 //import React from "react";
-import type { PostEventProps } from '@/types/index';
 import type { Event } from '@/types/index';
 
 import { useState } from 'react';
 //import { today } from "@internationalized/date";
 import { useQuery } from '@tanstack/react-query';
-
 import { motion } from 'framer-motion';
 import { IoMdArrowDropleft, IoMdArrowDropright } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +27,6 @@ export default function MiniCalendar() {
         queryKey: ['events'],
         queryFn: fetchEvents,
     });
-
 
     const EventList = events?.map((event) => {
         return {
@@ -82,9 +79,9 @@ export default function MiniCalendar() {
                 <div
                     key={day}
                     className={`${classDay} ${isToday ? 'bg-gray-100 flex items-center' : ''}`}
-                    onClick={() => navigate(`/calendar`)}
                     role="button"
                     tabIndex={0}
+                    onClick={() => navigate(`/calendar`)}
                     onKeyPress={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                             navigate(`/calendar`);
