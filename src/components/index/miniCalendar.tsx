@@ -1,8 +1,7 @@
-//import React from "react";
+
 import type { Event } from '@/types/index';
 
 import { useState } from 'react';
-//import { today } from "@internationalized/date";
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { IoMdArrowDropleft, IoMdArrowDropright } from 'react-icons/io';
@@ -147,7 +146,7 @@ export default function MiniCalendar() {
     ];
 
     return (
-        <div className="h-fit w-fit border rounded-2xl shadow-md bg-gradient-to-b from-primary via-primary to-white pt-1">
+        <div className="h-fit w-72  rounded-2xl  bg-primary  pt-1">
             <div className="flex justify-between items-center ">
                 <motion.div
                     className="cursor-pointer"
@@ -185,7 +184,7 @@ export default function MiniCalendar() {
                 <div className={calendarDayName}>F</div>
                 <div className={calendarDayName}>S</div>
             </div>
-            <div className="grid grid-cols-7 grid-rows-6 bg-white pt-2 px-3 border rounded-b-2xl shadow-md pb-1">
+            <div className="grid grid-cols-7 grid-rows-6 bg-white pt-2 px-3  rounded-b-2xl shadow-lg pb-1">
                 {renderDays()}
             </div>
         </div>
