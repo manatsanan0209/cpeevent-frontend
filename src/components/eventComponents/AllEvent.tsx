@@ -31,9 +31,10 @@ interface User {
 interface AllEventProps {
     events: Event[];
     user: User;
+    state: string;
 }
 
-export default function AllEvent({ events, user }: AllEventProps) {
+export default function AllEvent({ events, user, state }: AllEventProps) {
     const { access } = useContext(AuthContext);
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<Event[]>(
         [],
@@ -233,7 +234,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
                     </Select>
                 </div>
             </div>
-            {parseInt(access) > 1 && (
+            {state === 'All' && parseInt(access) > 1 && (
                 <div className="mx-4 sm:mx-10 my-2">
                     <Button
                         fullWidth
@@ -258,10 +259,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                     aria-label={event.eventName}
                                     title={
                                         <div className="flex flex-col sm:flex-row">
-                                            <span
-                                                className="w-full sm:w-5/12 text-zinc-600"
-                                                style={{ fontWeight: 'bold' }}
-                                            >
+                                            <span className="text-zinc-600 font-semibold text-xl h-7 w-full overflow-hidden text-ellipsis whitespace-nowrap">
                                                 {event.eventName}
                                             </span>
                                             <span className="text-sm w-full sm:w-3/12 pt-1">
@@ -318,55 +316,59 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                             </p>
                                         </div>
                                         <div className="flex flex-col text-wrap w-full sm:w-1/4">
-                                            <Button
-                                                aria-label="Join Event"
-                                                className={`mx-4 sm:mx-12 my-5 ${
-                                                    event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
+                                            {state === 'All' && (
+                                                <Button
+                                                    aria-label="Join Event"
+                                                    className={`mx-4 sm:mx-12 my-5 ${
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
+                                                                user._id,
+                                                        ) ||
+                                                        (eventStatus(event) !==
+                                                            'Upcoming' &&
+                                                            eventStatus(
+                                                                event,
+                                                            ) !== 'Ongoing') ||
+                                                        event.participants.includes(
                                                             user._id,
-                                                    ) ||
-                                                    (eventStatus(event) !==
-                                                        'Upcoming' &&
-                                                        eventStatus(event) !==
-                                                            'Ongoing') ||
-                                                    event.participants.includes(
-                                                        user._id,
-                                                    )
-                                                        ? 'bg-zinc-300 text-violet-700'
-                                                        : 'bg-violet-700 text-white'
-                                                }`}
-                                                isDisabled={
-                                                    event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
+                                                        )
+                                                            ? 'bg-zinc-300 text-violet-700'
+                                                            : 'bg-violet-700 text-white'
+                                                    }`}
+                                                    isDisabled={
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
+                                                                user._id,
+                                                        ) ||
+                                                        (eventStatus(event) !==
+                                                            'Upcoming' &&
+                                                            eventStatus(
+                                                                event,
+                                                            ) !== 'Ongoing') ||
+                                                        event.participants.includes(
                                                             user._id,
-                                                    ) ||
-                                                    (eventStatus(event) !==
-                                                        'Upcoming' &&
-                                                        eventStatus(event) !==
-                                                            'Ongoing') ||
-                                                    event.participants.includes(
-                                                        user._id,
-                                                    )
-                                                }
-                                                onPress={onOpen}
-                                            >
-                                                {!(
-                                                    event.staff?.some(
-                                                        (staff) =>
-                                                            staff.stdID ===
+                                                        )
+                                                    }
+                                                    onPress={onOpen}
+                                                >
+                                                    {!(
+                                                        event.staff?.some(
+                                                            (staff) =>
+                                                                staff.stdID ===
+                                                                user._id,
+                                                        ) ||
+                                                        event.participants.includes(
                                                             user._id,
-                                                    ) ||
-                                                    event.participants.includes(
-                                                        user._id,
-                                                    )
-                                                ) ? (
-                                                    <strong>Join</strong>
-                                                ) : (
-                                                    <strong>Joined</strong>
-                                                )}
-                                            </Button>
+                                                        )
+                                                    ) ? (
+                                                        <strong>Join</strong>
+                                                    ) : (
+                                                        <strong>Joined</strong>
+                                                    )}
+                                                </Button>
+                                            )}
 
                                             <JoinEventModal
                                                 eventID={event._id}

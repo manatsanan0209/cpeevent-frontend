@@ -8,7 +8,6 @@ import { axiosAPIInstance } from '@/api/axios-config.ts';
 import DefaultLayout from '@/layouts/default';
 import AllEvent from '@/components/eventComponents/AllEvent.tsx';
 import { AuthContext } from '@/context/AuthContext';
-import JoinedEvent from '@/components/eventComponents/JoinedEvent';
 
 export default function Event() {
     const { user } = useContext(AuthContext);
@@ -46,22 +45,32 @@ export default function Event() {
                         variant="underlined"
                     >
                         <Tab key="All" title="All">
-                            <AllEvent events={allEventData} user={user_id} />
+                            <AllEvent
+                                events={allEventData}
+                                state="All"
+                                user={user_id}
+                            />
                         </Tab>
 
                         <Tab key="Joined" title="Joined">
-                            <JoinedEvent
-                                events={allEventData && allEventData.filter(
-                                    (event) =>
-                                        event.staff?.some(
-                                            (staff) =>
-                                                staff.stdID === user_id._id,
-                                        ) ||
-                                        event.participants?.some(
-                                            (participant) =>
-                                                participant === user_id._id,
-                                        ),
-                                )}
+                            <AllEvent
+                                events={
+                                    allEventData &&
+                                    allEventData.filter(
+                                        (event) =>
+                                            event.staff?.some(
+                                                (staff) =>
+                                                    staff.stdID === user_id._id,
+                                            ) ||
+                                            event.participants?.some(
+                                                (participant) =>
+                                                    participant === user_id._id,
+                                            ),
+                                        user,
+                                    )
+                                }
+                                state="Joined"
+                                user={user_id}
                             />
                         </Tab>
                     </Tabs>
