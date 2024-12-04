@@ -21,6 +21,8 @@ import { LuMoreHorizontal } from 'react-icons/lu';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useDisclosure } from '@nextui-org/react';
 import { getLocalTimeZone, now } from '@internationalized/date';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 import UpdatePost from './updatePost/updatePost.tsx';
 import UpdateForm from './updatePost/updateForm.tsx';
@@ -34,7 +36,14 @@ interface PostModalProps {
     event: Event;
 }
 
-export default function PostModal({ post, event }: PostModalProps) {
+export default function EditPost({
+    post,
+    event,
+    onPostChange,
+}: {
+    post: PostEventProps;
+    onPostChange: () => void;
+}) {
     const onEdit = () => {
         if (post.kind == 'post') {
             // <UpdatePost />
@@ -48,10 +57,14 @@ export default function PostModal({ post, event }: PostModalProps) {
         }
     };
 
+    const {
+        isOpen: isDeleteModalOpen,
+        onOpen: onDeleteModalOpen,
+        onOpenChange: onDeleteModalChange,
+    } = useDisclosure();
+
     const onDelete = () => {
-        if (window.confirm('Are you sure you want to delete this post?')) {
-            deletePost();
-        }
+        onDeleteModalOpen();
     };
 
     const { user } = useContext(AuthContext);
@@ -119,38 +132,35 @@ export default function PostModal({ post, event }: PostModalProps) {
         return new Date(endDate) < new Date(startDate);
     }
 
-    async function savePostToAPI(updatedPost: PostEventProps) {
-        const finalPayload = {
-            data: { ...updatedPost, postID: updatedPost._id },
-        };
-
-        try {
+    const savePostMutation = useMutation({
+        mutationFn: async (updatedPost: PostEventProps) => {
+            const finalPayload = {
+                data: { ...updatedPost, postID: updatedPost._id },
+            };
             const response = await axiosAPIInstance.patch(
                 'v1/posts/update',
                 finalPayload.data,
             );
 
-            console.log('Post create successfully:', response.data);
-            alert('Created successfully!');
-        } catch (error) {
-            console.error(`Error creating post:`, error);
-            alert('Failed to create post.');
-        } finally {
-            window.location.reload();
-        }
-    }
+            return response.data;
+        },
+        onSuccess: () => {
+            toast.success('Post updated successfully!');
+            onPostChange();
+        },
+        onError: () => {
+            toast.error('Failed to update post.');
+        },
+    });
 
-    async function deletePost() {
-        const eventID = window.location.pathname.split('/')[2];
-        const postID = post._id; // Fixed here
+    const deletePostMutation = useMutation({
+        mutationFn: async () => {
+            const eventID = window.location.pathname.split('/')[2];
+            const postID = post._id;
 
-        if (!postID) {
-            console.error('Cannot delete: No post ID provided.');
-            alert('Error: No post ID provided.');
-
-            return;
-        }
-        try {
+            if (!postID) {
+                throw new Error('No post ID provided.');
+            }
             const response = await axiosAPIInstance.delete('v1/posts/delete', {
                 data: {
                     eventID,
@@ -158,13 +168,23 @@ export default function PostModal({ post, event }: PostModalProps) {
                 },
             });
 
-            alert('Post deleted successfully!');
-            console.log('Post deleted successfully:', response.data);
-        } catch (error) {
-            alert('Failed to delete post.');
-        } finally {
-            window.location.reload();
-        }
+            return response.data;
+        },
+        onSuccess: () => {
+            toast.success('Post deleted successfully!');
+            onPostChange();
+        },
+        onError: () => {
+            toast.error('Failed to delete post.');
+        },
+    });
+
+    async function savePostToAPI(updatedPost: PostEventProps) {
+        savePostMutation.mutate(updatedPost);
+    }
+
+    async function deletePost() {
+        deletePostMutation.mutate();
     }
 
     function completePost(kind: string) {
@@ -458,6 +478,34 @@ export default function PostModal({ post, event }: PostModalProps) {
                             </ModalFooter>
                         </form>
                     )}
+                </ModalContent>
+            </Modal>
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onOpenChange={onDeleteModalChange}
+            >
+                <ModalContent>
+                    <ModalHeader>Confirm Delete</ModalHeader>
+                    <ModalBody>
+                        Are you sure you want to delete this post?
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button
+                            variant="light"
+                            onPress={() => onDeleteModalChange()}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            color="danger"
+                            onPress={() => {
+                                deletePost();
+                                onDeleteModalChange();
+                            }}
+                        >
+                            Delete
+                        </Button>
+                    </ModalFooter>
                 </ModalContent>
             </Modal>
             <Dropdown className="flex justify-end">

@@ -195,7 +195,7 @@ export const Sidebar = ({
                                                                       }
                                                                     : {}
                                                             }
-                                                            className={`flex mr-2 items-center justify-center w-3 h-3 rounded-full ring-4 ${
+                                                            className={`flex mr-2 items-center justify-center w-3 h-3 rounded-full ring-4 min-w-3 ${
                                                                 currentPath.includes(
                                                                     event._id,
                                                                 )
