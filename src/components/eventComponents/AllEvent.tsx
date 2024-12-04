@@ -177,8 +177,8 @@ export default function AllEvent({ events, user }: AllEventProps) {
         targetID: string;
     }
 
-    const { state } = useLocation() as { state: LocationState };
-    const { targetID } = (state as LocationState) || {};
+    const locationState = useLocation();
+    const { targetID } = (locationState.state as LocationState) || {};
 
     useEffect(() => {
         const e = document.getElementById(targetID);
