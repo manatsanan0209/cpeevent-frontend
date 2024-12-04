@@ -6,14 +6,16 @@ import MiniCalendar from '@/components/index/miniCalendar';
 export default function IndexPage() {
     return (
         <DefaultLayout>
-            <div className="grid grid-cols-3">
-                <div className="col-span-2 ">
-                    <CarouselComponent />
+            <div className="flex flex-col justify-between h-full">
+                <div className="grid grid-cols-3">
+                    <div className="col-span-2 ">
+                        <CarouselComponent />
+                    </div>
+                    <div className="col-span-1 flex justify-center items-center">
+                        <MiniCalendar />
+                    </div>
                 </div>
-                <div className="col-span-1 flex justify-center items-center">
-                    <MiniCalendar />
-                </div>
-                <div className="col-span-3">
+                <div>
                     <EventHome />
                 </div>
             </div>

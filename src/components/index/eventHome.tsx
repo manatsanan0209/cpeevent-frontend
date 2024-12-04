@@ -74,17 +74,10 @@ export default function EventHome() {
     return (
         <>
             <div>
-                <div className="flex justify-between items-center mb-4 mt-4">
+                <div className="items-center mb-2 mt-3">
                     <div className="text-zinc-600 font-bold text-4xl ml-8">
                         Events
                     </div>
-
-                    <Button
-                        className="w-1/5 text-base font-semibold mr-8 bg-indigo-500 hover:bg-indigo-500 text-white transition duration-300"
-                        onClick={() => navigate('/events')}
-                    >
-                        See all events
-                    </Button>
                 </div>
 
                 <div className="flex justify-center items-center">
@@ -100,7 +93,7 @@ export default function EventHome() {
                         <GrFormPrevious className="text-xl" />
                     </button>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 justify-items-center w-full max-w-screen-xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-3 mt-1 gap-x-4 justify-items-center w-full max-w-screen-xl mx-auto">
                         {currentEvents.length > 0 ? (
                             currentEvents.map(
                                 (event: {
@@ -188,6 +181,14 @@ export default function EventHome() {
                     >
                         <MdOutlineNavigateNext className="text-xl" />
                     </button>
+                </div>
+                <div className="flex justify-center mt-6">
+                    <Button
+                        className="w-1/5 text-base font-semibold mr-8 bg-indigo-500 hover:bg-indigo-500 text-white transition duration-300"
+                        onClick={() => navigate('/events')}
+                    >
+                        See all events
+                    </Button>
                 </div>
             </div>
             {isModalOpen && selectedEventID && (
