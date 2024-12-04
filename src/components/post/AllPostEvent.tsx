@@ -22,6 +22,7 @@ import { GrStatusGoodSmall } from 'react-icons/gr';
 import { IoFilter } from 'react-icons/io5';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 import { SearchIcon } from '../icons.tsx';
 
@@ -58,10 +59,15 @@ export default function AllPostEvent() {
         data: posts = [],
         isLoading,
         isError,
+        error,
     } = useQuery<PostEventProps[]>({
         queryKey: ['posts', eventid, refreshKey],
         queryFn: fetchPosts,
     });
+
+    if (isError) {
+        toast.error(error.message);
+    }
 
     const fetchEventByEventID = async () => {
         const response = await axiosAPIInstance.get(
@@ -72,7 +78,7 @@ export default function AllPostEvent() {
     };
 
     const { data: currentEvent = {} as Event } = useQuery<Event>({
-        queryKey: ['currrentEvent', eventid],
+        queryKey: ['currentEvent'],
         queryFn: fetchEventByEventID,
     });
 
@@ -517,11 +523,6 @@ export default function AllPostEvent() {
                         })}
                 </div>
             </Skeleton>
-            {isError && (
-                <div className="text-red-500 text-center my-4">
-                    An error occurred. Please try again later.
-                </div>
-            )}
         </div>
     );
 }
