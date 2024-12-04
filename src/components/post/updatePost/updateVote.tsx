@@ -11,11 +11,10 @@ interface PostKindVoteProps {
     setVoteQuestions: React.Dispatch<React.SetStateAction<VoteQuestions>>;
 }
 
-export default function updateVote({
+export default function UpdateVote({
     voteQuestions,
     setVoteQuestions,
 }: PostKindVoteProps) {
-
     useEffect(() => {
         if (voteQuestions.options.length === 0) {
             setVoteQuestions({
@@ -40,10 +39,12 @@ export default function updateVote({
     function deleteOption(optionIndex: number) {
         const updatedQuestion = { ...voteQuestions };
 
-        updatedQuestion.options = updatedQuestion.options.filter((_, index) => index != optionIndex);
+        updatedQuestion.options = updatedQuestion.options.filter(
+            (_, index) => index != optionIndex,
+        );
         console.log(updatedQuestion);
 
-        setVoteQuestions(updatedQuestion)
+        setVoteQuestions(updatedQuestion);
     }
 
     // function updateOption(optionIndex: number, value: string) {
@@ -53,9 +54,9 @@ export default function updateVote({
     //     setVoteQuestions(updatedQuestion);
     // }
 
-    function updateOption(optionIndex: number, value: string
-    ) {
+    function updateOption(optionIndex: number, value: string) {
         const updatedQuestion = { ...voteQuestions };
+
         if (updatedQuestion.options) {
             updatedQuestion.options[optionIndex] = value;
         }
@@ -89,9 +90,7 @@ export default function updateVote({
                         validationBehavior="native"
                         value={option}
                         onChange={(e) =>
-                            updateOption(
-                                optionIndex,
-                                e.target.value)
+                            updateOption(optionIndex, e.target.value)
                         }
                     />
                     <Button
