@@ -24,10 +24,7 @@ export default function UpdateVote({
         }
     }, [voteQuestions, setVoteQuestions]);
 
-    // useMemo(() => {
-    //     console.log('debug', voteQuestions)
-
-    // }, [voteQuestions, deleteOption])
+   
 
     function addOption() {
         const updatedQuestion = { ...voteQuestions };
@@ -47,12 +44,7 @@ export default function UpdateVote({
         setVoteQuestions(updatedQuestion);
     }
 
-    // function updateOption(optionIndex: number, value: string) {
-    //     const updatedQuestion = { ...voteQuestions };
-
-    //     updatedQuestion.options[optionIndex] = value;
-    //     setVoteQuestions(updatedQuestion);
-    // }
+   
 
     function updateOption(optionIndex: number, value: string) {
         const updatedQuestion = { ...voteQuestions };

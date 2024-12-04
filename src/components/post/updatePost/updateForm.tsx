@@ -1,5 +1,5 @@
 import { Button, Input, Select, SelectItem } from '@nextui-org/react';
-// import React, { useEffect } from 'react';
+
 
 type FormQuestion = {
     question: string;
@@ -17,23 +17,13 @@ export default function updateForm({
     setFormQuestions,
 }: PostKindFormProps) {
     function addQuestion() {
-        // console.log(formQuestions);
-        // const updatedQuest = [...formQuestions];
-        // console.log(updatedQuest);
-        // updatedQuest.push({ question: '', inputType: 'text', options: [] });
-        // console.log(updatedQuest);
-        // setFormQuestions(updatedQuest);
+       
         const updatedQuestions = [...formQuestions];
 
         updatedQuestions.push({ question: '', inputType: 'text', options: [] });
         setFormQuestions(updatedQuestions);
     }
-    // function updateQuestion(field: keyof VoteQuestions, value: string) {
-    //     const updatedQuestion = { ...voteQuestions, [field]: value };
-
-    //     setVoteQuestions(updatedQuestion);
-    // }
-
+   
     function deleteQuestion(index: number) {
         if (formQuestions.length > 1) {
             console.log(formQuestions);
@@ -58,24 +48,7 @@ export default function updateForm({
         }
         setFormQuestions(updatedQuestions);
     }
-    //     index: number,
-    //     key: 'question' | 'inputType',
-    //     value: string,
-    // ) {
-    //     const updatedQuestion = [...formQuestions];
-
-    //     if (key === 'inputType') {
-    //         if (value === 'option') {
-    //             updatedQuestion[index].options = [''];
-    //         } else {
-    //             updatedQuestion[index].options = [];
-    //         }
-    //     }
-    //     updatedQuestion[index][key] = value;
-    //     setFormQuestions(updatedQuestion);
-
-    //add Question
-
+  
     function addOption(questionIndex: number) {
         const updatedQuestions = [...formQuestions];
 
