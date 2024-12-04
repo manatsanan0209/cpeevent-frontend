@@ -31,17 +31,13 @@ import UpdateVote from './updatePost/updateVote.tsx';
 import { axiosAPIInstance } from '@/api/axios-config';
 import { AuthContext } from '@/context/AuthContext';
 
-interface PostModalProps {
-    post: PostEventProps;
-    event: Event;
-}
-
 export default function EditPost({
     post,
     event,
     onPostChange,
 }: {
     post: PostEventProps;
+    event: Event;
     onPostChange: () => void;
 }) {
     const onEdit = () => {
