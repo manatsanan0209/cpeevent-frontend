@@ -60,23 +60,23 @@ export default function VoteResult() {
                     Voting Results
                 </h1>
                 <div className="flex flex-row w-full">
-                    <p className="flex justify-center w-3/5 ">
+                    <div className="flex justify-center w-3/5 ">
                         {transactionData?.answer ? (
-                            <p className=" text-red-500 font-bold text-base">
+                            <div className=" text-red-500 font-bold text-base">
                                 Your answer : &quot; {transactionData?.answer}{' '}
                                 &quot;
-                            </p>
+                            </div>
                         ) : (
-                            <p className=" text-red-500 font-bold text-base">
+                            <div className=" text-red-500 font-bold text-base">
                                 You haven&apos;t voted yet
-                            </p>
+                            </div>
                         )}
-                    </p>
-                    <p className="flex mb-3 ml-auto text-blue-500 font-bold text-base w-2/5 justify-center">
+                    </div>
+                    <div className="flex mb-3 ml-auto text-blue-500 font-bold text-base w-2/5 justify-center">
                         Total votes : {summaryData?.totalVotes}
-                    </p>
+                    </div>
                 </div>
-                <p className="flex justify-center w-full">
+                <div className="flex justify-center w-full">
                     <BarChart
                         barSize={50}
                         className="flex justify-center w-full"
@@ -103,7 +103,7 @@ export default function VoteResult() {
                             }}
                         />
                     </BarChart>
-                </p>
+                </div>
             </div>
         </>
     );
