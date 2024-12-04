@@ -51,7 +51,7 @@ export default function Event() {
 
                         <Tab key="Joined" title="Joined">
                             <JoinedEvent
-                                events={allEventData.filter(
+                                events={allEventData && allEventData.filter(
                                     (event) =>
                                         event.staff?.some(
                                             (staff) =>

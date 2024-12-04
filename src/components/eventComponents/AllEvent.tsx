@@ -50,7 +50,7 @@ export default function AllEvent({ events, user }: AllEventProps) {
     } = useDisclosure();
 
     useEffect(() => {
-        if (events.length > 0) {
+        if (events && events.length > 0) {
             setSortedAndSearchEvents(
                 sortedAndSearchEventsFunc(sortOption, searchInput),
             );
@@ -59,10 +59,12 @@ export default function AllEvent({ events, user }: AllEventProps) {
     }, [events, sortOption, searchInput]);
 
     useEffect(() => {
-        setSortedAndSearchEvents(
-            sortedAndSearchEventsFunc(sortOption, searchInput),
-        );
-        setIsLoading(false);
+        if (events) {
+            setSortedAndSearchEvents(
+                sortedAndSearchEventsFunc(sortOption, searchInput),
+            );
+            setIsLoading(false);
+        }
     }, [sortOption, searchInput]);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,6 +104,8 @@ export default function AllEvent({ events, user }: AllEventProps) {
         option: string,
         searchTerm: string,
     ): Event[] {
+        if (!events) return [];
+
         let newSortedArray = [...events];
 
         switch (option) {
@@ -145,8 +149,6 @@ export default function AllEvent({ events, user }: AllEventProps) {
         const current_time = new Date(
             getCurrentTime().getTime() + 7 * 60 * 60 * 1000,
         );
-
-        console.log(current_time);
 
         if (current_time < new Date(event.startDate)) {
             return 'Upcoming';
@@ -413,7 +415,9 @@ export default function AllEvent({ events, user }: AllEventProps) {
                                                 <strong>Workspace</strong>
                                             </Button>
 
-                                            {parseInt(access) > 1 && (
+                                            {((user._id === event.president &&
+                                                parseInt(access) === 2) ||
+                                                parseInt(access) >= 3) && (
                                                 <div className="flex flex-row justify-center my-4">
                                                     <Button
                                                         className=" bg-yellow-500 w-5/12 mr-2"

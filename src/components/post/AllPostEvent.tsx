@@ -1,7 +1,7 @@
-import type { PostEventProps } from '@/types/index';
+import type { PostEventProps, Event } from '@/types/index';
 
 import { IoAdd } from 'react-icons/io5';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {
     Card,
     CardHeader,
@@ -26,12 +26,13 @@ import { useQuery } from '@tanstack/react-query';
 import { SearchIcon } from '../icons.tsx';
 
 import CreatePostModal from './createPost/createPostModal.tsx';
+import EditPost from './editPost.tsx';
 
 import voteImage from '@/images/Vote.png';
 import formImage from '@/images/Form.png';
 import postImage from '@/images/Post.png';
 import { axiosAPIInstance } from '@/api/axios-config';
-import EditPost from './editPost.tsx';
+import { AuthContext } from '@/context/AuthContext.ts';
 
 const selectItems = [
     { key: 'all', value: 'all', label: 'All' },
@@ -41,7 +42,7 @@ const selectItems = [
 ];
 
 export default function AllPostEvent() {
-    // const [sortOption, setSortOption] = useState<string>('DateDSC');
+    const { user, access } = useContext(AuthContext);
     const { eventid } = useParams<{ eventid: string }>();
     const fetchPosts = async () => {
         const response = await axiosAPIInstance.get(
@@ -50,9 +51,6 @@ export default function AllPostEvent() {
 
         return response.data.data;
     };
-
-    console.log(eventid);
-
 
     const {
         data: posts = [],
@@ -63,6 +61,29 @@ export default function AllPostEvent() {
         queryFn: fetchPosts,
     });
 
+    const fetchEventByEventID = async () => {
+        const response = await axiosAPIInstance.get(
+            `v1/event/getEvent/${eventid}`,
+        );
+
+        return response.data.data;
+    };
+
+    const { data: currentEvent = {} as Event } = useQuery<Event>({
+        queryKey: ['currrentEvent', eventid],
+        queryFn: fetchEventByEventID,
+    });
+
+    const [isStaff, setIsStaff] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (currentEvent.staff) {
+            setIsStaff(
+                currentEvent.staff.some((staff) => staff.stdID === user),
+            );
+        }
+    }, [currentEvent]);
+
     const [searchInput, setSearchInput] = useState<string>('');
     const [sortOption, setSortOption] = useState<string>('DateDSC');
     const [sortedAndSearchEvents, setSortedAndSearchEvents] = useState<
@@ -71,6 +92,7 @@ export default function AllPostEvent() {
     const [filterOption, setFilterOption] = useState<string>('all');
     const navigate = useNavigate();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    // const { user, access } = useContext(AuthContext);
 
     useEffect(() => {
         setSortedAndSearchEvents(
@@ -346,28 +368,35 @@ export default function AllPostEvent() {
             </div>
             <Skeleton isLoaded={!isLoading}>
                 <div className="max-w-full gap-6 grid grid-cols-12 px-8 my-8">
-                    <Card
-                        className="col-span-12 sm:col-span-4 w-full min-h-[369px]"
-                        style={{ backgroundColor: '#efefef' }}
-                    >
-                        <Button
-                            className="flex flex-col w-full h-full justify-center items-center text-xl bg-transparent"
-                            onPress={onOpen}
+                    {isStaff ||
+                    (parseInt(access) === 2 &&
+                        user === currentEvent.president) ||
+                    parseInt(access) > 2 ? (
+                        <Card
+                            className="col-span-12 sm:col-span-4 w-full min-h-[369px]"
+                            style={{ backgroundColor: '#efefef' }}
                         >
-                            <div className="flex rounded-full bg-violet-500">
-                                <IoAdd className="text-6xl text-slate-200" />
-                            </div>
-                            <div className="text-zinc-600">Add new post</div>
-                        </Button>
-                        <Modal
-                            isOpen={isOpen}
-                            scrollBehavior="outside"
-                            size="lg"
-                            onOpenChange={onOpenChange}
-                        >
-                            <CreatePostModal />
-                        </Modal>
-                    </Card>
+                            <Button
+                                className="flex flex-col w-full h-full justify-center items-center text-xl bg-transparent"
+                                onPress={onOpen}
+                            >
+                                <div className="flex rounded-full bg-violet-500">
+                                    <IoAdd className="text-6xl text-slate-200" />
+                                </div>
+                                <div className="text-zinc-600">
+                                    Add new post
+                                </div>
+                            </Button>
+                            <Modal
+                                isOpen={isOpen}
+                                scrollBehavior="outside"
+                                size="lg"
+                                onOpenChange={onOpenChange}
+                            >
+                                <CreatePostModal />
+                            </Modal>
+                        </Card>
+                    ) : null}
                     {sortedAndSearchEvents.length > 0 &&
                         sortedAndSearchEvents.map((post) => {
                             return (
@@ -494,7 +523,6 @@ export default function AllPostEvent() {
                                 </Card>
                             );
                         })}
-
                 </div>
             </Skeleton>
             {isError && (
