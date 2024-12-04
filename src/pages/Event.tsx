@@ -4,22 +4,16 @@ import { Tabs, Tab, Skeleton } from '@nextui-org/react';
 import { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
-import { axiosAPIInstance } from '@/api/axios-config.ts';
 import DefaultLayout from '@/layouts/default';
 import AllEvent from '@/components/eventComponents/AllEvent.tsx';
 import { AuthContext } from '@/context/AuthContext';
 import JoinedEvent from '@/components/eventComponents/JoinedEvent';
+import { fetchEvents } from '@/hooks/api';
 
 export default function Event() {
     const { user } = useContext(AuthContext);
     const user_id = {
         _id: user as string,
-    };
-
-    const fetchEvents = async () => {
-        const response = await axiosAPIInstance.get('v1/events');
-
-        return response.data.data;
     };
 
     const {
@@ -51,17 +45,20 @@ export default function Event() {
 
                         <Tab key="Joined" title="Joined">
                             <JoinedEvent
-                                events={allEventData && allEventData.filter(
-                                    (event) =>
-                                        event.staff?.some(
-                                            (staff) =>
-                                                staff.stdID === user_id._id,
-                                        ) ||
-                                        event.participants?.some(
-                                            (participant) =>
-                                                participant === user_id._id,
-                                        ),
-                                )}
+                                events={
+                                    allEventData &&
+                                    allEventData.filter(
+                                        (event) =>
+                                            event.staff?.some(
+                                                (staff) =>
+                                                    staff.stdID === user_id._id,
+                                            ) ||
+                                            event.participants?.some(
+                                                (participant) =>
+                                                    participant === user_id._id,
+                                            ),
+                                    )
+                                }
                             />
                         </Tab>
                     </Tabs>

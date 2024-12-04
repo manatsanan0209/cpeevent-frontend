@@ -13,7 +13,7 @@ import { motion } from 'framer-motion';
 import { Event } from '@/types/index';
 import logo from '@/images/logo256.png';
 import { AuthContext } from '@/context/AuthContext';
-import { axiosAPIInstance } from '@/api/axios-config.ts';
+import { fetchEvents } from '@/hooks/api';
 import { siteConfig } from '@/config/site';
 
 export const Sidebar = ({
@@ -30,12 +30,6 @@ export const Sidebar = ({
     const { user } = useContext(AuthContext);
     const user_id = {
         _id: user as string,
-    };
-
-    const fetchEvents = async () => {
-        const response = await axiosAPIInstance.get('v1/events');
-
-        return response.data.data;
     };
 
     const {

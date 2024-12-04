@@ -1,6 +1,6 @@
 import type { Event } from '@/types/index';
 
-import React from 'react';
+import { useState } from 'react';
 import {
     Dropdown,
     DropdownItem,
@@ -12,52 +12,41 @@ import {
 } from '@nextui-org/react';
 import { LuMoreHorizontal } from 'react-icons/lu';
 import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 import CalendarPage from './calendar';
 
+import { fetchEvents } from '@/hooks/api';
 import MembersPage from '@/components/post/members';
 import LeaveEventModal from '@/components/post/leaveEventModal';
 import DefaultLayout from '@/layouts/default';
-import { axiosAPIInstance } from '@/api/axios-config';
 interface Props {
     children: React.ReactNode;
 }
 
 export default function Post(props: Props) {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [eventName, setEventName] = React.useState<string | null>(null);
+    const [backdrop, setBackdrop] = useState<'opaque' | 'transparent' | 'blur'>(
+        'opaque',
+    );
+    const { eventid } = useParams<{ eventid: string }>();
 
-    const [backdrop, setBackdrop] = React.useState<
-        'opaque' | 'transparent' | 'blur'
-    >('opaque');
+    const { data: events = [], error } = useQuery<Event[]>({
+        queryKey: ['events'],
+        queryFn: fetchEvents,
+    });
+
+    const event = events.find((event) => event._id === eventid);
+    const eventName = event
+        ? event.eventName
+        : error
+        ? 'Error fetching event'
+        : 'Event not found';
 
     const handleOpen = (backdrop: 'opaque' | 'transparent' | 'blur') => {
         setBackdrop(backdrop);
         onOpen();
     };
-    // let { eventid } = useParams();
-    const { eventid } = useParams<{ eventid: string }>();
-
-    React.useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const response = await axiosAPIInstance.get('v1/events');
-                const events: Event[] = response.data.data;
-
-                const event = events.find((event) => event._id === eventid);
-
-                if (event) {
-                    setEventName(event.eventName);
-                } else {
-                    setEventName('Event not found');
-                }
-            } catch (error) {
-                setEventName('Error fetching event');
-            }
-        };
-
-        fetchEvents();
-    }, [eventid]);
 
     return (
         <DefaultLayout>
