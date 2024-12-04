@@ -13,7 +13,7 @@ import { motion } from 'framer-motion';
 import { Event } from '@/types/index';
 import logo from '@/images/logo256.png';
 import { AuthContext } from '@/context/AuthContext';
-import { axiosAPIInstance } from '@/api/axios-config.ts';
+import { fetchEvents } from '@/hooks/api';
 import { siteConfig } from '@/config/site';
 
 export const Sidebar = ({
@@ -30,12 +30,6 @@ export const Sidebar = ({
     const { user } = useContext(AuthContext);
     const user_id = {
         _id: user as string,
-    };
-
-    const fetchEvents = async () => {
-        const response = await axiosAPIInstance.get('v1/events');
-
-        return response.data.data;
     };
 
     const {
@@ -206,7 +200,7 @@ export const Sidebar = ({
                                                                     event._id,
                                                                 )
                                                                     ? 'bg-violet-700 ring-violet-400'
-                                                                    : 'bg-foreground-400 ring-0'
+                                                                    : 'bg-foreground-500 ring-0 ring-transparent'
                                                             }`}
                                                             transition={{
                                                                 duration: 1,
@@ -214,7 +208,7 @@ export const Sidebar = ({
                                                                 ease: 'easeInOut',
                                                             }}
                                                         />
-                                                        <span className="capitalize">
+                                                        <span className="capitalize truncate">
                                                             {event.eventName}
                                                         </span>
                                                     </Link>
