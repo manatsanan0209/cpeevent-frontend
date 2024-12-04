@@ -3,13 +3,14 @@ import { Button } from '@nextui-org/react';
 import { useNavigate } from 'react-router-dom';
 export function Custom404() {
     const navigate = useNavigate();
+
     return (
         <div className="h-screen mx-auto grid place-items-center text-center px-8">
             <div>
                 <FaFlag className="w-20 h-20 mx-auto" />
                 <p
-                    color="blue-gray"
                     className="mt-10 !text-3xl !leading-snug md:!text-4xl"
+                    color="blue-gray"
                 >
                     Error 404 <br /> It looks like something went wrong.
                 </p>
@@ -18,8 +19,8 @@ export function Custom404() {
                     refreshing the page or come back later.
                 </p>
                 <Button
-                    color="warning"
                     className="w-full px-4 md:w-[8rem]"
+                    color="warning"
                     onClick={() => navigate(-1)}
                 >
                     Go Back
