@@ -18,12 +18,15 @@ const calendarDayName = 'text-center font-bold p-2 bg-primary text-white mb-1 ';
 export const FullCalendar = ({
     events,
     posts,
+    onTabChange,
 }: {
     events?: Event[];
     posts?: PostEventProps[];
+    onTabChange?: (key: string) => void;
 }) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [eventsToModal, setEventsToModal] = useState<typeof EventList | null>(null);
+    const [postsToModal, setPostsToModal] = useState<typeof PostList | null>(null);
     const [date, setDate] = useState(new Date());
 
     const EventList = events?.map((event) => {
@@ -37,9 +40,11 @@ export const FullCalendar = ({
 
     const PostList = posts?.map((posts) => {
         return {
+            postID: posts._id,
             title: posts.title,
             postDate: new Date(posts.postDate),
             endDate: posts.endDate ? new Date(posts.endDate) : null,
+            kind: posts.kind,
         };
     });
 
@@ -89,15 +94,13 @@ export const FullCalendar = ({
                           post.postDate.getFullYear() === year,
                   )
                 : [];
-
-            console.log(postsForDay);
     
             days.push(
                 <motion.div
                     key={day}
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}
-                    onClick={() => handleDayClick(eventsForDay, new Date(year, month, day))}
+                    onClick={() => handleDayClick(eventsForDay, postsForDay, new Date(year, month, day))}
                     className={`flex flex-col gap-0.5 p-4 h-28 border border-violet-100 rounded-lg cursor-pointer
                         ${theme === 'light' ? 'bg-white' : 'bg-default'}
                         ${isToday ? 'bg-violet-50' : ''}
@@ -123,8 +126,8 @@ export const FullCalendar = ({
                                     : 'bg-green-200 border-l-2 border-green-500 rounded-md'
                             }`}
                         >
-                            {event.eventName.length > 15
-                                ? `${event.eventName.substring(0, 15)}...`
+                            {event.eventName.length > 14
+                                ? `${event.eventName.substring(0, 14)}...`
                                 : event.eventName}
                         </p>
                     ))}
@@ -133,8 +136,8 @@ export const FullCalendar = ({
                             key={post.title}
                             className="pl-1 bg-blue-200 border-l-2 border-blue-500 rounded-md"
                         >
-                            {post.title.length > 15
-                                ? `${post.title.substring(0, 15)}...`
+                            {post.title.length > 14
+                                ? `${post.title.substring(0, 14)}...`
                                 : post.title}
                         </p>
                     ))}
@@ -187,9 +190,10 @@ export const FullCalendar = ({
         'December',
     ];
 
-    const handleDayClick = (events: typeof EventList, date: Date) => {
+    const handleDayClick = (events: typeof EventList, posts: typeof PostList, date: Date) => {
+        if (events) setEventsToModal(events);
+        if (posts) setPostsToModal(posts);
         setDate(date);
-        setEventsToModal(events);
         onOpen();
     };
     return (
@@ -235,7 +239,9 @@ export const FullCalendar = ({
             <CalendarModal
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
+                onTabChange={onTabChange}
                 events={eventsToModal || []}
+                posts={postsToModal || []}
                 date={date}
             />
         </div>

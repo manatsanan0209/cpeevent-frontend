@@ -1,4 +1,4 @@
-import type { Event } from '@/types/index';
+import type { PostEventProps, Event } from '@/types/index';
 
 import { useState } from 'react';
 import {
@@ -13,6 +13,7 @@ import {
 import { LuMoreHorizontal } from 'react-icons/lu';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { axiosAPIInstance } from '@/api/axios-config';
 
 import { FullCalendar } from '@/components/calendarComponents/fullCalendar';
 
@@ -43,10 +44,29 @@ export default function Post(props: Props) {
         ? 'Error fetching event'
         : 'Event not found';
 
+    const fetchPosts = async () => {
+        const response = await axiosAPIInstance.get(
+            `v1/event/${eventid}/posts`,
+        );
+
+        return response.data.data;
+    };
+
+    const { data: posts = [] } = useQuery<PostEventProps[]>({
+        queryKey: ['posts'],
+        queryFn: fetchPosts,
+    });
+
     const handleOpen = (backdrop: 'opaque' | 'transparent' | 'blur') => {
         setBackdrop(backdrop);
         onOpen();
     };
+
+    const [activeTab, setActiveTab] = useState('Post');
+
+    const handleTabChange = (key: string) => {
+        setActiveTab(key);
+    }
 
     return (
         <DefaultLayout>
@@ -83,14 +103,14 @@ export default function Post(props: Props) {
                     size="md"
                     style={{ fontWeight: 'bold' }}
                     variant="underlined"
+                    selectedKey={activeTab}
+                    onSelectionChange={(key) => handleTabChange(key as string)}
                 >
                     <Tab key="Post" title="Post">
                         {props.children}
                     </Tab>
                     <Tab key="Calendar" title="Calendar">
-                        <FullCalendar
-                            
-                        />
+                        <FullCalendar posts={posts} onTabChange={handleTabChange} />
                     </Tab>
                     <Tab key="Member" title="Member">
                         <MembersPage />
