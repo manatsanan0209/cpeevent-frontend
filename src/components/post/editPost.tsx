@@ -1,5 +1,4 @@
-import type { PostEventProps } from '@/types';
-import type { Event } from '@/types';
+import type { PostEventProps, Event } from '@/types';
 
 import {
     Dropdown,
@@ -21,18 +20,21 @@ import {
 import { LuMoreHorizontal } from 'react-icons/lu';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useDisclosure } from '@nextui-org/react';
-import { useParams } from 'react-router-dom';
 import { getLocalTimeZone, now } from '@internationalized/date';
-import { useQuery } from '@tanstack/react-query';
 
 import UpdatePost from './updatePost/updatePost.tsx';
 import UpdateForm from './updatePost/updateForm.tsx';
 import UpdateVote from './updatePost/updateVote.tsx';
 
+import { axiosAPIInstance } from '@/api/axios-config';
 import { AuthContext } from '@/context/AuthContext';
-import { axiosAPIInstance } from '@/api/axios-config.ts';
 
-export default function PostModal(post: PostEventProps) {
+interface PostModalProps {
+    post: PostEventProps;
+    event: Event;
+}
+
+export default function PostModal({ post, event }: PostModalProps) {
     const onEdit = () => {
         if (post.kind == 'post') {
             // <UpdatePost />
@@ -55,21 +57,6 @@ export default function PostModal(post: PostEventProps) {
     const { user } = useContext(AuthContext);
 
     const { isOpen, onOpenChange, onOpen } = useDisclosure();
-
-    const { eventid } = useParams();
-
-    const fetchEventByEventID = async () => {
-        const response = await axiosAPIInstance.get(
-            `v1/event/getEvent/${eventid}`,
-        );
-
-        return response.data.data;
-    };
-
-    const { data: event = {} as Event } = useQuery<Event>({
-        queryKey: ['event', eventid],
-        queryFn: fetchEventByEventID,
-    });
 
     const [disableEndDate, setDisableEndDate] = useState<boolean>(
         !post.endDate ? false : true,

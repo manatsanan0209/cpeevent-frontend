@@ -410,12 +410,12 @@ export default function AllPostEvent() {
                                                   `/workspace/${eventid}/post/${post._id}`,
                                               )
                                             : post.kind === 'vote'
-                                              ? navigate(
-                                                    `/workspace/${eventid}/vote/${post._id}`,
-                                                )
-                                              : navigate(
-                                                    `/workspace/${eventid}/form/${post._id}`,
-                                                );
+                                            ? navigate(
+                                                  `/workspace/${eventid}/vote/${post._id}`,
+                                              )
+                                            : navigate(
+                                                  `/workspace/${eventid}/form/${post._id}`,
+                                              );
                                     }}
                                 >
                                     <CardHeader className="flex flex-col bg-zinc-75  items-start">
@@ -430,7 +430,10 @@ export default function AllPostEvent() {
                                                     'post',
                                                 )}
                                             </p>
-                                            <EditPost {...post} />
+                                            <EditPost
+                                                event={currentEvent}
+                                                post={post}
+                                            />
                                         </div>
                                         <div className="mx-2.5 flex justify-start flex-wrap">
                                             {post.assignTo.map(
@@ -509,12 +512,12 @@ export default function AllPostEvent() {
                                                           `/workspace/${eventid}/post/${post._id}`,
                                                       )
                                                     : post.kind === 'vote'
-                                                      ? navigate(
-                                                            `/workspace/${eventid}/vote/${post._id}`,
-                                                        )
-                                                      : navigate(
-                                                            `/workspace/${eventid}/form/${post._id}`,
-                                                        );
+                                                    ? navigate(
+                                                          `/workspace/${eventid}/vote/${post._id}`,
+                                                      )
+                                                    : navigate(
+                                                          `/workspace/${eventid}/form/${post._id}`,
+                                                      );
                                             }}
                                         >
                                             Learn More
