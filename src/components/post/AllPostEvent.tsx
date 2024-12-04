@@ -410,12 +410,12 @@ export default function AllPostEvent() {
                                                   `/workspace/${eventid}/post/${post._id}`,
                                               )
                                             : post.kind === 'vote'
-                                            ? navigate(
-                                                  `/workspace/${eventid}/vote/${post._id}`,
-                                              )
-                                            : navigate(
-                                                  `/workspace/${eventid}/form/${post._id}`,
-                                              );
+                                              ? navigate(
+                                                    `/workspace/${eventid}/vote/${post._id}`,
+                                                )
+                                              : navigate(
+                                                    `/workspace/${eventid}/form/${post._id}`,
+                                                );
                                     }}
                                 >
                                     <CardHeader className="flex flex-col bg-zinc-75  items-start">
@@ -501,27 +501,6 @@ export default function AllPostEvent() {
                                                 </span>
                                             </p>
                                         </div>
-                                        <Button
-                                            className="text-tiny"
-                                            color="primary"
-                                            radius="full"
-                                            size="sm"
-                                            onClick={() => {
-                                                post.kind === 'post'
-                                                    ? navigate(
-                                                          `/workspace/${eventid}/post/${post._id}`,
-                                                      )
-                                                    : post.kind === 'vote'
-                                                    ? navigate(
-                                                          `/workspace/${eventid}/vote/${post._id}`,
-                                                      )
-                                                    : navigate(
-                                                          `/workspace/${eventid}/form/${post._id}`,
-                                                      );
-                                            }}
-                                        >
-                                            Learn More
-                                        </Button>
                                     </CardFooter>
                                 </Card>
                             );

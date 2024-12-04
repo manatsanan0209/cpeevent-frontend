@@ -7,7 +7,6 @@ import { useQuery } from '@tanstack/react-query';
 import DefaultLayout from '@/layouts/default';
 import AllEvent from '@/components/eventComponents/AllEvent.tsx';
 import { AuthContext } from '@/context/AuthContext';
-import JoinedEvent from '@/components/eventComponents/JoinedEvent';
 import { fetchEvents } from '@/hooks/api';
 
 export default function Event() {
@@ -40,11 +39,15 @@ export default function Event() {
                         variant="underlined"
                     >
                         <Tab key="All" title="All">
-                            <AllEvent events={allEventData} user={user_id} />
+                            <AllEvent
+                                events={allEventData}
+                                state="All"
+                                user={user_id}
+                            />
                         </Tab>
 
                         <Tab key="Joined" title="Joined">
-                            <JoinedEvent
+                            <AllEvent
                                 events={
                                     allEventData &&
                                     allEventData.filter(
@@ -57,8 +60,11 @@ export default function Event() {
                                                 (participant) =>
                                                     participant === user_id._id,
                                             ),
+                                        user,
                                     )
                                 }
+                                state="Joined"
+                                user={user_id}
                             />
                         </Tab>
                     </Tabs>

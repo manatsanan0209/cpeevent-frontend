@@ -21,7 +21,6 @@ export default function PostDetail() {
         queryKey: ['posts', postid],
         queryFn: fetchPosts,
     });
-    console.log(posts?.markdown);
 
     return (
         <div className="">

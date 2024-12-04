@@ -182,7 +182,6 @@ export default function VoteDetail() {
             setVoteCompleted(true);
         } catch (error) {
             toast.error('Error submitting vote');
-            console.error('Error:', error);
         }
     };
 
@@ -193,7 +192,6 @@ export default function VoteDetail() {
 
     useEffect(() => {
         setAnswers({ ...answers, answer: filteredSelected });
-        console.log(answers);
     }, [filteredSelected]);
 
     const transformedData =
