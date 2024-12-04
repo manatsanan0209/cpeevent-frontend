@@ -184,7 +184,7 @@ export default function EventHome() {
                 </div>
                 <div className="flex justify-center mt-6">
                     <Button
-                        className="w-1/5 text-base font-semibold mr-8 bg-indigo-500 hover:bg-indigo-500 text-white transition duration-300"
+                        className="w-1/5 text-base font-semibold mr-8 bg-violet-700 hover:bg-violet-700 text-white transition duration-300"
                         onClick={() => navigate('/events')}
                     >
                         See all events
