@@ -1,5 +1,12 @@
 import { useContext, useState } from 'react';
-import { Button, Card, CardBody, CardHeader } from '@nextui-org/react';
+import {
+    Button,
+    Card,
+    CardBody,
+    CardFooter,
+    CardHeader,
+    Chip,
+} from '@nextui-org/react';
 import { useQuery } from '@tanstack/react-query';
 import { MdOutlineNavigateNext } from 'react-icons/md';
 import { GrFormPrevious } from 'react-icons/gr';
@@ -66,14 +73,14 @@ export default function EventHome() {
 
     return (
         <>
-            <div className="mt-2">
-                <div className="flex justify-between items-center mb-4">
-                    <p className="text-zinc-600 font-bold text-4xl ml-5">
-                        Event
-                    </p>
+            <div>
+                <div className="flex justify-between items-center mb-4 mt-4">
+                    <div className="text-zinc-600 font-bold text-4xl ml-8">
+                        Events
+                    </div>
+
                     <Button
-                        className="w-1/5 text-base font-semibold mr-8"
-                        color="primary"
+                        className="w-1/5 text-base font-semibold mr-8 bg-indigo-500 hover:bg-indigo-500 text-white transition duration-300"
                         onClick={() => navigate('/events')}
                     >
                         See all events
@@ -85,7 +92,7 @@ export default function EventHome() {
                         className={
                             page === 0
                                 ? 'flex items-center justify-center w-7 h-7 bg-zinc-300 text-white rounded-full mr-2'
-                                : 'flex items-center justify-center w-7 h-7 bg-indigo-500 text-white rounded-full shadow-lg hover:bg-indigo-600 transition duration-300 mr-2'
+                                : 'flex items-center justify-center w-7 h-7 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-600 transition duration-300 mr-2'
                         }
                         disabled={page === 0}
                         onClick={() => setPage(page - 1)}
@@ -93,7 +100,7 @@ export default function EventHome() {
                         <GrFormPrevious className="text-xl" />
                     </button>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-6 justify-items-center w-full max-w-screen-xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 justify-items-center w-full max-w-screen-xl mx-auto">
                         {currentEvents.length > 0 ? (
                             currentEvents.map(
                                 (event: {
@@ -103,6 +110,7 @@ export default function EventHome() {
                                     startDate: string;
                                     participants: string[];
                                     staff: { stdID: string }[];
+                                    kind: string;
                                 }) => (
                                     <Card
                                         key={event._id}
@@ -110,7 +118,7 @@ export default function EventHome() {
                                         className="shadow-md shadow-slate-300 w-full max-w-md"
                                         onPress={() => handleCardClick(event)}
                                     >
-                                        <CardHeader>
+                                        <CardHeader className="py-1">
                                             <div className="text-zinc-600 font-semibold text-xl h-7 w-full overflow-hidden text-ellipsis whitespace-nowrap text-left">
                                                 {event.eventName}
                                             </div>
@@ -126,26 +134,40 @@ export default function EventHome() {
                                                     {event.eventDescription}
                                                 </div>
                                             </div>
-                                            <div className="flex flex-row">
-                                                <div className="text-sm text-zinc-600 mt-3">
-                                                    <span className="font-bold">
-                                                        Start date:{' '}
-                                                    </span>
-                                                    <span className="font-normal">
-                                                        {new Date(
-                                                            event.startDate,
-                                                        ).toLocaleDateString(
-                                                            'en-GB',
-                                                            {
-                                                                day: '2-digit',
-                                                                month: '2-digit',
-                                                                year: 'numeric',
-                                                            },
-                                                        )}
-                                                    </span>
-                                                </div>
-                                            </div>
                                         </CardBody>
+                                        <CardFooter className="py-2">
+                                            <div className="flex flex-row justify-between w-full items-end">
+                                                <div>
+                                                    <div className="flex flex-row">
+                                                        <div className="text-sm text-zinc-600">
+                                                            <span className="font-bold">
+                                                                Start date:{' '}
+                                                            </span>
+                                                            <span className="font-bold text-blue-500">
+                                                                {new Date(
+                                                                    event.startDate,
+                                                                ).toLocaleDateString(
+                                                                    'en-GB',
+                                                                    {
+                                                                        day: '2-digit',
+                                                                        month: '2-digit',
+                                                                        year: 'numeric',
+                                                                    },
+                                                                )}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <Chip
+                                                    className="ml-auto"
+                                                    color="danger"
+                                                    variant="flat"
+                                                >
+                                                    {event.kind}
+                                                </Chip>
+                                            </div>
+                                        </CardFooter>
                                     </Card>
                                 ),
                             )
@@ -158,7 +180,7 @@ export default function EventHome() {
                     <button
                         className={
                             events && endIndex < events.length
-                                ? 'flex items-center justify-center w-7 h-7 bg-indigo-500 text-white rounded-full shadow-lg hover:bg-indigo-600 transition duration-300 ml-2'
+                                ? 'flex items-center justify-center w-7 h-7 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-500 transition duration-300 ml-2'
                                 : 'flex items-center justify-center w-7 h-7 bg-zinc-300 text-white rounded-full ml-2'
                         }
                         disabled={!(events && endIndex < events.length)}
