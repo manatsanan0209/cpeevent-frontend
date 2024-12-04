@@ -50,8 +50,6 @@ export default function FormDetail() {
         queryFn: fetchPosts,
     });
 
-    console.log(posts);
-
     const { data: submittedAnswers } = useQuery<formAnswer>({
         queryKey: ['answers', postid],
         queryFn: async () => {
