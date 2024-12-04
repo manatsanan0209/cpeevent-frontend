@@ -259,7 +259,7 @@ export default function AllEvent({ events, user, state }: AllEventProps) {
                                     aria-label={event.eventName}
                                     title={
                                         <div className="flex flex-col sm:flex-row">
-                                            <span className="text-zinc-600 font-semibold text-xl h-7 w-full overflow-hidden text-ellipsis whitespace-nowrap">
+                                            <span className="w-full sm:w-5/12 text-zinc-600 pr-2 font-semibold overflow-hidden text-ellipsis whitespace-nowrap">
                                                 {event.eventName}
                                             </span>
                                             <span className="text-sm w-full sm:w-3/12 pt-1">
