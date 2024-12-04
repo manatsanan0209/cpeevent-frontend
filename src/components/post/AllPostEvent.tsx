@@ -430,7 +430,10 @@ export default function AllPostEvent() {
                                                     'post',
                                                 )}
                                             </p>
-                                            <EditPost {...post} />
+                                            <EditPost
+                                                event={currentEvent}
+                                                post={post}
+                                            />
                                         </div>
                                         <div className="mx-2.5 flex justify-start flex-wrap">
                                             {post.assignTo.map(
