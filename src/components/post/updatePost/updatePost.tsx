@@ -6,17 +6,18 @@ interface PostKindPostProps {
     setMarkdown: React.Dispatch<React.SetStateAction<string>>;
 }
 
-
-
-export default function updatePost({markdown, setMarkdown}: PostKindPostProps) {
+export default function updatePost({
+    markdown,
+    setMarkdown,
+}: PostKindPostProps) {
     return (
         <Textarea
+            defaultValue={markdown} // Pre-fill if editing
             errorMessage="This field is required"
             label="Markdown"
             placeholder="Enter Markdown Detail"
             type="text"
             validationBehavior="native"
-            defaultValue={markdown} // Pre-fill if editing
             onChange={(e) => setMarkdown(e.target.value)}
         />
     );
