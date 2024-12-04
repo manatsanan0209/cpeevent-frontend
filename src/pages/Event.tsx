@@ -7,7 +7,6 @@ import { useQuery } from '@tanstack/react-query';
 import DefaultLayout from '@/layouts/default';
 import AllEvent from '@/components/eventComponents/AllEvent.tsx';
 import { AuthContext } from '@/context/AuthContext';
-import JoinedEvent from '@/components/eventComponents/JoinedEvent';
 import { fetchEvents } from '@/hooks/api';
 
 export default function Event() {
