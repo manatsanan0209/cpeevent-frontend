@@ -112,7 +112,7 @@ export default function EventHome() {
                                         onPress={() => handleCardClick(event)}
                                     >
                                         <CardHeader className="py-1">
-                                            <div className="text-zinc-600 font-semibold text-xl h-7 w-full overflow-hidden text-ellipsis whitespace-nowrap text-left">
+                                            <div className="text-zinc-600 font-semibold text-lg h-7 w-full overflow-hidden text-ellipsis whitespace-nowrap text-left">
                                                 {event.eventName}
                                             </div>
                                         </CardHeader>
