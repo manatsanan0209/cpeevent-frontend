@@ -173,7 +173,11 @@ export default function AllEvent({ events, user }: AllEventProps) {
         });
     };
 
-    const { state } = useLocation();
+    interface LocationState {
+        targetID: string;
+    }
+
+    const { state } = useLocation() as { state: LocationState };
     const { targetID } = state || {};
 
     useEffect(() => {
