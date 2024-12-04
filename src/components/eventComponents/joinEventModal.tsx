@@ -84,7 +84,9 @@ const JoinEventModal: React.FC<JoinEventModalProps> = ({
 
     // fetch event interface EventFromAPI
     const fetchEvent = async () => {
-        const response = await axiosAPIInstance.get(`v1/event/getEvent/${eventID}`);
+        const response = await axiosAPIInstance.get(
+            `v1/event/getEvent/${eventID}`,
+        );
 
         return response.data.data;
     };
@@ -170,7 +172,10 @@ const JoinEventModal: React.FC<JoinEventModalProps> = ({
                                 whileTap={{
                                     scale: isStaffDisabled ? 1 : 0.9,
                                 }}
-                                onClick={() => !isStaffDisabled && handleRoleChange('staff')}
+                                onClick={() =>
+                                    !isStaffDisabled &&
+                                    handleRoleChange('staff')
+                                }
                             >
                                 <h5 className="text-lg font-semibold text-foreground-600">
                                     Staff
@@ -178,23 +183,28 @@ const JoinEventModal: React.FC<JoinEventModalProps> = ({
                                 <p className="text-foreground-400">
                                     Contributing as staff.
                                 </p>
-                                {selectedRole === 'staff' && eventData.role && eventData.role.length > 0 && (
-                                    <Select
-                                        isRequired
-                                        label={subRoleLabel}
-                                        variant="underlined"
-                                        className="max-w-xs"
-                                        onChange={(e) =>
-                                            handleSubRoleChange(e.target.value)
-                                        }
-                                    >
-                                        {eventData.role.map((role) => (
-                                            <SelectItem key={role}>
-                                                {role}
-                                            </SelectItem>
-                                        ))}
-                                    </Select>
-                                )}
+                                {selectedRole === 'staff' &&
+                                    eventData.role &&
+                                    eventData.role.length > 0 && (
+                                        <Select
+                                            isRequired
+                                            aria-label="Select a role"
+                                            className="max-w-xs"
+                                            label={subRoleLabel}
+                                            variant="underlined"
+                                            onChange={(e) =>
+                                                handleSubRoleChange(
+                                                    e.target.value,
+                                                )
+                                            }
+                                        >
+                                            {eventData.role.map((role) => (
+                                                <SelectItem key={role}>
+                                                    {role}
+                                                </SelectItem>
+                                            ))}
+                                        </Select>
+                                    )}
                             </motion.div>
                         </ModalBody>
                         <ModalFooter>
