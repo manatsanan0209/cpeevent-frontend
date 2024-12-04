@@ -14,9 +14,9 @@ export default function IndexPage() {
                     <div className="col-span-1 flex justify-center items-center">
                         <MiniCalendar />
                     </div>
-                </div>
-                <div>
-                    <EventHome />
+                    <div className="col-span-3">
+                        <EventHome />
+                    </div>
                 </div>
             </div>
         </DefaultLayout>
