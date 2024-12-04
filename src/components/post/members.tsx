@@ -59,10 +59,7 @@ export default function MembersPage() {
     useEffect(() => {
         if (eventsData) {
             setStaffMembers(eventsData.staff);
-            console.log(staffMembers);
             setParticipants(eventsData.participants);
-        } else {
-            console.log('No data');
         }
     }, [eventsData, eventID]);
 
