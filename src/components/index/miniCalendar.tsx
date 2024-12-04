@@ -30,18 +30,6 @@ export default function MiniCalendar() {
         queryFn: fetchEvents,
     });
 
-    const fetchPosts = async () => {
-        const response = await axiosAPIInstance.get(
-            `v1/event/${events[0]?._id}/posts`,
-        );
-
-        return response.data.data;
-    };
-
-    useQuery<PostEventProps[]>({
-        queryKey: ['posts'],
-        queryFn: fetchPosts,
-    });
 
     const EventList = events?.map((event) => {
         return {
