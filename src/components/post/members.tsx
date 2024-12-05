@@ -1,16 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { Input, Select, SelectItem, Kbd } from '@nextui-org/react';
+import { IoFilter } from 'react-icons/io5';
+
+import { SearchIcon } from '../icons.tsx';
 
 import { axiosAPIInstance } from '@/api/axios-config.ts';
-import {
-    Input,
-    Select,
-    SelectItem,
-    Kbd,
-} from '@nextui-org/react';
-import { IoFilter } from 'react-icons/io5';
-import { SearchIcon } from '../icons.tsx';
 
 interface StaffMember {
     stdID: string;
@@ -39,9 +35,11 @@ export default function MembersPage() {
     const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
     const [participants, setParticipants] = useState<Participant[]>([]);
     const [searchInput, setSearchInput] = useState('');
-    const [sortedAndSearchMembers, setSortedAndSearchMembers] = useState<StaffMember[]>([]);
+    const [sortedAndSearchMembers, setSortedAndSearchMembers] = useState<
+        StaffMember[]
+    >([]);
     const [sortOption, setSortOption] = useState('IdDSC');
-    const [filterRole, setFilterRole] = useState('all');
+    const [filterRole, setFilterRole] = useState('All');
 
     const fetchEvents = async () => {
         const response = await axiosAPIInstance.get(
@@ -63,8 +61,9 @@ export default function MembersPage() {
         }
     }, [eventsData, eventID]);
 
-    useEffect (() => {
-        setSortedAndSearchMembers(sortedAndSearchMembersFunc(sortOption, searchInput, filterRole),
+    useEffect(() => {
+        setSortedAndSearchMembers(
+            sortedAndSearchMembersFunc(sortOption, searchInput, filterRole),
         );
     }, [sortOption, searchInput, filterRole, eventsData]);
 
@@ -77,36 +76,53 @@ export default function MembersPage() {
         searchTerm: string,
         filter: string,
     ): StaffMember[] {
-        let newSortedArray = Array.isArray(eventsData?.staff) ? [...eventsData.staff] : [];
+        let newSortedArray = Array.isArray(eventsData?.staff)
+            ? [...eventsData.staff]
+            : [];
 
         switch (option) {
             case 'IdASC':
-                newSortedArray = newSortedArray.sort((a, b) => a.stdID.localeCompare(b.stdID));
+                newSortedArray = newSortedArray.sort((a, b) =>
+                    a.stdID.localeCompare(b.stdID),
+                );
                 break;
             case 'IdDSC':
-                newSortedArray = newSortedArray.sort((a, b) => b.stdID.localeCompare(a.stdID));
+                newSortedArray = newSortedArray.sort((a, b) =>
+                    b.stdID.localeCompare(a.stdID),
+                );
                 break;
             case 'NameASC':
-                newSortedArray = newSortedArray.sort((a, b) => a.name.localeCompare(b.name));
+                newSortedArray = newSortedArray.sort((a, b) =>
+                    a.name.localeCompare(b.name),
+                );
                 break;
             case 'NameDSC':
-                newSortedArray = newSortedArray.sort((a, b) => b.name.localeCompare(a.name));
+                newSortedArray = newSortedArray.sort((a, b) =>
+                    b.name.localeCompare(a.name),
+                );
                 break;
         }
 
-        if (filter !== 'all') {
-            newSortedArray = newSortedArray.filter(member => member.role === filter);
+        if (filter !== 'All') {
+            newSortedArray = newSortedArray.filter(
+                (member) => member.role === filter,
+            );
         }
 
         if (searchTerm) {
-            newSortedArray = newSortedArray.filter(member => member.name.toLowerCase().includes(searchTerm.toLowerCase()));
+            newSortedArray = newSortedArray.filter((member) =>
+                member.name.toLowerCase().includes(searchTerm.toLowerCase()),
+            );
         }
 
         return newSortedArray;
     }
 
-    const roles = Array.from(new Set(staffMembers.map(member => member.role)));
-    roles.push('all');
+    const roles = Array.from(
+        new Set(staffMembers.map((member) => member.role)),
+    );
+
+    roles.push('All');
 
     return (
         <div className="w-full ">
@@ -170,21 +186,21 @@ export default function MembersPage() {
                     </Select>
                 </div>
             </div>
-        <div>
-        <div className="flex col-start-3 flex-col">
-                <div className="flex flex-row mr-4 w-full items-center justify-between">
-                    <div className="ml-24 mb-2 text-zinc-600 font-bold text-large mt-4">
-                        All staff
-                    </div>
-                    <div className="flex flex-row items-center ml-auto mt-4 mb-2">
-                        <div className="flex mr-2 items-center text-sm text-zinc-600 font-bold">
-                            Filter
+            <div>
+                <div className="flex col-start-3 flex-col">
+                    <div className="flex flex-row mr-4 w-full items-center justify-between">
+                        <div className="ml-24 mb-2 text-zinc-600 font-bold text-large mt-4">
+                            All staff
                         </div>
-                        <div className="content-center mr-2">
-                            <IoFilter className="flex" />
-                        </div>
-                        <div className="flex"></div>
-                        <Select
+                        <div className="flex flex-row items-center ml-auto mt-4 mb-2">
+                            <div className="flex mr-2 items-center text-sm text-zinc-600 font-bold">
+                                Filter
+                            </div>
+                            <div className="content-center mr-2">
+                                <IoFilter className="flex" />
+                            </div>
+                            <div className="flex" />
+                            <Select
                                 disallowEmptySelection
                                 isRequired
                                 aria-label="Filter"
@@ -203,7 +219,7 @@ export default function MembersPage() {
                             </Select>
                         </div>
                     </div>
-                 </div>
+                </div>
             </div>
             <div className="h-fit mx-20 rounded-xl shadow-md border border-gray-100 p-8">
                 <table className="w-full table-auto">
@@ -212,19 +228,15 @@ export default function MembersPage() {
                             <th className="px-4 py-2 rounded-l-lg text-gray-700 ">
                                 Student
                             </th>
-                            <th className="px-4 py-2 text-gray-700 ">
-                                Name
-                            </th>
-                            <th className="px-4 py-2 text-gray-700 ">
-                                Role
-                            </th>
+                            <th className="px-4 py-2 text-gray-700 ">Name</th>
+                            <th className="px-4 py-2 text-gray-700 ">Role</th>
                             <th className="px-4 py-2 rounded-r-lg text-gray-700 ">
                                 Tel
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                    {sortedAndSearchMembers.length > 0 ? (
+                        {sortedAndSearchMembers.length > 0 ? (
                             sortedAndSearchMembers.map((member, index) => (
                                 <tr
                                     key={index}
@@ -243,7 +255,8 @@ export default function MembersPage() {
                                         {member.phoneNumber}
                                     </td>
                                 </tr>
-                            ))) : (
+                            ))
+                        ) : (
                             <tr>
                                 <td
                                     className="px-4 py-3 text-center text-gray-500"
@@ -303,6 +316,6 @@ export default function MembersPage() {
                     </tbody>
                 </table>
             </div>
-        </div>  
+        </div>
     );
 }
