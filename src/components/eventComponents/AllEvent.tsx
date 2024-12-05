@@ -183,6 +183,7 @@ export default function AllEvent({ events, user, state }: AllEventProps) {
 
     useEffect(() => {
         const e = document.getElementById(targetID);
+
         if (e) {
             e.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
@@ -248,7 +249,7 @@ export default function AllEvent({ events, user, state }: AllEventProps) {
                     </Select>
                 </div>
             </div>
-            {state === 'All' && parseInt(access) > 1 && (
+            {state === 'All' && parseInt(access) > 2 && (
                 <div className="mx-4 sm:mx-10 my-2">
                     <Button
                         fullWidth
@@ -266,15 +267,15 @@ export default function AllEvent({ events, user, state }: AllEventProps) {
             {!isLoading && (
                 <div className="mx-4 sm:mx-8">
                     <Accordion
+                        defaultExpandedKeys={[targetID]}
                         variant="splitted"
-                        defaultExpandedKeys={[targetID]} 
                     >
                         {sortedAndSearchEvents.map((event) => {
                             return (
                                 <AccordionItem
-                                    id={event._id}
                                     key={event._id}
                                     aria-label={event.eventName}
+                                    id={event._id}
                                     title={
                                         <div className="flex flex-col sm:flex-row">
                                             <span className="w-full sm:w-5/12 text-zinc-600 pr-2 font-semibold overflow-hidden text-ellipsis whitespace-nowrap">
