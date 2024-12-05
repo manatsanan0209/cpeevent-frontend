@@ -299,10 +299,14 @@ export default function EditPost({
 
                                     <div className="flex flex-col w-full">
                                         <Select
+                                            isRequired
                                             className="pl-1"
                                             errorMessage="This field is required"
+                                            isDisabled={postDetails.public}
+                                            isInvalid={postDetails.assignTo[0] === ''}
                                             label={'Assign To'}
                                             selectedKeys={postDetails.assignTo}
+                                            value={postDetails.assignTo}
                                             selectionMode="multiple"
                                             onChange={(e) => {
                                                 const selectedValues =
