@@ -149,7 +149,8 @@ export const FullCalendar = ({
                                     ? 'text-red-500 bg-red-200 border-l-2 border-red-500 rounded-md'
                                     : event.startDate > today
                                     ? 'bg-yellow-200 border-l-2 border-yellow-500 rounded-md'
-                                    : 'bg-green-200 border-l-2 border-green-500 rounded-md'
+                                    : event.startDate <= today && event.endDate >= today
+                                    && 'bg-green-200 border-l-2 border-green-500 rounded-md'
                             }`}
                         >
                             {event.eventName.length > 14
