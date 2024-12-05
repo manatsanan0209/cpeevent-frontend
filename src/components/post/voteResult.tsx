@@ -86,9 +86,15 @@ export default function VoteResult() {
                     >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis
-                            className="overflow-hidden text-ellipsis whitespace-nowrap"
+                            className="text-md overflow-hidden"
                             dataKey="name"
+                            tickFormatter={(tick) =>
+                                tick.length > 10
+                                    ? `${tick.slice(0, 10)}...`
+                                    : tick
+                            }
                         />
+                        <Tooltip formatter={(value) => value} />
 
                         <YAxis />
                         <Label
@@ -96,7 +102,7 @@ export default function VoteResult() {
                             position="insideLeft"
                             value="Number"
                         />
-                        <Tooltip />
+
                         <Legend />
                         <Bar
                             dataKey="votes"
