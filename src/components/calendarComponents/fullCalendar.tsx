@@ -42,8 +42,8 @@ export const FullCalendar = ({
         return {
             postID: posts._id,
             title: posts.title,
-            postDate: new Date(posts.postDate),
-            endDate: posts.endDate ? new Date(posts.endDate) : null,
+            postDate: new Date(new Date(posts.postDate).getTime() - 7 * 60 * 60 * 1000),
+            endDate: posts.endDate ? new Date(new Date(posts.endDate).getTime() - 7 * 60 * 60 * 1000) : null,
             kind: posts.kind,
         };
     });
@@ -88,10 +88,14 @@ export const FullCalendar = ({
                 : [];
             const postsForDay = PostList
                 ? PostList.filter(
-                      (post) =>
-                          post.postDate.getDate() === day &&
-                          post.postDate.getMonth() === month &&
-                          post.postDate.getFullYear() === year,
+                      (post) => {
+                          const postDate = post.endDate ? post.endDate : post.postDate;
+                          return (
+                              postDate.getDate() === day &&
+                              postDate.getMonth() === month &&
+                              postDate.getFullYear() === year
+                          );
+                      }
                   )
                 : [];
     
@@ -134,7 +138,13 @@ export const FullCalendar = ({
                     {postsForDay.slice(0, 1).map((post) => (
                         <p
                             key={post.title}
-                            className="pl-1 bg-blue-200 border-l-2 border-blue-500 rounded-md"
+                            className={`pl-1 ${
+                                post.kind === 'post'
+                                    ? 'bg-purple-200 border-l-2 border-purple-500'
+                                    : post.kind === 'vote'
+                                    ? 'bg-yellow-200 border-l-2 border-yellow-500'
+                                    : 'bg-blue-200 border-l-2 border-blue-500'
+                            } rounded-md`}
                         >
                             {post.title.length > 14
                                 ? `${post.title.substring(0, 14)}...`
