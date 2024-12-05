@@ -85,7 +85,10 @@ export default function VoteResult() {
                         width={800}
                     >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
+                        <XAxis
+                            className="overflow-hidden text-ellipsis whitespace-nowrap"
+                            dataKey="name"
+                        />
 
                         <YAxis />
                         <Label
