@@ -1,9 +1,12 @@
 import type { Event, PostEventProps } from '@/types/index';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDisclosure } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/hooks/use-theme';
+import { axiosAPIInstance } from '@/api/axios-config.ts';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
 import {
     IoIosArrowDropleftCircle,
@@ -17,12 +20,12 @@ const calendarDayName = 'text-center font-bold p-2 bg-primary text-white mb-1 ';
 
 export const FullCalendar = ({
     events,
-    posts,
     onTabChange,
+    isPostType = false,
 }: {
     events?: Event[];
-    posts?: PostEventProps[];
     onTabChange?: (key: string) => void;
+    isPostType?: boolean;
 }) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [eventsToModal, setEventsToModal] = useState<typeof EventList | null>(null);
@@ -37,6 +40,25 @@ export const FullCalendar = ({
             endDate: new Date(event.endDate),
         };
     });
+
+    const { eventid } = useParams<{ eventid: string }>();
+    const fetchPosts = async () => {
+        const response = await axiosAPIInstance.get(
+            `v1/event/${eventid}/posts`,
+        );
+
+        return response.data.data;
+    };
+
+    const { data: posts = [], refetch } = useQuery<PostEventProps[]>({
+        queryKey: ['posts', eventid],
+        queryFn: fetchPosts,
+        enabled: isPostType,
+    });
+
+    useEffect(() => {
+        refetch();
+    }, [location.pathname]);
 
     const PostList = posts?.map((posts) => {
         return {
@@ -206,6 +228,8 @@ export const FullCalendar = ({
         setDate(date);
         onOpen();
     };
+
+
     return (
         <div className="w-full border rounded-2xl shadow-md p-4">
             <div className="flex justify-between items-center mb-4 py-4">
