@@ -1,50 +1,100 @@
-# Vite & NextUI Template
+# CPE Event (CPEEVO)
 
-This is a template for creating applications using Vite and NextUI (v2).
+CPE Event is a web application for managing events, posts, and user interactions. Built with React and TypeScript, it utilizes modern libraries like NextUI and Tailwind CSS to deliver a responsive and interactive user interface.
 
-[Try it on CodeSandbox](https://githubbox.com/nextui-org/vite-template)
+## Features
+
+- Create and manage events
+- Post updates and announcements
+- User authentication and context management
+- Responsive design with NextUI components
+- Markdown support for posts
 
 ## Technologies Used
 
-- [Vite](https://vitejs.dev/guide/)
-- [NextUI](https://nextui.org)
-- [Tailwind CSS](https://tailwindcss.com)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org)
-- [Framer Motion](https://www.framer.com/motion)
+- **React**: Front-end library for building user interfaces
+- **TypeScript**: Superset of JavaScript for type safety
+- **NextUI**: UI components library for React
+- **Tailwind CSS**: Utility-first CSS framework
+- **React Router**: Client-side routing
+- **Axios**: Promise-based HTTP client
+- **React Markdown**: Render Markdown content
+- **Framer Motion**: Animation library
 
-## How to Use
+## Getting Started
 
-To clone the project, run the following command:
+### Prerequisites
 
+- Node.js 18.17.0 or higher
+- pnpm package manager
+
+### Installation
+
+1. Clone the repository:
+    ```bash
+    git clone <repository-url>
+    ```
+2. Navigate to the project directory:
+    ```bash
+    cd cpeevent-frontend
+    ```
+3. Install dependencies:
+    ```bash
+    pnpm install
+    ```
+
+### Running the Application
+
+Start the development server:
 ```bash
-git clone https://github.com/nextui-org/vite-template.git
+pnpm dev
+```
+The app will be available at ``http://localhost:3000.``
+
+### Building for Production
+Build the application:
+```bash
+pnpm build
+```
+Preview the production build:
+```bash
+pnpm preview
 ```
 
-### Install dependencies
+## Project Structure
 
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
-
-```bash
-npm install
+```
+.
+├── index.html
+├── package.json
+├── pnpm-lock.yaml
+├── public/
+├── src/
+│   ├── api/
+│   ├── App.tsx
+│   ├── components/
+│   ├── context/
+│   ├── data/
+│   ├── hooks/
+│   ├── layouts/
+│   ├── main.tsx
+│   ├── pages/
+│   ├── router/
+│   ├── styles/
+│   ├── types/
+│   └── vite-env.d.ts
+├── tailwind.config.js
+└── vite.config.ts
 ```
 
-### Run the development server
+## Scripts
 
-```bash
-npm run dev
-```
-
-### Setup pnpm (optional)
-
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
-
-```bash
-public-hoist-pattern[]=*@nextui-org/*
-```
-
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
+- Dev Server: `pnpm dev`
+- Build: `pnpm build`
+- Preview: `pnpm preview`
+- Lint: `pnpm lint`
 
 ## License
 
-Licensed under the [MIT license](https://github.com/nextui-org/vite-template/blob/main/LICENSE).
+Licensed under the [MIT license](https://github.com/Encall/cpeevent-frontend/blob/main/LICENSE).
+

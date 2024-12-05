@@ -180,6 +180,7 @@ export default function VoteDetail() {
             toast.success('Vote submitted successfully!');
             setIsModalVisible(false);
             setVoteCompleted(true);
+            window.location.reload();
         } catch (error) {
             toast.error('Error submitting vote');
         }

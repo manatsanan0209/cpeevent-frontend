@@ -14,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 
 import JoinEventModal from '@/components/eventComponents/joinEventModal';
 import { axiosAPIInstance } from '@/api/axios-config';
-import New3 from '@/images/New3.png';
 import { AuthContext } from '@/context/AuthContext';
 
 export default function EventHome() {
@@ -74,17 +73,10 @@ export default function EventHome() {
     return (
         <>
             <div>
-                <div className="flex justify-between items-center mb-4 mt-4">
+                <div className="items-center mb-2 mt-3">
                     <div className="text-zinc-600 font-bold text-4xl ml-8">
                         Events
                     </div>
-
-                    <Button
-                        className="w-1/5 text-base font-semibold mr-8 bg-indigo-500 hover:bg-indigo-500 text-white transition duration-300"
-                        onClick={() => navigate('/events')}
-                    >
-                        See all events
-                    </Button>
                 </div>
 
                 <div className="flex justify-center items-center">
@@ -100,18 +92,21 @@ export default function EventHome() {
                         <GrFormPrevious className="text-xl" />
                     </button>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 justify-items-center w-full max-w-screen-xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-3 mt-1 gap-x-4 justify-items-center w-full max-w-screen-xl mx-auto">
                         {currentEvents.length > 0 ? (
                             currentEvents.map(
-                                (event: {
-                                    _id: string;
-                                    eventName: string;
-                                    eventDescription: string;
-                                    startDate: string;
-                                    participants: string[];
-                                    staff: { stdID: string }[];
-                                    kind: string;
-                                }) => (
+                                (
+                                    event: {
+                                        _id: string;
+                                        eventName: string;
+                                        eventDescription: string;
+                                        startDate: string;
+                                        participants: string[];
+                                        staff: { stdID: string }[];
+                                        kind: string;
+                                    },
+                                    index: number,
+                                ) => (
                                     <Card
                                         key={event._id}
                                         isPressable
@@ -119,7 +114,7 @@ export default function EventHome() {
                                         onPress={() => handleCardClick(event)}
                                     >
                                         <CardHeader className="py-1">
-                                            <div className="text-zinc-600 font-semibold text-xl h-7 w-full overflow-hidden text-ellipsis whitespace-nowrap text-left">
+                                            <div className="text-zinc-600 font-semibold text-lg h-7 w-full overflow-hidden text-ellipsis whitespace-nowrap text-left">
                                                 {event.eventName}
                                             </div>
                                         </CardHeader>
@@ -128,7 +123,9 @@ export default function EventHome() {
                                                 <img
                                                     alt="Event"
                                                     className="w-1/2 rounded-lg shadow-lg h-28"
-                                                    src={New3}
+                                                    src={`https://picsum.photos/200/300?random=${
+                                                        index + 1
+                                                    }`}
                                                 />
                                                 <div className="text-sm text-zinc-600 ml-3 w-11/12 h-20 overflow-hidden text-ellipsis line-clamp-4">
                                                     {event.eventDescription}
@@ -160,7 +157,7 @@ export default function EventHome() {
                                                 </div>
 
                                                 <Chip
-                                                    className="ml-auto"
+                                                    className="ml-auto capitalize"
                                                     color="danger"
                                                     variant="flat"
                                                 >
@@ -188,6 +185,14 @@ export default function EventHome() {
                     >
                         <MdOutlineNavigateNext className="text-xl" />
                     </button>
+                </div>
+                <div className="flex justify-center mt-6">
+                    <Button
+                        className="w-1/5 text-base font-semibold mr-8 bg-violet-700 hover:bg-violet-700 text-white transition duration-300"
+                        onClick={() => navigate('/events')}
+                    >
+                        See all events
+                    </Button>
                 </div>
             </div>
             {isModalOpen && selectedEventID && (

@@ -1,11 +1,8 @@
-//import React from "react";
-import type { PostEventProps } from '@/types/index';
+
 import type { Event } from '@/types/index';
 
 import { useState } from 'react';
-//import { today } from "@internationalized/date";
 import { useQuery } from '@tanstack/react-query';
-
 import { motion } from 'framer-motion';
 import { IoMdArrowDropleft, IoMdArrowDropright } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
@@ -28,19 +25,6 @@ export default function MiniCalendar() {
     const { data: events = [] } = useQuery<Event[]>({
         queryKey: ['events'],
         queryFn: fetchEvents,
-    });
-
-    const fetchPosts = async () => {
-        const response = await axiosAPIInstance.get(
-            `v1/event/${events[0]?._id}/posts`,
-        );
-
-        return response.data.data;
-    };
-
-    useQuery<PostEventProps[]>({
-        queryKey: ['posts'],
-        queryFn: fetchPosts,
     });
 
     const EventList = events?.map((event) => {
@@ -94,9 +78,9 @@ export default function MiniCalendar() {
                 <div
                     key={day}
                     className={`${classDay} ${isToday ? 'bg-gray-100 flex items-center' : ''}`}
-                    onClick={() => navigate(`/calendar`)}
                     role="button"
                     tabIndex={0}
+                    onClick={() => navigate(`/calendar`)}
                     onKeyPress={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                             navigate(`/calendar`);
@@ -162,7 +146,7 @@ export default function MiniCalendar() {
     ];
 
     return (
-        <div className="h-fit w-fit border rounded-2xl shadow-md bg-gradient-to-b from-primary via-primary to-white pt-1">
+        <div className="h-fit w-72  rounded-2xl  bg-primary  pt-1">
             <div className="flex justify-between items-center ">
                 <motion.div
                     className="cursor-pointer"
@@ -200,7 +184,7 @@ export default function MiniCalendar() {
                 <div className={calendarDayName}>F</div>
                 <div className={calendarDayName}>S</div>
             </div>
-            <div className="grid grid-cols-7 grid-rows-6 bg-white pt-2 px-3 border rounded-b-2xl shadow-md pb-1">
+            <div className="grid grid-cols-7 grid-rows-6 bg-white pt-2 px-3  rounded-b-2xl shadow-lg pb-1">
                 {renderDays()}
             </div>
         </div>

@@ -12,7 +12,7 @@ import {
     useDisclosure,
 } from '@nextui-org/react';
 import { GrStatusGoodSmall } from 'react-icons/gr';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MdEdit } from 'react-icons/md';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import { IoTrashBin } from 'react-icons/io5';
@@ -174,6 +174,21 @@ export default function AllEvent({ events, user, state }: AllEventProps) {
         });
     };
 
+    interface LocationState {
+        targetID: string;
+    }
+
+    const locationState = useLocation();
+    const { targetID } = (locationState.state as LocationState) || {};
+
+    useEffect(() => {
+        const e = document.getElementById(targetID);
+
+        if (e) {
+            e.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [isLoading, targetID]);
+
     return (
         <>
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 my-8 items-center px-4 sm:px-10">
@@ -234,7 +249,7 @@ export default function AllEvent({ events, user, state }: AllEventProps) {
                     </Select>
                 </div>
             </div>
-            {state === 'All' && parseInt(access) > 1 && (
+            {state === 'All' && parseInt(access) > 2 && (
                 <div className="mx-4 sm:mx-10 my-2">
                     <Button
                         fullWidth
@@ -251,12 +266,16 @@ export default function AllEvent({ events, user, state }: AllEventProps) {
             )}
             {!isLoading && (
                 <div className="mx-4 sm:mx-8">
-                    <Accordion variant="splitted">
+                    <Accordion
+                        defaultExpandedKeys={[targetID]}
+                        variant="splitted"
+                    >
                         {sortedAndSearchEvents.map((event) => {
                             return (
                                 <AccordionItem
                                     key={event._id}
                                     aria-label={event.eventName}
+                                    id={event._id}
                                     title={
                                         <div className="flex flex-col sm:flex-row">
                                             <span className="w-full sm:w-5/12 text-zinc-600 pr-2 font-semibold overflow-hidden text-ellipsis whitespace-nowrap">

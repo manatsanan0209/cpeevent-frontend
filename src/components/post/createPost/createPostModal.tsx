@@ -16,6 +16,8 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getLocalTimeZone, now } from '@internationalized/date';
 import { useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 import PostKindPost from './postKindPost';
 import PostKindVote from './postKindVote';
@@ -24,7 +26,13 @@ import PostKindForm from './postKindForm';
 import { AuthContext } from '@/context/AuthContext';
 import { axiosAPIInstance } from '@/api/axios-config';
 
-export default function CreatePostModal() {
+export default function CreatePostModal({
+    onPostChange,
+    onOpenChange,
+}: {
+    onPostChange: () => void;
+    onOpenChange: () => void;
+}) {
     const { user } = useContext(AuthContext);
     const { eventid } = useParams<{ eventid: string }>();
     const [disableEndDate, setDisableEndDate] = useState<boolean>(true);
@@ -108,21 +116,32 @@ export default function CreatePostModal() {
         return false;
     }
 
-    async function postToAPI(updatedPost: PostEventProps) {
-        const eventid = window.location.pathname.split('/')[2];
-        const final = { eventID: eventid, updatedPost: { ...updatedPost } };
-
-        try {
+    const createPostMutation = useMutation({
+        mutationFn: async (updatedPost: PostEventProps) => {
+            const eventid = window.location.pathname.split('/')[2];
+            const finalPayload = {
+                eventID: eventid,
+                updatedPost: { ...updatedPost },
+            };
             const response = await axiosAPIInstance.post(
                 'v1/posts/create',
-                final,
+                finalPayload,
             );
 
-            console.log('Post created successfully:', response.data);
-        } catch (error) {
-            console.error('Error creating post:', error);
-        }
-        window.location.reload();
+            return response.data;
+        },
+        onSuccess: () => {
+            toast.success('Post created successfully!');
+            onPostChange();
+            onOpenChange();
+        },
+        onError: () => {
+            toast.error('Failed to create post.');
+        },
+    });
+
+    async function postToAPI(updatedPost: PostEventProps) {
+        createPostMutation.mutate(updatedPost);
     }
 
     function completePost(kind: string) {

@@ -1,5 +1,5 @@
 import { Button, Input, Select, SelectItem } from '@nextui-org/react';
-// import React, { useEffect } from 'react';
+
 
 type FormQuestion = {
     question: string;
@@ -16,29 +16,19 @@ export default function updateForm({
     formQuestions = [],
     setFormQuestions,
 }: PostKindFormProps) {
-
-
     function addQuestion() {
-        // console.log(formQuestions); 
-        // const updatedQuest = [...formQuestions];
-        // console.log(updatedQuest);  
-        // updatedQuest.push({ question: '', inputType: 'text', options: [] });
-        // console.log(updatedQuest);
-        // setFormQuestions(updatedQuest);
+       
         const updatedQuestions = [...formQuestions];
+
         updatedQuestions.push({ question: '', inputType: 'text', options: [] });
         setFormQuestions(updatedQuestions);
     }
-    // function updateQuestion(field: keyof VoteQuestions, value: string) {
-    //     const updatedQuestion = { ...voteQuestions, [field]: value };
-
-    //     setVoteQuestions(updatedQuestion);
-    // }
-
+   
     function deleteQuestion(index: number) {
         if (formQuestions.length > 1) {
             console.log(formQuestions);
-            const updateQues = formQuestions.filter((_, i) => i !== index,);
+            const updateQues = formQuestions.filter((_, i) => i !== index);
+
             setFormQuestions(updateQues);
             console.log(updateQues);
             console.log(formQuestions);
@@ -48,36 +38,20 @@ export default function updateForm({
     function updateQuestion(
         questionIndex: number,
         key: 'question' | 'inputType',
-        value: string
+        value: string,
     ) {
         const updatedQuestions = [...formQuestions];
+
         updatedQuestions[questionIndex][key] = value;
         if (key === 'inputType' && value !== 'option') {
             updatedQuestions[questionIndex].options = [];
         }
         setFormQuestions(updatedQuestions);
     }
-    //     index: number,
-    //     key: 'question' | 'inputType',
-    //     value: string,
-    // ) {
-    //     const updatedQuestion = [...formQuestions];
-
-    //     if (key === 'inputType') {
-    //         if (value === 'option') {
-    //             updatedQuestion[index].options = [''];
-    //         } else {
-    //             updatedQuestion[index].options = [];
-    //         }
-    //     }
-    //     updatedQuestion[index][key] = value;
-    //     setFormQuestions(updatedQuestion);
-
-    //add Question
-
-
+  
     function addOption(questionIndex: number) {
         const updatedQuestions = [...formQuestions];
+
         if (!updatedQuestions[questionIndex].options) {
             updatedQuestions[questionIndex].options = [];
         }
@@ -87,6 +61,7 @@ export default function updateForm({
 
     function deleteOption(questionIndex: number, optionIndex: number) {
         const updatedQuestions = [...formQuestions];
+
         if (updatedQuestions[questionIndex].options) {
             updatedQuestions[questionIndex].options = updatedQuestions[
                 questionIndex
@@ -98,9 +73,10 @@ export default function updateForm({
     function updateOption(
         questionIndex: number,
         optionIndex: number,
-        value: string
+        value: string,
     ) {
         const updatedQuestions = [...formQuestions];
+
         if (updatedQuestions[questionIndex].options) {
             updatedQuestions[questionIndex].options[optionIndex] = value;
         }
@@ -124,7 +100,7 @@ export default function updateForm({
                             updateQuestion(
                                 questionIndex,
                                 'question',
-                                e.target.value
+                                e.target.value,
                             )
                         }
                     />
@@ -139,7 +115,7 @@ export default function updateForm({
                             updateQuestion(
                                 questionIndex,
                                 'inputType',
-                                e.target.value
+                                e.target.value,
                             )
                         }
                     >
@@ -174,7 +150,7 @@ export default function updateForm({
                                             updateOption(
                                                 questionIndex,
                                                 optionIndex,
-                                                e.target.value
+                                                e.target.value,
                                             )
                                         }
                                     />
@@ -183,7 +159,7 @@ export default function updateForm({
                                         onPress={() =>
                                             deleteOption(
                                                 questionIndex,
-                                                optionIndex
+                                                optionIndex,
                                             )
                                         }
                                     >
@@ -216,4 +192,4 @@ export default function updateForm({
             </div>
         </>
     );
-}    
+}

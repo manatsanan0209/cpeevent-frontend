@@ -22,6 +22,7 @@ import { GrStatusGoodSmall } from 'react-icons/gr';
 import { IoFilter } from 'react-icons/io5';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 import { SearchIcon } from '../icons.tsx';
 
@@ -44,6 +45,8 @@ const selectItems = [
 export default function AllPostEvent() {
     const { user, access } = useContext(AuthContext);
     const { eventid } = useParams<{ eventid: string }>();
+    const [refreshKey, setRefreshKey] = useState(0);
+
     const fetchPosts = async () => {
         const response = await axiosAPIInstance.get(
             `v1/event/${eventid}/posts`,
@@ -56,10 +59,15 @@ export default function AllPostEvent() {
         data: posts = [],
         isLoading,
         isError,
+        error,
     } = useQuery<PostEventProps[]>({
-        queryKey: ['posts', eventid],
+        queryKey: ['posts', eventid, refreshKey],
         queryFn: fetchPosts,
     });
+
+    if (isError) {
+        toast.error(error.message);
+    }
 
     const fetchEventByEventID = async () => {
         const response = await axiosAPIInstance.get(
@@ -70,7 +78,7 @@ export default function AllPostEvent() {
     };
 
     const { data: currentEvent = {} as Event } = useQuery<Event>({
-        queryKey: ['currrentEvent', eventid],
+        queryKey: ['currentEvent'],
         queryFn: fetchEventByEventID,
     });
 
@@ -271,6 +279,10 @@ export default function AllPostEvent() {
         }
     };
 
+    const onPostChange = () => {
+        setRefreshKey((oldKey) => oldKey + 1);
+    };
+
     return (
         <div className="w-full ">
             <div className="grid grid-cols-4 gap-4 mt-4 items-center px-8  ">
@@ -393,7 +405,10 @@ export default function AllPostEvent() {
                                 size="lg"
                                 onOpenChange={onOpenChange}
                             >
-                                <CreatePostModal />
+                                <CreatePostModal
+                                    onOpenChange={onOpenChange}
+                                    onPostChange={onPostChange}
+                                />
                             </Modal>
                         </Card>
                     ) : null}
@@ -410,12 +425,12 @@ export default function AllPostEvent() {
                                                   `/workspace/${eventid}/post/${post._id}`,
                                               )
                                             : post.kind === 'vote'
-                                              ? navigate(
-                                                    `/workspace/${eventid}/vote/${post._id}`,
-                                                )
-                                              : navigate(
-                                                    `/workspace/${eventid}/form/${post._id}`,
-                                                );
+                                            ? navigate(
+                                                  `/workspace/${eventid}/vote/${post._id}`,
+                                              )
+                                            : navigate(
+                                                  `/workspace/${eventid}/form/${post._id}`,
+                                              );
                                     }}
                                 >
                                     <CardHeader className="flex flex-col bg-zinc-75  items-start">
@@ -430,10 +445,12 @@ export default function AllPostEvent() {
                                                     'post',
                                                 )}
                                             </p>
-                                            <EditPost
+                                            {post.author === user && (
+                                                <EditPost
                                                 event={currentEvent}
                                                 post={post}
-                                            />
+                                                onPostChange={onPostChange}
+                                            />)}
                                         </div>
                                         <div className="mx-2.5 flex justify-start flex-wrap">
                                             {post.assignTo.map(
@@ -507,11 +524,6 @@ export default function AllPostEvent() {
                         })}
                 </div>
             </Skeleton>
-            {isError && (
-                <div className="text-red-500 text-center my-4">
-                    An error occurred. Please try again later.
-                </div>
-            )}
         </div>
     );
 }
