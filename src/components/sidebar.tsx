@@ -3,7 +3,6 @@ import { useContext } from 'react';
 import { Link, link as linkStyles, Skeleton } from '@nextui-org/react';
 import { BiCalendarStar } from 'react-icons/bi';
 import { LuCalendarClock } from 'react-icons/lu';
-import { GoChecklist } from 'react-icons/go';
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useEffect, useRef } from 'react';
@@ -14,7 +13,21 @@ import { Event } from '@/types/index';
 import logo from '@/images/logo256.png';
 import { AuthContext } from '@/context/AuthContext';
 import { fetchEvents } from '@/hooks/api';
-import { siteConfig } from '@/config/site';
+
+const SidebarItem = {
+    sideItems: [
+        {
+            label: 'Event',
+            href: '/events',
+            icon: 'event',
+        },
+        {
+            label: 'Calendar',
+            href: '/calendar',
+            icon: 'calendar',
+        },
+    ],
+};
 
 export const Sidebar = ({
     isOpen,
@@ -93,7 +106,7 @@ export const Sidebar = ({
                         <RxCross2 size={30} />
                     </button>
                 </div>
-                {siteConfig.sideItems.map((item) => (
+                {SidebarItem.sideItems.map((item) => (
                     <div key={item.href} className="my-2">
                         <Link
                             key={item.href}
@@ -117,9 +130,6 @@ export const Sidebar = ({
                             )}
                             {item.icon === 'calendar' && (
                                 <LuCalendarClock className="w-6 h-6 mx-4" />
-                            )}
-                            {item.icon === 'todo' && (
-                                <GoChecklist className="w-6 h-6 mx-4" />
                             )}
                             {/* label */}
                             <span className="font-medium">{item.label}</span>
