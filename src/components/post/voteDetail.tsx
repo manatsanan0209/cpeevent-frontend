@@ -144,22 +144,8 @@ export default function VoteDetail() {
         setSelected({ [index]: value });
     };
 
-    // async function submitVote() {
-    //     try {
-    //         const response = await axiosAPIInstance.post(
-    //             'v1/posts/submit',
-    //             answers,
-    //         );
-    //         setVoteCompleted(true);
-    //         console.log(response);
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // }
-
     const submitVote = useMutation({
         mutationFn: async () => {
-            console.log('answers', answers);
             await axiosAPIInstance.post('v1/posts/submit', answers);
         },
         onSuccess: () => {
@@ -392,7 +378,6 @@ export default function VoteDetail() {
                         <Button
                             color="secondary"
                             onClick={() => {
-                                console.log('answers', answers);
                                 submitVote.mutate();
                                 handleModalClose;
                             }}
