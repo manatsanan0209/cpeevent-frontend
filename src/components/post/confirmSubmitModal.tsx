@@ -5,9 +5,10 @@ import {
     ModalFooter,
     Button,
 } from '@nextui-org/react';
+import { UseMutationResult } from '@tanstack/react-query';
 
 interface ConfirmSubmitModalProps {
-    onSubmit: () => Promise<void>;
+    onSubmit: UseMutationResult<void, Error, void, unknown>;
 }
 
 export default function ConfirmSubmitModal({
@@ -34,8 +35,11 @@ export default function ConfirmSubmitModal({
                             </Button>
                             <Button
                                 color="primary"
-                                onClick={() => onSubmit()}
-                                onPress={() => onClose}
+                                onClick={() => {
+                                    onSubmit.mutate();
+                                    onClose();
+                                }}
+                                // onPress={() => onClose}
                             >
                                 Submit
                             </Button>
