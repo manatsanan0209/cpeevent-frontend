@@ -39,7 +39,6 @@ export default function ConfirmSubmitModal({
                                     onSubmit.mutate();
                                     onClose();
                                 }}
-                                // onPress={() => onClose}
                             >
                                 Submit
                             </Button>
