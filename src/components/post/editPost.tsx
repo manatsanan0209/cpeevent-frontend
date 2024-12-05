@@ -143,6 +143,7 @@ export default function EditPost({
         onSuccess: () => {
             toast.success('Post updated successfully!');
             onPostChange();
+            onOpenChange();
         },
         onError: () => {
             toast.error('Failed to update post.');
