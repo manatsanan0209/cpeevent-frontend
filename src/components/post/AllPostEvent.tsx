@@ -445,12 +445,12 @@ export default function AllPostEvent() {
                                                     'post',
                                                 )}
                                             </p>
-                                            {post.author === user && (
+                                            {parseInt(access) === 3 || post.author === user ? (
                                                 <EditPost
                                                 event={currentEvent}
                                                 post={post}
                                                 onPostChange={onPostChange}
-                                            />)}
+                                            />) : null}
                                         </div>
                                         <div className="mx-2.5 flex justify-start flex-wrap">
                                             {post.assignTo.map(
