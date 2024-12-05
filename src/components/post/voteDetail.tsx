@@ -14,7 +14,7 @@ import {
 import { toast } from 'react-toastify';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
 import VoteResult from './voteResult';
@@ -63,6 +63,7 @@ const calculateTimeLeft = (endDate: string): string => {
 };
 
 export default function VoteDetail() {
+    const [refreshKey, setRefreshKey] = useState(0);
     const { postid } = useParams();
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -98,7 +99,7 @@ export default function VoteDetail() {
         return response.data.data;
     };
     const { data: summaryData } = useQuery({
-        queryKey: ['postSummary', postid],
+        queryKey: ['postSummary', postid, refreshKey],
         queryFn: fetchPostSummary,
     });
 
@@ -110,7 +111,7 @@ export default function VoteDetail() {
         return response.data.data;
     };
     const { data: transactionData } = useQuery({
-        queryKey: ['transaction', postid, user],
+        queryKey: ['transaction', postid, user, refreshKey],
         queryFn: fetchTransaction,
     });
 
@@ -143,18 +144,34 @@ export default function VoteDetail() {
         setSelected({ [index]: value });
     };
 
-    async function submitVote() {
-        try {
-            const response = await axiosAPIInstance.post(
-                'v1/posts/submit',
-                answers,
-            );
+    // async function submitVote() {
+    //     try {
+    //         const response = await axiosAPIInstance.post(
+    //             'v1/posts/submit',
+    //             answers,
+    //         );
+    //         setVoteCompleted(true);
+    //         console.log(response);
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     }
+    // }
+
+    const submitVote = useMutation({
+        mutationFn: async () => {
+            console.log('answers', answers);
+            await axiosAPIInstance.post('v1/posts/submit', answers);
+        },
+        onSuccess: () => {
+            toast.success('Vote submitted successfully!');
+            setRefreshKey((prev) => prev + 1);
+            setIsModalVisible(false);
             setVoteCompleted(true);
-            console.log(response);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
+        },
+        onError: () => {
+            toast.error('Error submitting vote');
+        },
+    });
 
     const handleSubmit = () => {
         let isValid = true;
@@ -174,17 +191,17 @@ export default function VoteDetail() {
 
         setAnswers({ ...answers, answer: Object.values(selected)[0] });
     };
-    const handleConfirm = async () => {
-        try {
-            await submitVote();
-            toast.success('Vote submitted successfully!');
-            setIsModalVisible(false);
-            setVoteCompleted(true);
-            window.location.reload();
-        } catch (error) {
-            toast.error('Error submitting vote');
-        }
-    };
+    // const handleConfirm = async () => {
+    //     try {
+    //         await submitVote();
+    //         toast.success('Vote submitted successfully!');
+    //         setIsModalVisible(false);
+    //         setVoteCompleted(true);
+    //         window.location.reload();
+    //     } catch (error) {
+    //         toast.error('Error submitting vote');
+    //     }
+    // };
 
     const handleModalClose = () => {
         setIsModalVisible(false);
@@ -372,7 +389,14 @@ export default function VoteDetail() {
                         >
                             Cancel
                         </Button>
-                        <Button color="secondary" onPress={handleConfirm}>
+                        <Button
+                            color="secondary"
+                            onClick={() => {
+                                console.log('answers', answers);
+                                submitVote.mutate();
+                                handleModalClose;
+                            }}
+                        >
                             Confirm
                         </Button>
                     </ModalFooter>
