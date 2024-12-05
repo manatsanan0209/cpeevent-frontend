@@ -60,9 +60,9 @@ export default function SignupPage() {
     const schema = z.object({
         studentID: z
             .string()
-            .length(11, 'Student ID must be 11 digits')
+            .length(11, 'Username must be 11 digits')
             .refine((val) => !isNaN(Number(val)), {
-                message: 'Student ID must be a number',
+                message: 'Username must be a number',
             }),
         password: z.string().min(6, 'Password must be at least 6 characters'),
         firstName: z.string().min(1, 'First name is required'),
@@ -143,7 +143,7 @@ export default function SignupPage() {
                                 Create an account
                             </p>
                             <p className="text-lg text-zinc-500 my-2">
-                                Enter your student ID and password to continue.
+                                Enter your Username and password to continue.
                             </p>
                         </div>
                         <form
@@ -152,7 +152,7 @@ export default function SignupPage() {
                         >
                             <div className={errors.studentID ? "" : "mb-2"}>
                                 <InputField
-                                    label='Student ID'
+                                    label='Username'
                                     control={control}
                                     error={errors.studentID?.message}
                                     name="studentID"
