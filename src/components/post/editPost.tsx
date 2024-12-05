@@ -469,7 +469,7 @@ export default function EditPost({
                                     className="bg-violet-700 text-white"
                                     type="submit"
                                 >
-                                    Update Post
+                                    Edit Post
                                 </Button>
                             </ModalFooter>
                         </form>
