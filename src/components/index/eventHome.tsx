@@ -14,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 
 import JoinEventModal from '@/components/eventComponents/joinEventModal';
 import { axiosAPIInstance } from '@/api/axios-config';
-import New3 from '@/images/New3.png';
 import { AuthContext } from '@/context/AuthContext';
 
 export default function EventHome() {
@@ -96,15 +95,18 @@ export default function EventHome() {
                     <div className="grid grid-cols-1 md:grid-cols-3 mt-1 gap-x-4 justify-items-center w-full max-w-screen-xl mx-auto">
                         {currentEvents.length > 0 ? (
                             currentEvents.map(
-                                (event: {
-                                    _id: string;
-                                    eventName: string;
-                                    eventDescription: string;
-                                    startDate: string;
-                                    participants: string[];
-                                    staff: { stdID: string }[];
-                                    kind: string;
-                                }) => (
+                                (
+                                    event: {
+                                        _id: string;
+                                        eventName: string;
+                                        eventDescription: string;
+                                        startDate: string;
+                                        participants: string[];
+                                        staff: { stdID: string }[];
+                                        kind: string;
+                                    },
+                                    index: number,
+                                ) => (
                                     <Card
                                         key={event._id}
                                         isPressable
@@ -121,7 +123,9 @@ export default function EventHome() {
                                                 <img
                                                     alt="Event"
                                                     className="w-1/2 rounded-lg shadow-lg h-28"
-                                                    src={New3}
+                                                    src={`https://picsum.photos/200/300?random=${
+                                                        index + 1
+                                                    }`}
                                                 />
                                                 <div className="text-sm text-zinc-600 ml-3 w-11/12 h-20 overflow-hidden text-ellipsis line-clamp-4">
                                                     {event.eventDescription}
@@ -153,7 +157,7 @@ export default function EventHome() {
                                                 </div>
 
                                                 <Chip
-                                                    className="ml-auto"
+                                                    className="ml-auto capitalize"
                                                     color="danger"
                                                     variant="flat"
                                                 >
