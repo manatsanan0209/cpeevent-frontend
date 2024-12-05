@@ -35,8 +35,8 @@ export default function VoteResult() {
         summaryData?.totalVotes === 0
             ? []
             : summaryData?.results.map(
-                  (item: { answer: string; count: number }) => ({
-                      name: item.answer,
+                  (item: { option: string; count: number }) => ({
+                      name: item.option,
                       votes: item.count,
                   }),
               ) || [];
@@ -85,7 +85,16 @@ export default function VoteResult() {
                         width={800}
                     >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
+                        <XAxis
+                            className="text-md overflow-hidden"
+                            dataKey="name"
+                            tickFormatter={(tick) =>
+                                tick.length > 10
+                                    ? `${tick.slice(0, 10)}...`
+                                    : tick
+                            }
+                        />
+                        <Tooltip formatter={(value) => value} />
 
                         <YAxis />
                         <Label
@@ -93,7 +102,7 @@ export default function VoteResult() {
                             position="insideLeft"
                             value="Number"
                         />
-                        <Tooltip />
+
                         <Legend />
                         <Bar
                             dataKey="votes"

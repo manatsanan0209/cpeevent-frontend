@@ -15,7 +15,7 @@ import {
 } from '@nextui-org/react';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useContext, useEffect, useState } from 'react';
 
 import FormResult from './sumForm';
@@ -25,8 +25,10 @@ import { axiosAPIInstance } from '@/api/axios-config';
 import { AuthContext } from '@/context/AuthContext';
 import SubmittedFormImage from '@/images/SubmittedForm.png';
 import TimeUpImage from '@/images/Noi.png';
+import { toast } from 'react-toastify';
 
 export default function FormDetail() {
+    const [refreshKey, setRefreshKey] = useState(0);
     const navigate = useNavigate();
     const { postid } = useParams();
     const { user, access } = useContext(AuthContext); // Combined `access` here.
@@ -51,7 +53,7 @@ export default function FormDetail() {
     });
 
     const { data: submittedAnswers } = useQuery<formAnswer>({
-        queryKey: ['answers', postid],
+        queryKey: ['answers', postid, refreshKey],
         queryFn: async () => {
             const response = await axiosAPIInstance.get(
                 `v1/posts/answer/${postid}/${user}`,
@@ -132,12 +134,18 @@ export default function FormDetail() {
 
     const [ResultPage, setResultPage] = useState(false);
 
-    async function onSubmit() {
-        try {
+    const onSubmit = useMutation({
+        mutationFn: async () => {
             await axiosAPIInstance.post('/v1/posts/submit', answers);
-            window.location.reload();
-        } catch (_) {}
-    }
+        },
+        onSuccess: () => {
+            toast.success('Form submitted successfully');
+            setRefreshKey((prev) => prev + 1);
+        },
+        onError: () => {
+            toast.error('Failed to submit form');
+        },
+    });
 
     useEffect(() => {
         if (posts?.formQuestions) {

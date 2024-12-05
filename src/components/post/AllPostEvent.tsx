@@ -439,7 +439,7 @@ export default function AllPostEvent() {
                                                 {displayPostStatus(post.kind)}
                                             </p>
 
-                                            <p className="flex text-zinc-600 mr-4 font-semibold text-xs">
+                                            <p className="flex text-zinc-600 mr-4 font-semibold text-xs items-center">
                                                 {formatDate(
                                                     post.postDate,
                                                     'post',
@@ -457,7 +457,7 @@ export default function AllPostEvent() {
                                                 (assignee, index) => (
                                                     <Chip
                                                         key={index}
-                                                        className="mr-1 mb-1"
+                                                        className="mr-1 mb-1 capitalize"
                                                         color={
                                                             assignee ===
                                                             'everyone'
