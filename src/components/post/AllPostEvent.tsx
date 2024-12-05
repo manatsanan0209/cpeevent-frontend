@@ -445,11 +445,12 @@ export default function AllPostEvent() {
                                                     'post',
                                                 )}
                                             </p>
-                                            <EditPost
+                                            {post.author === user && (
+                                                <EditPost
                                                 event={currentEvent}
                                                 post={post}
                                                 onPostChange={onPostChange}
-                                            />
+                                            />)}
                                         </div>
                                         <div className="mx-2.5 flex justify-start flex-wrap">
                                             {post.assignTo.map(
