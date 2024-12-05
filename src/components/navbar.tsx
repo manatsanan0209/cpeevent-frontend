@@ -44,6 +44,27 @@ export const Navbar = ({
     const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
+    const handleAutocompleteItemClick = (item: string) => {
+        setIsModalOpen(false);
+        setSearchContent('');
+        switch (item) {
+            case 'Home':
+                navigate('/');
+                break;
+            case 'Event':
+                navigate('/events');
+                break;
+            case 'Calendar':
+                navigate('/calendar');
+                break;
+            case 'Settings':
+                navigate('/settings');
+                break;
+            default:
+                break;
+        }
+    };
+
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
 
@@ -164,7 +185,14 @@ export const Navbar = ({
                                     onChange={handleSearchChange}
                                 >
                                     {filteredItems.map((item, index) => (
-                                        <AutocompleteItem key={index}>
+                                        <AutocompleteItem
+                                            key={index}
+                                            onClick={() =>
+                                                handleAutocompleteItemClick(
+                                                    item,
+                                                )
+                                            }
+                                        >
                                             {item}
                                         </AutocompleteItem>
                                     ))}
