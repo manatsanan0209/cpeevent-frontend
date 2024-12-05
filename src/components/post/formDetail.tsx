@@ -220,7 +220,7 @@ export default function FormDetail() {
                                         Author: {posts?.author}
                                     </small>
                                     <div className="flex justify-end w-1/2 ml-auto">
-                                        {parseInt(access) > 1 && (
+                                        {parseInt(access) === 3 || posts?.author === user && (
                                             <Button
                                                 className="w-2/5 flex mr-8 text-white font-bold"
                                                 color="danger"
