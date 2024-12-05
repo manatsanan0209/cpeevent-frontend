@@ -445,30 +445,36 @@ export default function AllPostEvent() {
                                                     'post',
                                                 )}
                                             </p>
-                                            {parseInt(access) === 3 || post.author === user ? (
+                                            {parseInt(access) === 3 ||
+                                            post.author === user ? (
                                                 <EditPost
-                                                event={currentEvent}
-                                                post={post}
-                                                onPostChange={onPostChange}
-                                            />) : null}
+                                                    event={currentEvent}
+                                                    post={post}
+                                                    onPostChange={onPostChange}
+                                                />
+                                            ) : null}
                                         </div>
                                         <div className="mx-2.5 flex justify-start flex-wrap">
-                                            {post.assignTo.map(
-                                                (assignee, index) => (
-                                                    <Chip
-                                                        key={index}
-                                                        className="mr-1 mb-1 capitalize"
-                                                        color={
-                                                            assignee ===
-                                                            'everyone'
-                                                                ? 'danger'
-                                                                : 'secondary'
-                                                        }
-                                                        variant="flat"
-                                                    >
-                                                        {assignee}
-                                                    </Chip>
-                                                ),
+                                            {post.public ? (
+                                                <Chip color='success' variant='flat'>Public</Chip>
+                                            ) : (
+                                                post.assignTo.map(
+                                                    (assignee, index) => (
+                                                        <Chip
+                                                            key={index}
+                                                            className="mr-1 mb-1 capitalize"
+                                                            color={
+                                                                assignee ===
+                                                                'everyone'
+                                                                    ? 'danger'
+                                                                    : 'secondary'
+                                                            }
+                                                            variant="flat"
+                                                        >
+                                                            {assignee}
+                                                        </Chip>
+                                                    ),
+                                                )
                                             )}
                                         </div>
                                     </CardHeader>
