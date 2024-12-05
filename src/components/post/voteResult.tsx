@@ -35,8 +35,8 @@ export default function VoteResult() {
         summaryData?.totalVotes === 0
             ? []
             : summaryData?.results.map(
-                  (item: { answer: string; count: number }) => ({
-                      name: item.answer,
+                  (item: { option: string; count: number }) => ({
+                      name: item.option,
                       votes: item.count,
                   }),
               ) || [];
