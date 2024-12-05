@@ -112,9 +112,9 @@ export default function LoginPage() {
     const schema = z.object({
         studentID: z
             .string()
-            .length(11, 'Student ID must be 11 digits')
+            .length(11, 'Username must be 11 digits')
             .refine((val) => !isNaN(Number(val)), {
-                message: 'Student ID must be a number',
+                message: 'Username must be a number',
             }),
         password: z.string().min(6, 'Password must be at least 6 characters'),
     });
@@ -167,7 +167,7 @@ export default function LoginPage() {
                                 Welcome Back!
                             </p>
                             <p className="text-lg text-zinc-500 my-2">
-                                Enter your student ID and password to continue.
+                                Enter your Username and password to continue.
                             </p>
                         </div>
                         <form
@@ -177,7 +177,7 @@ export default function LoginPage() {
                             <div className="">
                                 <InputField
                                     control={control}
-                                    label="Student ID"
+                                    label="Username"
                                     name="studentID"
                                     rules={schema.pick({ studentID: true })}
                                     error={errors.studentID?.message}
