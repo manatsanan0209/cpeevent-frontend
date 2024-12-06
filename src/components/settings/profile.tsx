@@ -1,6 +1,6 @@
 import type { UserAccountType } from '@/types/index';
 
-import { Divider, Input, Button, Avatar, ButtonGroup } from '@nextui-org/react';
+import { Divider, Input, Button, Avatar, ButtonGroup, user } from '@nextui-org/react';
 import { TbSignature } from 'react-icons/tb';
 import { useForm, Controller, UseFormSetValue } from 'react-hook-form';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -24,6 +24,11 @@ interface InputFieldProps {
 interface UserProfileUpdate {
     username: string;
 }
+
+type ProfileFromAPI = {
+    username: string;
+    imgProfile: string;
+};
 
 const InputField = ({
     placeholder,
@@ -147,10 +152,14 @@ export default function Profile() {
         return response.data.data;
     };
 
-    const { data: userData } = useQuery<UserAccountType>({
+    const { data: userData } = useQuery<ProfileFromAPI>({
         queryKey: ['studentid'],
         queryFn: fetchProfile,
     });
+
+    const base64ToImage = (base64: string) => {
+        return `data:image/png;base64,${base64}`;
+    }
 
     useEffect(() => {
         if (userData) {
@@ -203,7 +212,7 @@ export default function Profile() {
                     <div className="flex flex-row items-center gap-4">
                         <Avatar
                             className="w-24 h-24"
-                            src={imageSrc || userData?.imgProfile}
+                            src={imageSrc || (userData?.imgProfile ? base64ToImage(userData.imgProfile) : undefined)}
                         />
                         <ButtonGroup>
                             <ImgUpload
