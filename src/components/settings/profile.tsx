@@ -1,6 +1,6 @@
 import type { UserAccountType } from '@/types/index';
 
-import { Divider, Input, Button, Avatar, ButtonGroup, user } from '@nextui-org/react';
+import { Divider, Input, Button, Avatar, ButtonGroup } from '@nextui-org/react';
 import { TbSignature } from 'react-icons/tb';
 import { useForm, Controller, UseFormSetValue } from 'react-hook-form';
 import { useMutation, useQuery } from '@tanstack/react-query';
