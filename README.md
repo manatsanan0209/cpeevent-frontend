@@ -1,4 +1,4 @@
-visite our online websitre https://cpeevo.encall.live/
+visit our online websitre https://cpeevo.encall.live/
 # CPE Event (CPEEVO)
 
 CPE Event is a web application for managing events, posts, and user interactions. Built with React and TypeScript, it utilizes modern libraries like NextUI and Tailwind CSS to deliver a responsive and interactive user interface.
